@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono";
 
 import { Toaster } from "@/components/ui/sonner";
 import { CustomQueryClientProvider } from "@/components/providers/query-client-provider";
+import { ProvidersWrapper } from "@/components/providers/providers-wrapper";
 import { APP_CONFIG } from "@/config/app-config";
 import { getPreference } from "@/server/server-actions";
 import { PreferencesStoreProvider } from "@/stores/preferences/preferences-provider";
@@ -30,10 +31,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     >
       <body className={`${geistMono.className} min-h-screen antialiased`}>
         <PreferencesStoreProvider themeMode={themeMode}>
-          <CustomQueryClientProvider>
-            {children}
-            <Toaster />
-          </CustomQueryClientProvider>
+          <ProvidersWrapper>
+            <CustomQueryClientProvider>
+              {children}
+              <Toaster />
+            </CustomQueryClientProvider>
+          </ProvidersWrapper>
         </PreferencesStoreProvider>
       </body>
     </html>

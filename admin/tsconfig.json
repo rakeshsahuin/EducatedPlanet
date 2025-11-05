@@ -19,7 +19,13 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@educatedplanet/models": ["../models/src"],
+      "@educatedplanet/models/*": ["../models/src/*"],
+      "@educatedplanet/dataservice": ["../dataservice/src"],
+      "@educatedplanet/dataservice/*": ["../dataservice/src/*"],
+      "@educatedplanet/common": ["../common/src"],
+      "@educatedplanet/common/*": ["../common/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],

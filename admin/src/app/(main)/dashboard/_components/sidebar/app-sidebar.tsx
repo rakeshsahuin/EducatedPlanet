@@ -13,6 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { LoadingLink } from "@/components/ui/loading-link";
 import { APP_CONFIG } from "@/config/app-config";
 import { rootUser } from "@/data/users";
 import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
@@ -64,10 +65,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-              <Link href="/dashboard/default">
+              <LoadingLink href="/dashboard/default">
                 <Command />
                 <span className="text-base font-semibold">{APP_CONFIG.name}</span>
-              </Link>
+              </LoadingLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

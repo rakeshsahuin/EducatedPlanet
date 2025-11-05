@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { GeistMono } from "geist/font/mono";
 
 import { Toaster } from "@/components/ui/sonner";
 import { CustomQueryClientProvider } from "@/components/providers/query-client-provider";
@@ -12,7 +12,7 @@ import { THEME_MODE_VALUES, type ThemeMode } from "@/types/preferences/theme";
 
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const geistMono = GeistMono;
 
 export const metadata: Metadata = {
   title: APP_CONFIG.meta.title,
@@ -28,7 +28,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       className={themeMode === "dark" ? "dark" : ""}
       suppressHydrationWarning
     >
-      <body className={`${inter.className} min-h-screen antialiased`}>
+      <body className={`${geistMono.className} min-h-screen antialiased`}>
         <PreferencesStoreProvider themeMode={themeMode}>
           <CustomQueryClientProvider>
             {children}

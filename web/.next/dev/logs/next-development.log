@@ -1,0 +1,367 @@
+[00:00:02.126] Server  LOG      ✓ Ready in 1553ms
+[00:00:05.217] Server  LOG      ○ Compiling / ...
+[00:02:13.921] Server  LOG      ✓ Compiled in 246ms
+[00:03:32.388] Server  LOG      ✓ Compiled in 199ms
+[00:05:00.378] Server  LOG      ✓ Compiled in 157ms
+[00:12:39.584] Server  LOG      ✓ Compiled in 147ms
+[00:13:37.780] Server  LOG      ✓ Compiled in 99ms
+[00:13:48.896] Server  LOG      ✓ Compiled in 97ms
+[00:13:54.128] Server  LOG      ✓ Compiled in 130ms
+[00:14:32.376] Server  LOG      ✓ Compiled in 101ms
+[00:14:40.675] Server  LOG      ✓ Compiled in 131ms
+[00:14:49.124] Server  LOG      ✓ Compiled in 80ms
+[00:15:07.140] Server  LOG      ✓ Compiled in 88ms
+[00:15:20.263] Server  LOG      ✓ Compiled in 126ms
+[00:16:53.569] Server  LOG      ✓ Compiled in 123ms
+[00:17:21.107] Server  LOG      ✓ Compiled in 638ms
+[00:17:21.647] Browser ERROR   ./Documents/Project/educatedplanet/components/header/navigation.tsx:2:10
+Ecmascript file had an error
+  1 | import Link from "next/link"
+> 2 | import { usePathname } from "next/navigation"
+    |          ^^^^^^^^^^^
+  3 | import { cn } from "@/lib/utils"
+  4 |
+  5 | interface NavigationProps {
+
+You're importing a component that needs `usePathname`. This React Hook only works in a Client Component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Server Component:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx
+    ./Documents/Project/educatedplanet/components/header/index.ts
+    ./Documents/Project/educatedplanet/app/layout.tsx
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+[00:17:33.649] Browser ERROR   ./Documents/Project/educatedplanet/components/header/navigation.tsx:2:10
+Ecmascript file had an error
+  1 | import Link from "next/link"
+> 2 | import { usePathname } from "next/navigation"
+    |          ^^^^^^^^^^^
+  3 | import { cn } from "@/lib/utils"
+  4 |
+  5 | interface NavigationProps {
+
+You're importing a component that needs `usePathname`. This React Hook only works in a Client Component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Server Component:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx
+    ./Documents/Project/educatedplanet/components/header/index.ts
+    ./Documents/Project/educatedplanet/app/layout.tsx
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+[00:19:27.653] Browser ERROR   ./Documents/Project/educatedplanet/components/header/navigation.tsx:2:10
+Ecmascript file had an error
+  1 | import Link from "next/link"
+> 2 | import { usePathname } from "next/navigation"
+    |          ^^^^^^^^^^^
+  3 | import { cn } from "@/lib/utils"
+  4 |
+  5 | interface NavigationProps {
+
+You're importing a component that needs `usePathname`. This React Hook only works in a Client Component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Server Component:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx
+    ./Documents/Project/educatedplanet/components/header/index.ts
+    ./Documents/Project/educatedplanet/app/layout.tsx
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+[00:19:47.649] Browser ERROR   ./Documents/Project/educatedplanet/components/header/navigation.tsx:2:10
+Ecmascript file had an error
+  1 | import Link from "next/link"
+> 2 | import { usePathname } from "next/navigation"
+    |          ^^^^^^^^^^^
+  3 | import { cn } from "@/lib/utils"
+  4 |
+  5 | interface NavigationProps {
+
+You're importing a component that needs `usePathname`. This React Hook only works in a Client Component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Server Component:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx
+    ./Documents/Project/educatedplanet/components/header/index.ts
+    ./Documents/Project/educatedplanet/app/layout.tsx
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+[00:19:47.649] Browser ERROR   ./Documents/Project/educatedplanet/components/header/navigation.tsx:2:10
+Ecmascript file had an error
+  1 | import Link from "next/link"
+> 2 | import { usePathname } from "next/navigation"
+    |          ^^^^^^^^^^^
+  3 | import { cn } from "@/lib/utils"
+  4 |
+  5 | interface NavigationProps {
+
+You're importing a component that needs `usePathname`. This React Hook only works in a Client Component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Server Component:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx
+    ./Documents/Project/educatedplanet/components/header/index.ts
+    ./Documents/Project/educatedplanet/app/layout.tsx
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+[00:19:48.654] Browser ERROR   ./Documents/Project/educatedplanet/components/header/navigation.tsx:2:10
+Ecmascript file had an error
+  1 | import Link from "next/link"
+> 2 | import { usePathname } from "next/navigation"
+    |          ^^^^^^^^^^^
+  3 | import { cn } from "@/lib/utils"
+  4 |
+  5 | interface NavigationProps {
+
+You're importing a component that needs `usePathname`. This React Hook only works in a Client Component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Server Component:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx
+    ./Documents/Project/educatedplanet/components/header/index.ts
+    ./Documents/Project/educatedplanet/app/layout.tsx
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+[00:19:49.648] Browser ERROR   ./Documents/Project/educatedplanet/components/header/navigation.tsx:2:10
+Ecmascript file had an error
+  1 | import Link from "next/link"
+> 2 | import { usePathname } from "next/navigation"
+    |          ^^^^^^^^^^^
+  3 | import { cn } from "@/lib/utils"
+  4 |
+  5 | interface NavigationProps {
+
+You're importing a component that needs `usePathname`. This React Hook only works in a Client Component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Server Component:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx
+    ./Documents/Project/educatedplanet/components/header/index.ts
+    ./Documents/Project/educatedplanet/app/layout.tsx
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+[00:19:52.643] Browser ERROR   ./Documents/Project/educatedplanet/components/header/navigation.tsx:2:10
+Ecmascript file had an error
+  1 | import Link from "next/link"
+> 2 | import { usePathname } from "next/navigation"
+    |          ^^^^^^^^^^^
+  3 | import { cn } from "@/lib/utils"
+  4 |
+  5 | interface NavigationProps {
+
+You're importing a component that needs `usePathname`. This React Hook only works in a Client Component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Server Component:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx
+    ./Documents/Project/educatedplanet/components/header/index.ts
+    ./Documents/Project/educatedplanet/app/layout.tsx
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+[00:19:52.644] Browser ERROR   ./Documents/Project/educatedplanet/components/header/navigation.tsx:2:10
+Ecmascript file had an error
+  1 | import Link from "next/link"
+> 2 | import { usePathname } from "next/navigation"
+    |          ^^^^^^^^^^^
+  3 | import { cn } from "@/lib/utils"
+  4 |
+  5 | interface NavigationProps {
+
+You're importing a component that needs `usePathname`. This React Hook only works in a Client Component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Server Component:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx
+    ./Documents/Project/educatedplanet/components/header/index.ts
+    ./Documents/Project/educatedplanet/app/layout.tsx
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+[00:19:52.644] Browser ERROR   ./Documents/Project/educatedplanet/components/header/navigation.tsx:2:10
+Ecmascript file had an error
+  1 | import Link from "next/link"
+> 2 | import { usePathname } from "next/navigation"
+    |          ^^^^^^^^^^^
+  3 | import { cn } from "@/lib/utils"
+  4 |
+  5 | interface NavigationProps {
+
+You're importing a component that needs `usePathname`. This React Hook only works in a Client Component. To fix, mark the file (or its parent) with the `"use client"` directive.
+
+ Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+
+Import traces:
+  Server Component:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx
+    ./Documents/Project/educatedplanet/components/header/index.ts
+    ./Documents/Project/educatedplanet/app/layout.tsx
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/components/header/navigation.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/components/header/header.tsx [Server Component]
+    ./Documents/Project/educatedplanet/app/layout.tsx [Server Component]
+[00:19:59.455] Server  LOG      ✓ Compiled in 197ms
+[00:19:59.917] Server  ERROR    ⨯ ReferenceError: cn is not defined
+[00:20:01.671] Browser ERROR   uncaughtError: ReferenceError: cn is not defined
+[00:21:04.814] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:22:32.427] Server  LOG      ✓ Compiled in 162ms
+[00:22:39.908] Server  LOG      ✓ Compiled in 98ms
+[00:23:07.803] Server  LOG      ✓ Compiled in 102ms
+[00:23:25.985] Server  LOG      ✓ Compiled in 103ms
+[00:28:09.885] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[00:28:09.885] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:28:09.885] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[00:28:09.885] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:37:01.268] Server  LOG      ✓ Compiled in 129ms
+[00:38:07.917] Server  LOG      ✓ Compiled in 83ms
+[00:38:18.015] Server  LOG      ✓ Compiled in 57ms
+[00:38:45.549] Server  LOG      ✓ Compiled in 56ms
+[00:40:04.468] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:40:04.468] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[00:58:52.772] Server  LOG      ✓ Compiled in 209ms
+[00:59:01.213] Server  LOG      ✓ Compiled in 135ms
+[00:59:26.244] Server  LOG      ✓ Compiled in 136ms
+[00:59:43.810] Server  LOG      ✓ Compiled in 129ms
+[00:59:58.334] Server  LOG      ✓ Compiled in 208ms
+[01:04:43.653] Server  LOG      ✓ Compiled in 134ms
+[01:07:30.449] Server  LOG      ✓ Compiled in 130ms
+[01:08:11.396] Server  LOG      ✓ Compiled in 755ms
+[01:08:34.123] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-1.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:08:34.136] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-2.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:08:34.138] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-3.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:08:34.141] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-4.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:08:34.146] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-5.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:08:34.152] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-6.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:08:34.177] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-7.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:08:34.181] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-8.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:09:38.229] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-1.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:09:38.231] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-2.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:09:38.239] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-3.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:09:38.242] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-4.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:09:38.252] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-5.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:09:38.254] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-6.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:09:38.264] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-7.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:09:38.413] Server  ERROR    ⨯ The requested resource "/placeholder-tutor-8.jpg" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:14:51.618] Server  LOG      ✓ Compiled in 230ms

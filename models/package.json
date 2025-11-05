@@ -1,0 +1,27 @@
+{
+  "name": "@educatedplanet/models",
+  "version": "1.0.0",
+  "description": "Shared TypeScript interfaces and types for EducatedPlanet platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": ["typescript", "types", "interfaces", "educatedplanet"],
+  "author": "EducatedPlanet",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^5"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/educatedplanet/models"
+  }
+}

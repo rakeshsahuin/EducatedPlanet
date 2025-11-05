@@ -1,0 +1,3 @@
+module.exports=[84349,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(42987);a.n(d("[project]/Documents/Project/educatedplanet/web/node_modules/next/dist/client/components/builtin/global-error.js <module evaluation>"))},88285,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(42987);a.n(d("[project]/Documents/Project/educatedplanet/web/node_modules/next/dist/client/components/builtin/global-error.js"))},67479,a=>{"use strict";a.i(84349);var b=a.i(88285);a.n(b)}];
+
+//# sourceMappingURL=a996f_next_dist_client_components_builtin_global-error_ef9a6757.js.map

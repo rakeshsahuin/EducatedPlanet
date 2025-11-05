@@ -1,0 +1,11 @@
+var R=require("../../chunks/ssr/[turbopack]_runtime.js")("server/app/_global-error/page.js")
+R.c("server/chunks/ssr/[root-of-the-server]__7455ce5a._.js")
+R.c("server/chunks/ssr/Documents_Project_educatedplanet_web_936807fc._.js")
+R.c("server/chunks/ssr/a996f_next_dist_65055dae._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__ea4c7c36._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0ac81693._.js")
+R.c("server/chunks/ssr/a996f_next_dist_037856de._.js")
+R.c("server/chunks/ssr/Documents_Project_educatedplanet_web_app_6a6106b2._.js")
+R.c("server/chunks/ssr/f381b_web__next-internal_server_app__global-error_page_actions_141ca659.js")
+R.m(79089)
+module.exports=R.m(79089).exports

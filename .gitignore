@@ -9,6 +9,10 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+/.claude
+/.kilocode
+
+AGENTS.md
 
 # testing
 /coverage

@@ -1,10 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Theme preset styles: these override CSS variables based on the selected data-theme-preset */
-@import "../styles/presets/brutalist.css";
-@import "../styles/presets/soft-pop.css";
-@import "../styles/presets/tangerine.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -186,39 +182,6 @@ These serve as the fallback; there is no separate default.css file. */
   --shadow-2xl: 0px 1px 0px 0px hsl(0 0% 0% / 0.00);
 }
 
-@layer utilities {
-  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-2xs {
-    box-shadow: var(--shadow-2xs);
-  }
-
-  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-xs {
-    box-shadow: var(--shadow-xs);
-  }
-
-  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-sm {
-    box-shadow: var(--shadow-sm);
-  }
-
-  [data-theme-preset]:not([data-theme-preset="default"]) .shadow {
-    box-shadow: var(--shadow);
-  }
-
-  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-md {
-    box-shadow: var(--shadow-md);
-  }
-
-  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-lg {
-    box-shadow: var(--shadow-lg);
-  }
-
-  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-xl {
-    box-shadow: var(--shadow-xl);
-  }
-
-  [data-theme-preset]:not([data-theme-preset="default"]) .shadow-2xl {
-    box-shadow: var(--shadow-2xl);
-  }
-}
 
 @layer base {
   * {

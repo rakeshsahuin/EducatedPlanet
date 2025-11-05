@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/**/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -9,8 +10,18 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+
+# AI Assistant settings
 /.claude
 /.kilocode
+/.kilocodemodes
+/**/.claude
+/**/.kilocode
+/**/.kilocodemodes
+
+# Build tools
+/.turbo
+
 
 AGENTS.md
 

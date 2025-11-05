@@ -1,0 +1,184 @@
+
+> studio-admin@2.0.0 build C:\Users\RakaThinkpad\Documents\Project\educatedplanet\admin
+> next build
+
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\RakaThinkpad\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\RakaThinkpad\Documents\Project\educatedplanet\admin\package-lock.json
+   * C:\Users\RakaThinkpad\Documents\Project\educatedplanet\pnpm-lock.yaml
+
+   ▲ Next.js 16.0.1 (Turbopack)
+
+   Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 4 errors:
+./Documents/Project/educatedplanet/dataservice/dist/index.js:25:20
+Module not found: Can't resolve '@educatedplanet/datamodels'
+[0m [90m 23 |[39m [33mObject[39m[33m.[39mdefineProperty(exports[33m,[39m [32m"reviewService"[39m[33m,[39m { enumerable[33m:[39m [36mtrue[39m[33m,[39m [36mget[39m[33m:[39m [36mfunction[39m () { [36mreturn[39m review_service_1[33m.[39mreviewService[33m;[39m } })[33m;[39m
+ [90m 24 |[39m [90m// Re-export models and queries for advanced usage[39m
+[31m[1m>[22m[39m[90m 25 |[39m [36mvar[39m datamodels_1 [33m=[39m require([32m"@educatedplanet/datamodels"[39m)[33m;[39m
+ [90m    |[39m                    [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 26 |[39m [33mObject[39m[33m.[39mdefineProperty(exports[33m,[39m [32m"UserModel"[39m[33m,[39m { enumerable[33m:[39m [36mtrue[39m[33m,[39m [36mget[39m[33m:[39m [36mfunction[39m () { [36mreturn[39m datamodels_1[33m.[39m[33mUserModel[39m[33m;[39m } })[33m;[39m
+ [90m 27 |[39m [33mObject[39m[33m.[39mdefineProperty(exports[33m,[39m [32m"UserQueries"[39m[33m,[39m { enumerable[33m:[39m [36mtrue[39m[33m,[39m [36mget[39m[33m:[39m [36mfunction[39m () { [36mreturn[39m datamodels_1[33m.[39m[33mUserQueries[39m[33m;[39m } })[33m;[39m
+ [90m 28 |[39m [33mObject[39m[33m.[39mdefineProperty(exports[33m,[39m [32m"TutorModel"[39m[33m,[39m { enumerable[33m:[39m [36mtrue[39m[33m,[39m [36mget[39m[33m:[39m [36mfunction[39m () { [36mreturn[39m datamodels_1[33m.[39m[33mTutorModel[39m[33m;[39m } })[33m;[39m[0m
+
+
+
+Import traces:
+  App Route:
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts
+    ./Documents/Project/educatedplanet/admin/src/app/api/dashboard/route.ts
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/hooks/api/use-dashboard.ts [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Server Component]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/hooks/api/use-dashboard.ts [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Server Component]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./Documents/Project/educatedplanet/dataservice/dist/services/review.service.js:4:22
+Module not found: Can't resolve '@educatedplanet/datamodels'
+[0m [90m 2 |[39m [33mObject[39m[33m.[39mdefineProperty(exports[33m,[39m [32m"__esModule"[39m[33m,[39m { value[33m:[39m [36mtrue[39m })[33m;[39m
+ [90m 3 |[39m exports[33m.[39mreviewService [33m=[39m exports[33m.[39m[33mReviewService[39m [33m=[39m [36mvoid[39m [35m0[39m[33m;[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mconst[39m datamodels_1 [33m=[39m require([32m"@educatedplanet/datamodels"[39m)[33m;[39m
+ [90m   |[39m                      [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m [90m/**[39m
+ [90m 6 |[39m [90m * Review service for handling review-related business logic[39m
+ [90m 7 |[39m [90m */[39m[0m
+
+
+
+Import traces:
+  App Route:
+    ./Documents/Project/educatedplanet/dataservice/dist/services/review.service.js
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts
+    ./Documents/Project/educatedplanet/admin/src/app/api/dashboard/route.ts
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/dataservice/dist/services/review.service.js [Client Component Browser]
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/hooks/api/use-dashboard.ts [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Server Component]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/dataservice/dist/services/review.service.js [Client Component SSR]
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/hooks/api/use-dashboard.ts [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Server Component]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./Documents/Project/educatedplanet/dataservice/dist/services/tutor.service.js:4:22
+Module not found: Can't resolve '@educatedplanet/datamodels'
+[0m [90m 2 |[39m [33mObject[39m[33m.[39mdefineProperty(exports[33m,[39m [32m"__esModule"[39m[33m,[39m { value[33m:[39m [36mtrue[39m })[33m;[39m
+ [90m 3 |[39m exports[33m.[39mtutorService [33m=[39m exports[33m.[39m[33mTutorService[39m [33m=[39m [36mvoid[39m [35m0[39m[33m;[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mconst[39m datamodels_1 [33m=[39m require([32m"@educatedplanet/datamodels"[39m)[33m;[39m
+ [90m   |[39m                      [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m [90m/**[39m
+ [90m 6 |[39m [90m * Tutor service for handling tutor-related business logic[39m
+ [90m 7 |[39m [90m */[39m[0m
+
+
+
+Import traces:
+  App Route:
+    ./Documents/Project/educatedplanet/dataservice/dist/services/tutor.service.js
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts
+    ./Documents/Project/educatedplanet/admin/src/app/api/dashboard/route.ts
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/dataservice/dist/services/tutor.service.js [Client Component Browser]
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/hooks/api/use-dashboard.ts [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Server Component]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/dataservice/dist/services/tutor.service.js [Client Component SSR]
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/hooks/api/use-dashboard.ts [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Server Component]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./Documents/Project/educatedplanet/dataservice/dist/services/user.service.js:9:22
+Module not found: Can't resolve '@educatedplanet/datamodels'
+[0m [90m  7 |[39m [36mconst[39m bcryptjs_1 [33m=[39m __importDefault(require([32m"bcryptjs"[39m))[33m;[39m
+ [90m  8 |[39m [36mconst[39m validator_1 [33m=[39m __importDefault(require([32m"validator"[39m))[33m;[39m
+[31m[1m>[22m[39m[90m  9 |[39m [36mconst[39m datamodels_1 [33m=[39m require([32m"@educatedplanet/datamodels"[39m)[33m;[39m
+ [90m    |[39m                      [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 10 |[39m [90m/**[39m
+ [90m 11 |[39m [90m * User service for handling user-related business logic[39m
+ [90m 12 |[39m [90m */[39m[0m
+
+
+
+Import traces:
+  App Route:
+    ./Documents/Project/educatedplanet/dataservice/dist/services/user.service.js
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts
+    ./Documents/Project/educatedplanet/admin/src/app/api/dashboard/route.ts
+
+  Client Component Browser:
+    ./Documents/Project/educatedplanet/dataservice/dist/services/user.service.js [Client Component Browser]
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/hooks/api/use-dashboard.ts [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Client Component Browser]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Server Component]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Documents/Project/educatedplanet/dataservice/dist/services/user.service.js [Client Component SSR]
+    ./Documents/Project/educatedplanet/dataservice/dist/index.js [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/lib/api.ts [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/hooks/api/use-dashboard.ts [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Client Component SSR]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/_components/section-cards.tsx [Server Component]
+    ./Documents/Project/educatedplanet/admin/src/app/(main)/dashboard/default/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (./Documents/Project/educatedplanet/dataservice/dist/index.js:25:20)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./Documents/Project/educatedplanet/dataservice/dist/services/review.service.js:4:22)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./Documents/Project/educatedplanet/dataservice/dist/services/tutor.service.js:4:22)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./Documents/Project/educatedplanet/dataservice/dist/services/user.service.js:9:22)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+ ELIFECYCLE  Command failed with exit code 1.

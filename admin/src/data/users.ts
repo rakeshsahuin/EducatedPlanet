@@ -1,19 +1,27 @@
+import { UserRole } from '@educatedplanet/models';
+
 export const users = [
   {
     id: "1",
     name: "Arham Khan",
-    username: "Aarhamkhnz",
     email: "hello@arhamkhnz.com",
+    phone: "+91-9876543210",
+    role: "admin" as UserRole,
     avatar: "/avatars/arhamkhnz.png",
-    role: "administrator",
+    isVerified: true,
+    createdAt: new Date("2024-01-01T00:00:00Z"),
+    updatedAt: new Date("2024-01-01T00:00:00Z")
   },
   {
     id: "2",
     name: "Ammar Khan",
-    username: "ammarkhnz",
     email: "hello@ammarkhnz.com",
+    phone: "+91-9876543211",
+    role: "admin" as UserRole,
     avatar: "",
-    role: "admin",
+    isVerified: true,
+    createdAt: new Date("2024-01-02T00:00:00Z"),
+    updatedAt: new Date("2024-01-02T00:00:00Z")
   },
 ];
 

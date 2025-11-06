@@ -2,6 +2,9 @@
  * Schema exports for datamodels package
  */
 
-export { IUserDocument, userSchema } from './user-clean.schema';
-export { ITutorDocument, tutorSchema } from './tutor-clean.schema';
-export { IReviewDocument, reviewSchema } from './review-clean.schema';
+export type { IUserDocument } from './user-clean.schema';
+export { userSchema } from './user-clean.schema';
+export type { ITutorDocument } from './tutor-clean.schema';
+export { tutorSchema } from './tutor-clean.schema';
+export type { IReviewDocument } from './review-clean.schema';
+export { reviewSchema } from './review-clean.schema';

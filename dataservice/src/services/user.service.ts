@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import validator from 'validator';
+import { Types } from 'mongoose';
 import {
   User,
   CreateUserInput,
@@ -18,12 +19,12 @@ export class UserService {
    */
   private transformUserDocument(userDoc: IUserDocument): User {
     return {
-      id: userDoc._id.toString(),
+      id: (userDoc._id as Types.ObjectId).toString(),
       name: userDoc.name,
       email: userDoc.email,
       phone: userDoc.phone,
       role: userDoc.role,
-      isVerified: userDoc.isEmailVerified && userDoc.isPhoneVerified,
+      isVerified: !!(userDoc.isEmailVerified && userDoc.isPhoneVerified),
       createdAt: userDoc.createdAt,
       updatedAt: userDoc.updatedAt
     };
@@ -163,7 +164,7 @@ export class UserService {
         updateData.phone
       );
 
-      if (existingUserDoc && existingUserDoc._id.toString() !== id) {
+      if (existingUserDoc && (existingUserDoc._id as Types.ObjectId).toString() !== id) {
         throw new Error('User with this email or phone already exists');
       }
     }
@@ -277,7 +278,7 @@ export class UserService {
     }
 
     // Update last login
-    await UserQueries.updateById(userDoc._id.toString(), { lastLoginAt: new Date() });
+    await UserQueries.updateById((userDoc._id as Types.ObjectId).toString(), { lastLoginAt: new Date() });
 
     return this.transformUserDocument(userDoc);
   }

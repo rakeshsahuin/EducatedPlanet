@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "generate:presets": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' src/scripts/generate-theme-presets.ts"
+    "generate:presets": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' src/scripts/generate-theme-presets.ts",
+    "seed:users": "node -e \"import('./src/lib/seed-database.js').then(m => m.seedDatabase().catch(console.error))\""
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [

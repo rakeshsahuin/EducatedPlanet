@@ -16,7 +16,7 @@ export class TutorService {
    */
   private transformTutorDocument(tutorDoc: ITutorDocument): Tutor {
     return {
-      id: tutorDoc._id.toString(),
+      id: (tutorDoc._id as Types.ObjectId).toString(),
       name: tutorDoc.name,
       title: tutorDoc.title,
       photo: tutorDoc.photo,

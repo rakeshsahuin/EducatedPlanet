@@ -36,13 +36,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 
-import type { User, UserRole } from "@/models/src/user";
+import type { User, UserRole } from "@educatedplanet/models";
 
 const userFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
   phone: z.string().min(1, "Phone is required"),
-  role: z.enum(["user", "tutor", "admin"] as UserRole[]),
+  role: z.enum(["user", "tutor", "admin"]),
   avatar: z.string().optional(),
   isVerified: z.boolean(),
 });

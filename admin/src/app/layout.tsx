@@ -23,6 +23,19 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   const themeMode = await getPreference<ThemeMode>("theme_mode", THEME_MODE_VALUES, "light");
 
+  console.log('app stared')
+  // Seed database on application startup (only in development/enabled mode)
+  if (process.env.SEED_ON_STARTUP === 'true') {
+    try {
+      // Dynamic import to prevent build-time execution
+      const { seedDatabase } = await import("@/lib/seed-database");
+      await seedDatabase();
+    } catch (error) {
+      console.error("Database seeding failed:", error);
+      // Don't prevent app startup due to seeding errors
+    }
+  }
+
   return (
     <html
       lang="en"

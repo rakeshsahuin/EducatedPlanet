@@ -16,9 +16,9 @@ export class ReviewService {
    */
   private transformReviewDocument(reviewDoc: IReviewDocument): Review {
     return {
-      id: reviewDoc._id.toString(),
-      tutorId: reviewDoc.tutorId.toString(),
-      userId: reviewDoc.userId.toString(),
+      id: (reviewDoc._id as Types.ObjectId).toString(),
+      tutorId: (reviewDoc.tutorId as Types.ObjectId).toString(),
+      userId: (reviewDoc.userId as Types.ObjectId).toString(),
       rating: reviewDoc.rating,
       comment: reviewDoc.comment,
       studentName: reviewDoc.studentName,

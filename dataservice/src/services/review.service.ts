@@ -5,12 +5,21 @@ import {
   UpdateReviewInput,
   ReviewSearchParams
 } from '@educatedplanet/models';
-import { IReviewDocument, ReviewQueries, ReviewModel } from '../datamodels';
+import { IReviewDocument, ReviewQueries, ReviewModel, initializeDatabase } from '../datamodels';
 
 /**
  * Review service for handling review-related business logic
  */
 export class ReviewService {
+  private static initialized = false;
+
+  private async ensureInitialized(): Promise<void> {
+    if (!ReviewService.initialized) {
+      await initializeDatabase();
+      ReviewService.initialized = true;
+    }
+  }
+
   /**
    * Transform MongoDB document to Review interface
    */
@@ -31,6 +40,8 @@ export class ReviewService {
    * Create a new review
    */
   public async createReview(reviewData: CreateReviewInput): Promise<Review> {
+    await this.ensureInitialized();
+    
     // Validate input
     this.validateReviewData(reviewData);
 
@@ -64,6 +75,8 @@ export class ReviewService {
    * Find review by ID
    */
   public async findReviewById(id: string): Promise<Review | null> {
+    await this.ensureInitialized();
+    
     const reviewDoc = await ReviewQueries.findById(id);
     return reviewDoc ? this.transformReviewDocument(reviewDoc) : null;
   }
@@ -127,6 +140,8 @@ export class ReviewService {
       pages: number;
     };
   }> {
+    await this.ensureInitialized();
+    
     const { page = 1, limit = 10, tutorId, userId, rating, isApproved, isPublic } = params;
 
     // Build filter object

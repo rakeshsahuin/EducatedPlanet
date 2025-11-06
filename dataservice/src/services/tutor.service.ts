@@ -5,12 +5,21 @@ import {
   UpdateTutorInput,
   TutorSearchParams
 } from '@educatedplanet/models';
-import { ITutorDocument, TutorQueries, TutorModel } from '../datamodels';
+import { ITutorDocument, TutorQueries, TutorModel, initializeDatabase } from '../datamodels';
 
 /**
  * Tutor service for handling tutor-related business logic
  */
 export class TutorService {
+  private static initialized = false;
+
+  private async ensureInitialized(): Promise<void> {
+    if (!TutorService.initialized) {
+      await initializeDatabase();
+      TutorService.initialized = true;
+    }
+  }
+
   /**
    * Transform MongoDB document to Tutor interface
    */
@@ -35,6 +44,8 @@ export class TutorService {
    * Create a new tutor profile
    */
   public async createTutor(tutorData: CreateTutorInput): Promise<Tutor> {
+    await this.ensureInitialized();
+    
     // Validate input
     this.validateTutorData(tutorData);
 
@@ -69,6 +80,8 @@ export class TutorService {
    * Find tutor by ID
    */
   public async findTutorById(id: string): Promise<Tutor | null> {
+    await this.ensureInitialized();
+    
     const tutorDoc = await TutorQueries.findById(id);
     return tutorDoc ? this.transformTutorDocument(tutorDoc) : null;
   }
@@ -82,6 +95,8 @@ export class TutorService {
     page: number;
     totalPages: number;
   }> {
+    await this.ensureInitialized();
+    
     const { page = 1, limit = 20 } = params;
     const searchResult = await TutorQueries.search({
       ...params,

@@ -26,7 +26,9 @@ export const featuredTutors: Tutor[] = [
       min: 800,
       max: 1200,
       currency: "₹"
-    }
+    },
+    createdAt: new Date('2023-01-15'),
+    updatedAt: new Date('2024-01-15')
   },
   {
     id: "2",
@@ -49,7 +51,9 @@ export const featuredTutors: Tutor[] = [
       min: 600,
       max: 900,
       currency: "₹"
-    }
+    },
+    createdAt: new Date('2023-02-20'),
+    updatedAt: new Date('2024-02-20')
   },
   {
     id: "3",
@@ -72,7 +76,9 @@ export const featuredTutors: Tutor[] = [
       min: 500,
       max: 800,
       currency: "₹"
-    }
+    },
+    createdAt: new Date('2023-03-10'),
+    updatedAt: new Date('2024-03-10')
   },
   {
     id: "4",
@@ -95,7 +101,9 @@ export const featuredTutors: Tutor[] = [
       min: 1000,
       max: 1500,
       currency: "₹"
-    }
+    },
+    createdAt: new Date('2022-11-05'),
+    updatedAt: new Date('2024-01-05')
   },
   {
     id: "5",
@@ -118,7 +126,9 @@ export const featuredTutors: Tutor[] = [
       min: 700,
       max: 1000,
       currency: "₹"
-    }
+    },
+    createdAt: new Date('2023-05-18'),
+    updatedAt: new Date('2024-02-18')
   },
   {
     id: "6",
@@ -141,7 +151,9 @@ export const featuredTutors: Tutor[] = [
       min: 1200,
       max: 1800,
       currency: "₹"
-    }
+    },
+    createdAt: new Date('2023-07-22'),
+    updatedAt: new Date('2024-03-22')
   },
   {
     id: "7",
@@ -164,7 +176,9 @@ export const featuredTutors: Tutor[] = [
       min: 800,
       max: 1100,
       currency: "₹"
-    }
+    },
+    createdAt: new Date('2023-04-12'),
+    updatedAt: new Date('2024-01-12')
   },
   {
     id: "8",
@@ -187,6 +201,8 @@ export const featuredTutors: Tutor[] = [
       min: 1000,
       max: 1400,
       currency: "₹"
-    }
+    },
+    createdAt: new Date('2022-09-30'),
+    updatedAt: new Date('2024-02-28')
   }
 ];

@@ -8,12 +8,20 @@ import {
   LoginInput,
   UserSearchParams
 } from '@educatedplanet/models';
-import { IUserDocument, UserQueries, UserModel } from '../datamodels';
+import { IUserDocument, UserQueries, UserModel, initializeDatabase } from '../datamodels';
 
 /**
  * User service for handling user-related business logic
  */
 export class UserService {
+  private static initialized = false;
+
+  private async ensureInitialized(): Promise<void> {
+    if (!UserService.initialized) {
+      await initializeDatabase();
+      UserService.initialized = true;
+    }
+  }
   /**
    * Transform MongoDB document to User interface
    */
@@ -33,6 +41,9 @@ export class UserService {
    * Create a new user
    */
   public async createUser(userData: CreateUserInput): Promise<User> {
+    // Ensure database is connected
+    await this.ensureInitialized();
+    
     // Validate input
     this.validateUserData(userData);
 
@@ -63,6 +74,8 @@ export class UserService {
    * Find user by ID
    */
   public async findUserById(id: string): Promise<User | null> {
+    await this.ensureInitialized();
+    
     if (!validator.isMongoId(id)) {
       throw new Error('Invalid user ID');
     }
@@ -104,6 +117,8 @@ export class UserService {
     page: number;
     totalPages: number;
   }> {
+    await this.ensureInitialized();
+    
     const { page = 1, limit = 10 } = params;
     const skip = (page - 1) * limit;
 

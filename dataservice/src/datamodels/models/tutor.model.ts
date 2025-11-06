@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
 import { ITutorDocument } from '../schemas/tutor-clean.schema';
+import { databaseConnection } from '../connections';
+import { ReviewModel } from './review.model';
 
 /**
- * Tutor model
+ * Tutor model bound to the database connection
  */
-export const TutorModel = mongoose.model<ITutorDocument>('Tutor');
+export const TutorModel = databaseConnection.getTutorModel();
 
 // Export frequently used query methods
 export const TutorQueries = {
@@ -206,8 +208,7 @@ export const TutorQueries = {
   updateRating: async (tutorId: string) => {
     // This would typically be called from the service layer
     // when reviews are updated
-    const Review = mongoose.model('Review');
-    const ratingResult = await Review.aggregate([
+    const ratingResult = await ReviewModel.aggregate([
       { $match: { tutorId, isApproved: true } },
       {
         $group: {

@@ -18,10 +18,16 @@ node_modules/
 /**/.claude
 /**/.kilocode
 /**/.kilocodemodes
-
+/**/.turbo
+**/.next
+/**/.next
 # Build tools
+/**/node_modules
 /.turbo
-
+**/dist/
+/dist/
+/dataservice/dist/
+/web/.next/
 
 AGENTS.md
 

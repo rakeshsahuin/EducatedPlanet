@@ -1,4 +1,7 @@
-import mongoose, { ConnectOptions } from 'mongoose';
+import mongoose, { ConnectOptions, Model } from 'mongoose';
+import { IUserDocument } from '../schemas/user-clean.schema';
+import { ITutorDocument } from '../schemas/tutor-clean.schema';
+import { IReviewDocument } from '../schemas/review-clean.schema';
 /**
  * Database connection configuration interface
  */
@@ -38,6 +41,18 @@ export declare class DatabaseConnection {
      * Get Mongoose instance
      */
     getMongoose(): typeof mongoose;
+    /**
+     * Get User model bound to this connection
+     */
+    getUserModel(): Model<IUserDocument>;
+    /**
+     * Get Tutor model bound to this connection
+     */
+    getTutorModel(): Model<ITutorDocument>;
+    /**
+     * Get Review model bound to this connection
+     */
+    getReviewModel(): Model<IReviewDocument>;
     /**
      * Health check for database connection
      */

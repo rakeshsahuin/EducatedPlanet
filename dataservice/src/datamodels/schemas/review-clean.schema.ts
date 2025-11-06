@@ -31,14 +31,12 @@ const reviewSchema = new Schema<IReviewDocument>({
   tutorId: {
     type: Schema.Types.ObjectId,
     ref: 'Tutor',
-    required: [true, 'Tutor ID is required'],
-    index: true
+    required: [true, 'Tutor ID is required']
   },
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: [true, 'User ID is required'],
-    index: true
+    required: [true, 'User ID is required']
   },
   rating: {
     type: Number,
@@ -60,8 +58,7 @@ const reviewSchema = new Schema<IReviewDocument>({
   },
   isApproved: {
     type: Boolean,
-    default: false,
-    index: true
+    default: false
   },
   isPublic: {
     type: Boolean,

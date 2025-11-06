@@ -8,7 +8,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 /**
  * User model
  */
-exports.UserModel = mongoose_1.default.model('User');
+exports.UserModel = mongoose_1.default.model('users');
 // Export frequently used query methods
 exports.UserQueries = {
     /**

@@ -125,8 +125,6 @@ const userSchema = new Schema<IUserDocument>({
 });
 
 // Indexes
-userSchema.index({ email: 1 });
-userSchema.index({ phone: 1 });
 userSchema.index({ role: 1 });
 userSchema.index({ isActive: 1, isDeleted: 1 });
 
@@ -136,7 +134,7 @@ userSchema.virtual('profileUrl').get(function() {
 });
 
 // Register the model
-mongoose.model<IUserDocument>('User', userSchema);
+mongoose.model<IUserDocument>('users', userSchema);
 
 // Export only the schema
 export { userSchema };

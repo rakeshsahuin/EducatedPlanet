@@ -142,8 +142,6 @@ const userSchema = new mongoose_1.Schema({
 });
 exports.userSchema = userSchema;
 // Indexes
-userSchema.index({ email: 1 });
-userSchema.index({ phone: 1 });
 userSchema.index({ role: 1 });
 userSchema.index({ isActive: 1, isDeleted: 1 });
 // Virtual for profile URL
@@ -151,5 +149,5 @@ userSchema.virtual('profileUrl').get(function () {
     return `/users/${this._id}`;
 });
 // Register the model
-mongoose_1.default.model('User', userSchema);
+mongoose_1.default.model('users', userSchema);
 //# sourceMappingURL=user-clean.schema.js.map

@@ -42,14 +42,12 @@ const reviewSchema = new mongoose_1.Schema({
     tutorId: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Tutor',
-        required: [true, 'Tutor ID is required'],
-        index: true
+        required: [true, 'Tutor ID is required']
     },
     userId: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'User',
-        required: [true, 'User ID is required'],
-        index: true
+        required: [true, 'User ID is required']
     },
     rating: {
         type: Number,
@@ -71,8 +69,7 @@ const reviewSchema = new mongoose_1.Schema({
     },
     isApproved: {
         type: Boolean,
-        default: false,
-        index: true
+        default: false
     },
     isPublic: {
         type: Boolean,

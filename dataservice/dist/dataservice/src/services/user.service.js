@@ -21,7 +21,7 @@ class UserService {
             email: userDoc.email,
             phone: userDoc.phone,
             role: userDoc.role,
-            isVerified: userDoc.isEmailVerified && userDoc.isPhoneVerified,
+            isVerified: !!(userDoc.isEmailVerified && userDoc.isPhoneVerified),
             createdAt: userDoc.createdAt,
             updatedAt: userDoc.updatedAt
         };

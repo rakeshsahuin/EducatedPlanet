@@ -4,7 +4,13 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
-  port: 3000,
+  // Configure server external packages to handle mongoose/mongodb properly
+  serverExternalPackages: [
+    'mongoose',
+    'mongodb',
+    'bcryptjs',
+    'validator'
+  ],
   async redirects() {
     return [
       {

@@ -4,6 +4,7 @@
     "username": "supreme.boss",
     "email": "superadmin@educatedplanet.net",
     "isActive": true,
-    "password": "Admin@123"
+    "password": "Admin@123",
+    "phone": "+919090909090"
   }
 ]

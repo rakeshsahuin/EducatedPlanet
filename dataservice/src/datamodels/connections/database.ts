@@ -1,4 +1,7 @@
-import mongoose, { ConnectOptions } from 'mongoose';
+import mongoose, { ConnectOptions, Model } from 'mongoose';
+import { userSchema, IUserDocument } from '../schemas/user-clean.schema';
+import { tutorSchema, ITutorDocument } from '../schemas/tutor-clean.schema';
+import { reviewSchema, IReviewDocument } from '../schemas/review-clean.schema';
 
 /**
  * Database connection configuration interface
@@ -12,7 +15,7 @@ export interface DatabaseConfig {
  * Default database configuration
  */
 export const defaultConfig: DatabaseConfig = {
-  uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/educatedplanet',
+  uri: process.env.MONGODB_URI,
   options: {
     maxPoolSize: 10,
     serverSelectionTimeoutMS: 5000,
@@ -22,6 +25,8 @@ export const defaultConfig: DatabaseConfig = {
     heartbeatFrequencyMS: 10000,
     retryWrites: true,
     w: 'majority',
+    // Explicitly set the database name from environment variable
+    dbName: process.env.MONGODB_DB_NAME
   },
 };
 
@@ -33,19 +38,19 @@ export class DatabaseConnection {
   private isConnected = false;
   private connectionConfig: DatabaseConfig;
 
-  private constructor(config?: Partial<DatabaseConfig>) {
+  private constructor() {
     this.connectionConfig = {
-      uri: config?.uri || defaultConfig.uri,
-      options: { ...defaultConfig.options, ...config?.options },
+      uri: defaultConfig.uri,
+      options: { ...defaultConfig.options},
     };
   }
 
   /**
    * Get singleton instance
    */
-  public static getInstance(config?: Partial<DatabaseConfig>): DatabaseConnection {
+  public static getInstance(): DatabaseConnection {
     if (!DatabaseConnection.instance) {
-      DatabaseConnection.instance = new DatabaseConnection(config);
+      DatabaseConnection.instance = new DatabaseConnection();
     }
     return DatabaseConnection.instance;
   }
@@ -125,6 +130,42 @@ export class DatabaseConnection {
   }
 
   /**
+   * Get User model bound to this connection
+   */
+  public getUserModel(): Model<IUserDocument> {
+    // Check if model already exists for this connection
+    if (this.getMongoose().models.User) {
+      return this.getMongoose().models.User;
+    }
+    // Register model with this connection
+    return this.getMongoose().model<IUserDocument>('User', userSchema);
+  }
+
+  /**
+   * Get Tutor model bound to this connection
+   */
+  public getTutorModel(): Model<ITutorDocument> {
+    // Check if model already exists for this connection
+    if (this.getMongoose().models.Tutor) {
+      return this.getMongoose().models.Tutor;
+    }
+    // Register model with this connection
+    return this.getMongoose().model<ITutorDocument>('Tutor', tutorSchema);
+  }
+
+  /**
+   * Get Review model bound to this connection
+   */
+  public getReviewModel(): Model<IReviewDocument> {
+    // Check if model already exists for this connection
+    if (this.getMongoose().models.Review) {
+      return this.getMongoose().models.Review;
+    }
+    // Register model with this connection
+    return this.getMongoose().model<IReviewDocument>('Review', reviewSchema);
+  }
+
+  /**
    * Health check for database connection
    */
   public async healthCheck(): Promise<{ status: 'healthy' | 'unhealthy'; message: string }> {
@@ -179,8 +220,8 @@ export const databaseConnection = DatabaseConnection.getInstance();
 /**
  * Helper function to initialize database with custom config
  */
-export const initializeDatabase = async (config?: Partial<DatabaseConfig>): Promise<void> => {
-  const db = DatabaseConnection.getInstance(config);
+export const initializeDatabase = async (): Promise<void> => {
+  const db = DatabaseConnection.getInstance();
   await db.connect();
 };
 

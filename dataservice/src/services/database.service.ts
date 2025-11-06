@@ -42,6 +42,8 @@ export class DatabaseService {
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
         bufferCommands: false,
+        // Use database name from config or environment variable
+        dbName: dbName || process.env.MONGODB_DB_NAME || 'eduplanet',
         ...options
       };
 

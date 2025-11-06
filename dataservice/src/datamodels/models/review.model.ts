@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 import { IReviewDocument } from '../schemas/review-clean.schema';
+import { databaseConnection } from '../connections';
 
 /**
- * Review model
+ * Review model bound to the database connection
  */
-export const ReviewModel = mongoose.model<IReviewDocument>('Review');
+export const ReviewModel = databaseConnection.getReviewModel();
 
 // Export frequently used query methods
 export const ReviewQueries = {

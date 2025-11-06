@@ -14,6 +14,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Configure server external packages to handle mongoose/mongodb properly
+  serverExternalPackages: [
+    'mongoose',
+    'mongodb',
+    'bcryptjs',
+    'validator'
+  ],
 };
 
 export default nextConfig;

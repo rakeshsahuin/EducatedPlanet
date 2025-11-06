@@ -5,11 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.closeDatabase = exports.initializeDatabase = exports.databaseConnection = exports.DatabaseConnection = exports.defaultConfig = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
+const user_clean_schema_1 = require("../schemas/user-clean.schema");
+const tutor_clean_schema_1 = require("../schemas/tutor-clean.schema");
+const review_clean_schema_1 = require("../schemas/review-clean.schema");
 /**
  * Default database configuration
  */
 exports.defaultConfig = {
-    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/educatedplanet',
+    uri: process.env.MONGODB_URI,
     options: {
         maxPoolSize: 10,
         serverSelectionTimeoutMS: 5000,
@@ -104,6 +107,39 @@ class DatabaseConnection {
      */
     getMongoose() {
         return mongoose_1.default;
+    }
+    /**
+     * Get User model bound to this connection
+     */
+    getUserModel() {
+        // Check if model already exists for this connection
+        if (this.getMongoose().models.User) {
+            return this.getMongoose().models.User;
+        }
+        // Register model with this connection
+        return this.getMongoose().model('User', user_clean_schema_1.userSchema);
+    }
+    /**
+     * Get Tutor model bound to this connection
+     */
+    getTutorModel() {
+        // Check if model already exists for this connection
+        if (this.getMongoose().models.Tutor) {
+            return this.getMongoose().models.Tutor;
+        }
+        // Register model with this connection
+        return this.getMongoose().model('Tutor', tutor_clean_schema_1.tutorSchema);
+    }
+    /**
+     * Get Review model bound to this connection
+     */
+    getReviewModel() {
+        // Check if model already exists for this connection
+        if (this.getMongoose().models.Review) {
+            return this.getMongoose().models.Review;
+        }
+        // Register model with this connection
+        return this.getMongoose().model('Review', review_clean_schema_1.reviewSchema);
     }
     /**
      * Health check for database connection

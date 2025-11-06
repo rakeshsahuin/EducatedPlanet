@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 import { IUserDocument } from '../schemas/user-clean.schema';
+import { databaseConnection } from '../connections';
 
 /**
- * User model
+ * User model bound to the database connection
  */
-export const UserModel = mongoose.model<IUserDocument>('User');
+export const UserModel = databaseConnection.getUserModel();
 
 // Export frequently used query methods
 export const UserQueries = {

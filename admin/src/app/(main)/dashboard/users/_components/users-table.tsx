@@ -49,10 +49,8 @@ export function UsersTable() {
     data: filteredData,
     columns: usersColumns,
     getRowId: (row) => row.id.toString(),
-    initialState: {
-      sorting: [{ id: "createdAt", desc: true }],
-      pagination: { pageSize: 10 },
-    },
+    defaultPageSize: 10,
+    defaultSorting: [{ id: "createdAt", desc: true }],
   });
 
   const handleExport = () => {
@@ -85,7 +83,7 @@ export function UsersTable() {
             <span>Users Management</span>
             <div className="flex items-center gap-2">
               <UserModal mode="create" onSubmit={handleUserSubmit}>
-                <Button>Add New User</Button>
+                <Button variant="default">Add New User</Button>
               </UserModal>
             </div>
           </CardTitle>

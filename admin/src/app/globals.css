@@ -10,7 +10,7 @@
   --card-foreground: rgb(10, 10, 10);
   --popover: rgb(255, 255, 255);
   --popover-foreground: rgb(10, 10, 10);
-  --primary: rgb(115, 115, 115);
+  --primary: rgb(39, 39, 39);
   --primary-foreground: rgb(250, 250, 250);
   --secondary: rgb(209, 213, 220);
   --secondary-foreground: rgb(23, 23, 23);
@@ -32,7 +32,7 @@
   --sidebar-foreground: rgb(10, 10, 10);
   --sidebar-primary: rgb(23, 23, 23);
   --sidebar-primary-foreground: rgb(250, 250, 250);
-  --sidebar-accent: rgb(245, 245, 245);
+  --sidebar-accent: rgb(190, 190, 190);
   --sidebar-accent-foreground: rgb(23, 23, 23);
   --sidebar-border: rgb(229, 229, 229);
   --sidebar-ring: rgb(161, 161, 161);

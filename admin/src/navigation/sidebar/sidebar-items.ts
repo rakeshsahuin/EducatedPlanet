@@ -16,6 +16,7 @@ import {
   Gauge,
   GraduationCap,
   type LucideIcon,
+  User,
 } from "lucide-react";
 
 export interface NavSubItem {
@@ -49,9 +50,14 @@ export const sidebarItems: NavGroup[] = [
     label: "Dashboards",
     items: [
       {
-        title: "Default",
-        url: "/dashboard/default",
+        title: "Home",
+        url: "/",
         icon: LayoutDashboard,
+      },
+      {
+        title: "Users",
+        url: "/dashboard/users",
+        icon: Users,
       },
       {
         title: "CRM",

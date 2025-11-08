@@ -61,7 +61,7 @@ export function UserModal({ children, user, mode, onSubmit }: UserModalProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<UserFormData>({
-    resolver: zodResolver(userFormSchema),
+    resolver: zodResolver(userFormSchema as any),
     defaultValues: {
       name: user?.name || "",
       email: user?.email || "",

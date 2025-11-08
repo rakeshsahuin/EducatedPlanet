@@ -1,6 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { encryptPassword } from '@/utils/encryption';
+import { getCSRFToken } from '@/utils/get-csrf-token';
 
 // Types
 export interface User {
@@ -53,7 +55,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Check session on mount
   useEffect(() => {
     checkSession();
+    // Initialize CSRF token
+    initializeCSRFToken();
   }, []);
+
+  const initializeCSRFToken = async () => {
+    try {
+      const response = await fetch('/api/auth/csrf', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        console.warn('Failed to initialize CSRF token');
+      }
+    } catch (error) {
+      console.error('CSRF token initialization error:', error);
+    }
+  };
 
   const checkSession = async () => {
     try {
@@ -83,16 +101,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
+      // Encrypt password before sending
+      const encryptedPassword = await encryptPassword(password);
+
+      // Get CSRF token
+      const csrfToken = getCSRFToken();
+
       const response = await fetch('/api/auth/sign-in/email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
         },
         credentials: 'include',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, encryptedPassword }),
       });
 
       const data = await response.json();
+
+      // Handle rate limit errors specifically
+      if (response.status === 429) {
+        return {
+          success: false,
+          error: data.message || 'Too many login attempts. Please try again later.'
+        };
+      }
 
       if (response.ok && data && data.user) {
         setUser(data.user);
@@ -145,12 +178,28 @@ export function useAuth() {
 
 // Legacy exports for compatibility
 export const signIn = async (email: string, password: string) => {
+  // Encrypt password before sending
+  const encryptedPassword = await encryptPassword(password);
+
+  // Get CSRF token
+  const csrfToken = getCSRFToken();
+
   const response = await fetch('/api/auth/sign-in/email', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(csrfToken && { 'X-CSRF-Token': csrfToken }),
+    },
     credentials: 'include',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, encryptedPassword }),
   });
+
+  // Handle rate limit errors specifically
+  if (response.status === 429) {
+    const data = await response.json() as SignInResponse;
+    throw new Error(data.message || 'Too many login attempts. Please try again later.');
+  }
+
   const data = await response.json() as SignInResponse;
   if (!response.ok) {
     throw new Error(data.error ?? data.message ?? 'Login failed');

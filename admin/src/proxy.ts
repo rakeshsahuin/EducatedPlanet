@@ -1,64 +1,82 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { validateSession } from '@educatedplanet/dataservice';
+import rateLimit from 'express-rate-limit';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+// Store rate limit data in memory (for production, use Redis or database)
+const requestCounts = new Map<string, { count: number; resetTime: number }>();
 
-  // Public routes that don't require authentication
-  const publicRoutes = ['/auth/login', '/auth/register'];
-  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
+// Rate limit configuration
+const RATE_LIMIT_WINDOW_MS = 2 * 60 * 1000; // 2 minutes
+const RATE_LIMIT_MAX_REQUESTS = 5; // Maximum 5 login attempts per 2 minutes
 
-  // API routes
-  const isApiRoute = pathname.startsWith('/api');
+/**
+ * Rate limiting middleware for authentication endpoints
+ */
+export function rateLimitMiddleware(request: NextRequest): Response | null {
+  const ip = request.headers.get('x-forwarded-for') ||
+             request.headers.get('x-real-ip') ||
+             request.headers.get('cf-connecting-ip') ||
+             'unknown';
+  const now = Date.now();
+  const windowStart = now - RATE_LIMIT_WINDOW_MS;
 
-  // Skip middleware for public routes and all API routes
-  // API routes will handle their own authentication
-  if (isPublicRoute || isApiRoute) {
-    return NextResponse.next();
+  // Get or create rate limit data for this IP
+  let rateLimitData = requestCounts.get(ip);
+
+  if (!rateLimitData || rateLimitData.resetTime <= now) {
+    // Initialize or reset the counter
+    rateLimitData = { count: 0, resetTime: now + RATE_LIMIT_WINDOW_MS };
+    requestCounts.set(ip, rateLimitData);
   }
 
-  // Check for session
-  const cookie = request.cookies.get('eduplanet-admin-session');
-  const token = cookie?.value;
+  // Increment the counter
+  rateLimitData.count++;
 
-  let session = null;
-  if (token) {
-    try {
-      // Validate session using dataservice
-      const sessionData = await validateSession(token);
-      if (sessionData) {
-        session = sessionData;
+  // Check if rate limit exceeded
+  if (rateLimitData.count > RATE_LIMIT_MAX_REQUESTS) {
+    const remainingTime = Math.ceil((rateLimitData.resetTime - now) / 1000);
+
+    return new Response(
+      JSON.stringify({
+        error: 'Too many login attempts. Please try again later.',
+        message: `Rate limit exceeded. Try again in ${remainingTime} seconds.`,
+        remainingTime,
+        retryAfter: remainingTime
+      }),
+      {
+        status: 429,
+        headers: {
+          'Content-Type': 'application/json',
+          'Retry-After': remainingTime.toString(),
+          'X-RateLimit-Limit': RATE_LIMIT_MAX_REQUESTS.toString(),
+          'X-RateLimit-Remaining': '0',
+          'X-RateLimit-Reset': rateLimitData.resetTime.toString()
+        }
       }
-    } catch (error) {
-      console.error('Session validation error:', error);
-    }
+    );
   }
 
-  // If no session and not on public route, redirect to login
-  if (!session) {
-    const loginUrl = new URL('/auth/login', request.url);
-    loginUrl.searchParams.set('redirect', pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  // If user is on root or auth page and has session, redirect to dashboard
-  if ((pathname === '/' || pathname.startsWith('/auth')) && session) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
-
-  // Continue with the request
-  return NextResponse.next();
+  // Return null to let the request pass through
+  return null;
 }
 
-export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public files (public directory)
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
-};
+/**
+ * Clear rate limit for a specific IP (called after successful authentication)
+ */
+export function clearRateLimitForIP(ip: string): void {
+  requestCounts.delete(ip);
+}
+
+/**
+ * Progressive delay for failed attempts (increases delay with each failure)
+ */
+export function getProgressiveDelay(attemptCount: number): number {
+  // Exponential backoff: 1s, 2s, 4s, 8s, 16s, max 30s
+  return Math.min(1000 * Math.pow(2, attemptCount - 1), 30000);
+}
+
+// Export for Next.js 16 proxy compatibility
+export { rateLimitMiddleware as middleware };
+
+// Default export for compatibility
+export default rateLimitMiddleware;

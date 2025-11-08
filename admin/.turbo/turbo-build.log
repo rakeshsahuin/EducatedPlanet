@@ -7,41 +7,20 @@
    - Environments: .env.local
 
    Creating an optimized production build ...
+ ✓ Compiled successfully in 22.1s
+   Running TypeScript ...
+Failed to compile.
 
-> Build error occurred
-Error: Turbopack build failed with 2 errors:
-./admin/src/app/(main)/auth/register/page.tsx:5:1
-Module not found: Can't resolve '../../_components/register-form'
-[0m [90m 3 |[39m [36mimport[39m { [33mCommand[39m } [36mfrom[39m [32m"lucide-react"[39m[33m;[39m
- [90m 4 |[39m
-[31m[1m>[22m[39m[90m 5 |[39m [36mimport[39m { [33mRegisterForm[39m } [36mfrom[39m [32m"../../_components/register-form"[39m[33m;[39m
- [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
- [90m 6 |[39m [36mimport[39m { [33mGoogleButton[39m } [36mfrom[39m [32m"../../_components/social-auth/google-button"[39m[33m;[39m
- [90m 7 |[39m
- [90m 8 |[39m [36mexport[39m [36mdefault[39m [36mfunction[39m [33mRegisterV1[39m() {[0m
+./src/app/(main)/dashboard/users/_components/user-modal.tsx:64:27
+Type error: Argument of type 'ZodObject<{ name: ZodString; email: ZodUnion<[ZodOptional<ZodString>, ZodLiteral<"">]>; phone: ZodString; role: ZodEnum<[...]>; avatar: ZodOptional<...>; isVerified: ZodBoolean; }, "strip", ZodTypeAny, { ...; }, { ...; }>' is not assignable to parameter of type 'ZodType<any, any, $ZodTypeInternals<any, any>>'.
+  Type 'ZodObject<{ name: ZodString; email: ZodUnion<[ZodOptional<ZodString>, ZodLiteral<"">]>; phone: ZodString; role: ZodEnum<[...]>; avatar: ZodOptional<...>; isVerified: ZodBoolean; }, "strip", ZodTypeAny, { ...; }, { ...; }>' is missing the following properties from type 'ZodType<any, any, $ZodTypeInternals<any, any>>': def, type, check, clone, and 14 more.
 
-
-
-https://nextjs.org/docs/messages/module-not-found
-
-
-./admin/src/app/(main)/auth/register/page.tsx:6:1
-Module not found: Can't resolve '../../_components/social-auth/google-button'
-[0m [90m 4 |[39m
- [90m 5 |[39m [36mimport[39m { [33mRegisterForm[39m } [36mfrom[39m [32m"../../_components/register-form"[39m[33m;[39m
-[31m[1m>[22m[39m[90m 6 |[39m [36mimport[39m { [33mGoogleButton[39m } [36mfrom[39m [32m"../../_components/social-auth/google-button"[39m[33m;[39m
- [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
- [90m 7 |[39m
- [90m 8 |[39m [36mexport[39m [36mdefault[39m [36mfunction[39m [33mRegisterV1[39m() {
- [90m 9 |[39m   [36mreturn[39m ([0m
-
-
-
-https://nextjs.org/docs/messages/module-not-found
-
-
-    at <unknown> (./admin/src/app/(main)/auth/register/page.tsx:5:1)
-    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
-    at <unknown> (./admin/src/app/(main)/auth/register/page.tsx:6:1)
-    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[0m [90m 62 |[39m
+ [90m 63 |[39m   [36mconst[39m form [33m=[39m useForm[33m<[39m[33mUserFormData[39m[33m>[39m({
+[31m[1m>[22m[39m[90m 64 |[39m     resolver[33m:[39m zodResolver(userFormSchema)[33m,[39m
+ [90m    |[39m                           [31m[1m^[22m[39m
+ [90m 65 |[39m     defaultValues[33m:[39m {
+ [90m 66 |[39m       name[33m:[39m user[33m?[39m[33m.[39mname [33m||[39m [32m""[39m[33m,[39m
+ [90m 67 |[39m       email[33m:[39m user[33m?[39m[33m.[39memail [33m||[39m [32m""[39m[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null
  ELIFECYCLE  Command failed with exit code 1.

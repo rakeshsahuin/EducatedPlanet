@@ -4,7 +4,7 @@
  * Exports all services and database management functionality
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.seedUsers = exports.reviewSchema = exports.tutorSchema = exports.userSchema = exports.closeDatabase = exports.initializeDatabase = exports.databaseConnection = exports.DatabaseConnection = exports.ReviewQueries = exports.TutorQueries = exports.UserQueries = exports.ReviewModel = exports.TutorModel = exports.UserModel = exports.userExists = exports.invalidateSession = exports.validateSession = exports.authenticateUser = exports.reviewService = exports.ReviewService = exports.tutorService = exports.TutorService = exports.userService = exports.UserService = exports.databaseService = exports.DatabaseService = void 0;
+exports.regenerateRSAKeys = exports.encryptWithPublicKey = exports.decryptWithPrivateKey = exports.getPublicKey = exports.initializeRSAKeys = exports.seedUsers = exports.reviewSchema = exports.tutorSchema = exports.userSchema = exports.closeDatabase = exports.initializeDatabase = exports.databaseConnection = exports.DatabaseConnection = exports.ReviewQueries = exports.TutorQueries = exports.UserQueries = exports.ReviewModel = exports.TutorModel = exports.UserModel = exports.userExists = exports.invalidateSession = exports.validateSession = exports.authenticateUser = exports.reviewService = exports.ReviewService = exports.tutorService = exports.TutorService = exports.userService = exports.UserService = exports.databaseService = exports.DatabaseService = void 0;
 // Database service
 var database_service_1 = require("./services/database.service");
 Object.defineProperty(exports, "DatabaseService", { enumerable: true, get: function () { return database_service_1.DatabaseService; } });
@@ -45,4 +45,11 @@ Object.defineProperty(exports, "reviewSchema", { enumerable: true, get: function
 // Export seeder
 var userseeder_1 = require("./seeder/userseeder");
 Object.defineProperty(exports, "seedUsers", { enumerable: true, get: function () { return userseeder_1.seedUsers; } });
+// Export RSA utilities
+var rsa_keys_1 = require("./utils/rsa-keys");
+Object.defineProperty(exports, "initializeRSAKeys", { enumerable: true, get: function () { return rsa_keys_1.initializeRSAKeys; } });
+Object.defineProperty(exports, "getPublicKey", { enumerable: true, get: function () { return rsa_keys_1.getPublicKey; } });
+Object.defineProperty(exports, "decryptWithPrivateKey", { enumerable: true, get: function () { return rsa_keys_1.decryptWithPrivateKey; } });
+Object.defineProperty(exports, "encryptWithPublicKey", { enumerable: true, get: function () { return rsa_keys_1.encryptWithPublicKey; } });
+Object.defineProperty(exports, "regenerateRSAKeys", { enumerable: true, get: function () { return rsa_keys_1.regenerateRSAKeys; } });
 //# sourceMappingURL=index.js.map

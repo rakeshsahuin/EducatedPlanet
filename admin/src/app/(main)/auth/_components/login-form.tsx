@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordStrength } from "@/components/ui/password-strength";
 import { signIn } from "@/lib/auth-client";
 
 const FormSchema = z.object({
@@ -22,6 +23,7 @@ const FormSchema = z.object({
 export function LoginForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema as any),
@@ -61,7 +63,13 @@ export function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
+        <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-md mb-4">
+          <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">🔐 Secure Login</h4>
+          <p className="text-xs text-blue-700 dark:text-blue-300">
+            Your password is encrypted before transmission using RSA-2048 encryption.
+          </p>
+        </div>
         <FormField
           control={form.control}
           name="email"

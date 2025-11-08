@@ -49,6 +49,15 @@ export {
 // Export seeder
 export { seedUsers } from './seeder/userseeder';
 
+// Export RSA utilities
+export {
+  initializeRSAKeys,
+  getPublicKey,
+  decryptWithPrivateKey,
+  encryptWithPublicKey,
+  regenerateRSAKeys
+} from './utils/rsa-keys';
+
 // Export all interfaces from models package
 export type {
   User,

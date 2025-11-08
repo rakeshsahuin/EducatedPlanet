@@ -1,11 +1,19 @@
 import mongoose from 'mongoose';
 import { IUserDocument } from '../schemas/user-clean.schema';
-import { databaseConnection } from '../connections';
 
 /**
- * User model bound to the database connection
+ * Get User model (lazy loaded to ensure database is initialized)
  */
-export const UserModel = databaseConnection.getUserModel();
+export function getUserModel() {
+  const { databaseConnection } = require('../connections');
+  return databaseConnection.getUserModel();
+}
+
+/**
+ * User model bound to the database connection (for backward compatibility)
+ * Note: This will throw if database is not initialized
+ */
+export const UserModel = getUserModel();
 
 // Export frequently used query methods
 export const UserQueries = {

@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { BadgeCheck, Bell, CreditCard, LogOut } from "lucide-react";
 
@@ -14,6 +16,7 @@ import {
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { cn, getInitials } from "@/lib/utils";
+import { useAuth } from "@/lib/auth-client";
 
 export function AccountSwitcher({
   users,
@@ -26,7 +29,51 @@ export function AccountSwitcher({
     readonly role: string;
   }>;
 }) {
-  const [activeUser, setActiveUser] = useState(users[0]);
+  const router = useRouter();
+  const { user, signOut } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Use session user if available, otherwise fallback to first user
+  const [activeUser, setActiveUser] = useState(() => {
+    if (user) {
+      return {
+        id: user.id,
+        name: user.name || 'Admin User',
+        email: user.email || '',
+        avatar: '', // No image field in our custom auth
+        role: user.role || 'admin',
+      };
+    }
+    return users[0];
+  });
+
+  // Update active user when session changes
+  useEffect(() => {
+    if (user) {
+      setActiveUser({
+        id: user.id,
+        name: user.name || 'Admin User',
+        email: user.email || '',
+        avatar: '',
+        role: user.role || 'admin',
+      });
+    }
+  }, [user]);
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+
+    setIsLoggingOut(true);
+    try {
+      await signOut();
+      toast.success("Logged out successfully");
+      router.push("/auth/login");
+    } catch (error) {
+      toast.error("Failed to logout");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -71,9 +118,9 @@ export function AccountSwitcher({
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut}>
           <LogOut />
-          Log out
+          {isLoggingOut ? "Logging out..." : "Log out"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

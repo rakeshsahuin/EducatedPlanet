@@ -10,10 +10,17 @@
     "clean": "rm -rf dist",
     "type-check": "tsc --noEmit"
   },
-  "keywords": ["utilities", "constants", "validation", "educatedplanet"],
+  "keywords": [
+    "utilities",
+    "constants",
+    "validation",
+    "educatedplanet"
+  ],
   "author": "EducatedPlanet",
   "license": "MIT",
   "dependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^2.4.3",
     "typescript": "^5",
     "zod": "^3.22.4"
   },

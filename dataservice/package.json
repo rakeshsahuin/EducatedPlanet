@@ -20,15 +20,19 @@
   "author": "EducatedPlanet Team",
   "license": "MIT",
   "dependencies": {
-    "@educatedplanet/models": "workspace:*",
     "@educatedplanet/common": "workspace:*",
-    "mongoose": "^8.0.3",
+    "@educatedplanet/models": "workspace:*",
+    "@types/jsonwebtoken": "^9.0.10",
     "bcryptjs": "^2.4.3",
+    "better-auth": "^1.3.34",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.20.0",
+    "mongoose": "^8.0.3",
     "validator": "^13.11.0"
   },
   "devDependencies": {
-    "@types/node": "^20",
     "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
     "@types/validator": "^13.11.10",
     "typescript": "^5"
   },

@@ -4,6 +4,10 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
+  // Configure Turbopack root directory to avoid multiple lockfile warnings
+  turbopack: {
+    root: '../'
+  },
   // Configure server external packages to handle mongoose/mongodb properly
   serverExternalPackages: [
     'mongoose',

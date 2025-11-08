@@ -6,7 +6,8 @@
       "Bash(npm run build)",
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
-      "Bash(pnpm build:*)"
+      "Bash(pnpm build:*)",
+      "mcp__deepcontext__search_codebase"
     ],
     "deny": [],
     "ask": []

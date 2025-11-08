@@ -16,6 +16,15 @@ export { TutorService, tutorService } from './services/tutor.service';
 // Review service
 export { ReviewService, reviewService } from './services/review.service';
 
+// Auth service
+export {
+  authenticateUser,
+  validateSession,
+  invalidateSession,
+  userExists
+} from './services/auth.service';
+export type { AuthSession, UserSessionResponse } from './services/auth.service';
+
 // Export datamodels
 export {
   UserModel,

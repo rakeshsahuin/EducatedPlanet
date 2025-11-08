@@ -1,6 +1,5 @@
 "use client";
 
-import { hashPassword } from '@educatedplanet/common';
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 // Types
@@ -17,6 +16,21 @@ export interface Session {
     token: string;
     expiresAt: Date;
   };
+}
+
+// API Response Types
+interface SignInResponse {
+  success: boolean;
+  user?: User;
+  session?: Session;
+  error?: string;
+  message?: string;
+}
+
+interface SessionResponse {
+  user?: User;
+  session?: Session;
+  error?: string;
 }
 
 // Auth context
@@ -68,7 +82,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
-    const hashedPassword = hashPassword(password);
     try {
       const response = await fetch('/api/auth/sign-in/email', {
         method: 'POST',
@@ -131,34 +144,30 @@ export function useAuth() {
 }
 
 // Legacy exports for compatibility
-export const { signIn, signOut, useSession: useSessionLegacy, getSession, isAuthenticated } = {
-  signIn: async (email: string, password: string) => {
-    const response = await fetch('/api/auth/sign-in/email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email, password }),
-    });
-    return response.json();
-  },
-  signOut: async () => {
-    await fetch('/api/auth/sign-out', {
-      method: 'POST',
-      credentials: 'include',
-    });
-  },
-  useSessionLegacy: () => {
-    const { user, session, isLoading } = useAuth();
-    return { data: session, isLoading };
-  },
-  getSession: async () => {
-    const response = await fetch('/api/auth/get-session', {
-      credentials: 'include',
-    });
-    return response.json();
-  },
-  isAuthenticated: () => {
-    const { user } = useAuth();
-    return !!user;
-  },
+export const signIn = async (email: string, password: string) => {
+  const response = await fetch('/api/auth/sign-in/email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ email, password }),
+  });
+  const data = await response.json() as SignInResponse;
+  if (!response.ok) {
+    throw new Error(data.error ?? data.message ?? 'Login failed');
+  }
+  return data;
+};
+
+export const signOut = async () => {
+  await fetch('/api/auth/sign-out', {
+    method: 'POST',
+    credentials: 'include',
+  });
+};
+
+export const getSession = async () => {
+  const response = await fetch('/api/auth/get-session', {
+    credentials: 'include',
+  });
+  return response.json();
 };

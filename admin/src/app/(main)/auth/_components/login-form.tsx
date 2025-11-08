@@ -24,7 +24,7 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+    resolver: zodResolver(FormSchema as any),
     defaultValues: {
       email: "",
       password: "",
@@ -38,20 +38,21 @@ export function LoginForm() {
     try {
       const result = await signIn(data.email, data.password);
 
-      if (result.success) {
+      // Check if login was successful by verifying user exists
+      if (result && result.user && result.user.id) {
         toast.success("Login successful!", {
           description: "Welcome back to EducatedPlanet Admin",
         });
-        router.push("/dashboard");
+        router.push('/');
         router.refresh();
       } else {
         toast.error("Login failed", {
-          description: result.error || "Invalid email or password",
+          description: "Invalid email or password",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Login failed", {
-        description: "An unexpected error occurred. Please try again.",
+        description: error.message || "An unexpected error occurred. Please try again.",
       });
     } finally {
       setIsLoading(false);

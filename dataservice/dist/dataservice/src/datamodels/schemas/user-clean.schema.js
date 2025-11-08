@@ -148,6 +148,8 @@ userSchema.index({ isActive: 1, isDeleted: 1 });
 userSchema.virtual('profileUrl').get(function () {
     return `/users/${this._id}`;
 });
-// Register the model
-mongoose_1.default.model('users', userSchema);
+// Register the model only if it doesn't already exist
+if (!mongoose_1.default.models.users) {
+    mongoose_1.default.model('users', userSchema);
+}
 //# sourceMappingURL=user-clean.schema.js.map

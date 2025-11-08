@@ -1,14 +1,19 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserQueries = exports.UserModel = void 0;
-const mongoose_1 = __importDefault(require("mongoose"));
+exports.getUserModel = getUserModel;
 /**
- * User model
+ * Get User model (lazy loaded to ensure database is initialized)
  */
-exports.UserModel = mongoose_1.default.model('users');
+function getUserModel() {
+    const { databaseConnection } = require('../connections');
+    return databaseConnection.getUserModel();
+}
+/**
+ * User model bound to the database connection (for backward compatibility)
+ * Note: This will throw if database is not initialized
+ */
+exports.UserModel = getUserModel();
 // Export frequently used query methods
 exports.UserQueries = {
     /**

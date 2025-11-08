@@ -4,6 +4,8 @@ import { ITutorDocument } from '../datamodels';
  * Tutor service for handling tutor-related business logic
  */
 export declare class TutorService {
+    private static initialized;
+    private ensureInitialized;
     /**
      * Transform MongoDB document to Tutor interface
      */

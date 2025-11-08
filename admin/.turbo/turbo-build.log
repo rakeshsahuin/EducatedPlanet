@@ -2,47 +2,46 @@
 > studio-admin@2.0.0 build C:\Projects\educatedplanet\admin
 > next build
 
- ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
- We detected multiple lockfiles and selected the directory of C:\Projects\educatedplanet\pnpm-lock.yaml as the root directory.
- To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
-   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
- Detected additional lockfiles: 
-   * C:\Projects\educatedplanet\admin\package-lock.json
-
+ ⚠ turbopack.root should be absolute, using: C:\Projects\educatedplanet
    ▲ Next.js 16.0.1 (Turbopack)
    - Environments: .env.local
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 26.8s
-   Running TypeScript ...
-   Collecting page data ...
-   Generating static pages (0/18) ...
-   Generating static pages (4/18) 
-   Generating static pages (8/18) 
-   Generating static pages (13/18) 
- ✓ Generating static pages (18/18) in 1413.7ms
-   Finalizing page optimization ...
 
-Route (app)
-┌ ƒ /
-├ ƒ /_not-found
-├ ƒ /api/dashboard
-├ ƒ /api/tutors
-├ ƒ /api/users
-├ ƒ /api/users/[id]
-├ ƒ /auth/v1/login
-├ ƒ /auth/v1/register
-├ ƒ /auth/v2/login
-├ ƒ /auth/v2/register
-├ ƒ /dashboard
-├ ƒ /dashboard/[...not-found]
-├ ƒ /dashboard/coming-soon
-├ ƒ /dashboard/crm
-├ ƒ /dashboard/default
-├ ƒ /dashboard/finance
-├ ƒ /dashboard/users
-└ ƒ /unauthorized
+> Build error occurred
+Error: Turbopack build failed with 2 errors:
+./admin/src/app/(main)/auth/register/page.tsx:5:1
+Module not found: Can't resolve '../../_components/register-form'
+[0m [90m 3 |[39m [36mimport[39m { [33mCommand[39m } [36mfrom[39m [32m"lucide-react"[39m[33m;[39m
+ [90m 4 |[39m
+[31m[1m>[22m[39m[90m 5 |[39m [36mimport[39m { [33mRegisterForm[39m } [36mfrom[39m [32m"../../_components/register-form"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 6 |[39m [36mimport[39m { [33mGoogleButton[39m } [36mfrom[39m [32m"../../_components/social-auth/google-button"[39m[33m;[39m
+ [90m 7 |[39m
+ [90m 8 |[39m [36mexport[39m [36mdefault[39m [36mfunction[39m [33mRegisterV1[39m() {[0m
 
 
-ƒ  (Dynamic)  server-rendered on demand
 
+https://nextjs.org/docs/messages/module-not-found
+
+
+./admin/src/app/(main)/auth/register/page.tsx:6:1
+Module not found: Can't resolve '../../_components/social-auth/google-button'
+[0m [90m 4 |[39m
+ [90m 5 |[39m [36mimport[39m { [33mRegisterForm[39m } [36mfrom[39m [32m"../../_components/register-form"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mimport[39m { [33mGoogleButton[39m } [36mfrom[39m [32m"../../_components/social-auth/google-button"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m
+ [90m 8 |[39m [36mexport[39m [36mdefault[39m [36mfunction[39m [33mRegisterV1[39m() {
+ [90m 9 |[39m   [36mreturn[39m ([0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (./admin/src/app/(main)/auth/register/page.tsx:5:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./admin/src/app/(main)/auth/register/page.tsx:6:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+ ELIFECYCLE  Command failed with exit code 1.

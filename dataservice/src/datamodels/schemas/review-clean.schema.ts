@@ -131,8 +131,10 @@ reviewSchema.virtual('reviewUrl').get(function() {
   return `/tutors/${this.tutorId}/reviews/${this._id}`;
 });
 
-// Register the model
-mongoose.model<IReviewDocument>('Review', reviewSchema);
+// Register the model only if it doesn't already exist
+if (!mongoose.models.Review) {
+  mongoose.model<IReviewDocument>('Review', reviewSchema);
+}
 
 // Export only the schema
 export { reviewSchema };

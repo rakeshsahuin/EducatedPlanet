@@ -4,6 +4,8 @@ import { IReviewDocument } from '../datamodels';
  * Review service for handling review-related business logic
  */
 export declare class ReviewService {
+    private static initialized;
+    private ensureInitialized;
     /**
      * Transform MongoDB document to Review interface
      */

@@ -1,14 +1,12 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TutorQueries = exports.TutorModel = void 0;
-const mongoose_1 = __importDefault(require("mongoose"));
+const connections_1 = require("../connections");
+const review_model_1 = require("./review.model");
 /**
- * Tutor model
+ * Tutor model bound to the database connection
  */
-exports.TutorModel = mongoose_1.default.model('Tutor');
+exports.TutorModel = connections_1.databaseConnection.getTutorModel();
 // Export frequently used query methods
 exports.TutorQueries = {
     /**
@@ -161,8 +159,7 @@ exports.TutorQueries = {
     updateRating: async (tutorId) => {
         // This would typically be called from the service layer
         // when reviews are updated
-        const Review = mongoose_1.default.model('Review');
-        const ratingResult = await Review.aggregate([
+        const ratingResult = await review_model_1.ReviewModel.aggregate([
             { $match: { tutorId, isApproved: true } },
             {
                 $group: {

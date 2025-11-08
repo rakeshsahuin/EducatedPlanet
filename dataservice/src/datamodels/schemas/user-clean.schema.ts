@@ -133,8 +133,10 @@ userSchema.virtual('profileUrl').get(function() {
   return `/users/${this._id}`;
 });
 
-// Register the model
-mongoose.model<IUserDocument>('users', userSchema);
+// Register the model only if it doesn't already exist
+if (!mongoose.models.users) {
+  mongoose.model<IUserDocument>('users', userSchema);
+}
 
 // Export only the schema
 export { userSchema };

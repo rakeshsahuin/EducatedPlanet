@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { ITutorDocument } from '../schemas/tutor-clean.schema';
 /**
- * Tutor model
+ * Tutor model bound to the database connection
  */
 export declare const TutorModel: mongoose.Model<ITutorDocument, {}, {}, {}, mongoose.Document<unknown, {}, ITutorDocument, {}, {}> & ITutorDocument & Required<{
     _id: unknown;

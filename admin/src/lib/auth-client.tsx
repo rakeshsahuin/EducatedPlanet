@@ -1,5 +1,6 @@
 "use client";
 
+import { hashPassword } from '@educatedplanet/common';
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 // Types
@@ -48,18 +49,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       const data = await response.json();
 
-      if (data.user) {
+      // Check if data exists and has user property
+      if (data && data.user) {
         setUser(data.user);
         setSession(data);
+      } else {
+        // Clear session if no valid data
+        setUser(null);
+        setSession(null);
       }
     } catch (error) {
       console.error('Failed to check session:', error);
+      setUser(null);
+      setSession(null);
     } finally {
       setIsLoading(false);
     }
   };
 
   const signIn = async (email: string, password: string) => {
+    const hashedPassword = hashPassword(password);
     try {
       const response = await fetch('/api/auth/sign-in/email', {
         method: 'POST',
@@ -72,12 +81,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const data = await response.json();
 
-      if (response.ok && data.user) {
+      if (response.ok && data && data.user) {
         setUser(data.user);
         setSession(data);
         return { success: true };
       } else {
-        return { success: false, error: data.error || 'Login failed' };
+        return { success: false, error: (data && data.error) || 'Login failed' };
       }
     } catch (error) {
       return { success: false, error: 'Network error' };

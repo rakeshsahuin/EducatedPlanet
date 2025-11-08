@@ -22,25 +22,27 @@ exports.defaultConfig = {
         heartbeatFrequencyMS: 10000,
         retryWrites: true,
         w: 'majority',
+        // Explicitly set the database name from environment variable
+        dbName: process.env.MONGODB_DB_NAME
     },
 };
 /**
  * Database connection manager singleton
  */
 class DatabaseConnection {
-    constructor(config) {
+    constructor() {
         this.isConnected = false;
         this.connectionConfig = {
-            uri: config?.uri || exports.defaultConfig.uri,
-            options: { ...exports.defaultConfig.options, ...config?.options },
+            uri: exports.defaultConfig.uri,
+            options: { ...exports.defaultConfig.options },
         };
     }
     /**
      * Get singleton instance
      */
-    static getInstance(config) {
+    static getInstance() {
         if (!DatabaseConnection.instance) {
-            DatabaseConnection.instance = new DatabaseConnection(config);
+            DatabaseConnection.instance = new DatabaseConnection();
         }
         return DatabaseConnection.instance;
     }
@@ -107,6 +109,15 @@ class DatabaseConnection {
      */
     getMongoose() {
         return mongoose_1.default;
+    }
+    /**
+     * Get raw MongoDB database instance
+     */
+    getDb() {
+        if (!this.isConnected) {
+            throw new Error('Database not connected');
+        }
+        return mongoose_1.default.connection.db;
     }
     /**
      * Get User model bound to this connection
@@ -194,8 +205,8 @@ exports.databaseConnection = DatabaseConnection.getInstance();
 /**
  * Helper function to initialize database with custom config
  */
-const initializeDatabase = async (config) => {
-    const db = DatabaseConnection.getInstance(config);
+const initializeDatabase = async () => {
+    const db = DatabaseConnection.getInstance();
     await db.connect();
 };
 exports.initializeDatabase = initializeDatabase;

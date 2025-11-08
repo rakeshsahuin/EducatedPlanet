@@ -195,8 +195,10 @@ tutorSchema.virtual('profileUrl').get(function() {
   return `/tutors/${this._id}`;
 });
 
-// Register the model
-mongoose.model<ITutorDocument>('Tutor', tutorSchema);
+// Register the model only if it doesn't already exist
+if (!mongoose.models.Tutor) {
+  mongoose.model<ITutorDocument>('Tutor', tutorSchema);
+}
 
 // Export only the schema
 export { tutorSchema };

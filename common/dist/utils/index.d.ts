@@ -18,4 +18,5 @@ export declare function isEmpty(str: string | null | undefined): boolean;
  * Truncate text to specified length
  */
 export declare function truncateText(text: string, maxLength: number): string;
+export * from './password';
 //# sourceMappingURL=index.d.ts.map

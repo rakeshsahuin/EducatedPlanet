@@ -1,142 +1,62 @@
-import mongoose from 'mongoose';
 import { IUserDocument } from '../schemas/user-clean.schema';
 /**
- * User model
+ * Get User model (lazy loaded to ensure database is initialized)
  */
-export declare const UserModel: mongoose.Model<IUserDocument, {}, {}, {}, mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-    _id: unknown;
-}> & {
-    __v: number;
-}, any>;
+export declare function getUserModel(): any;
+/**
+ * User model bound to the database connection (for backward compatibility)
+ * Note: This will throw if database is not initialized
+ */
+export declare const UserModel: any;
 export declare const UserQueries: {
     /**
      * Find user by ID
      */
-    findById: (id: string) => mongoose.Query<mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, {}, IUserDocument, "findOne", {}>;
+    findById: (id: string) => any;
     /**
      * Find user by email
      */
-    findByEmail: (email: string) => mongoose.Query<mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, {}, IUserDocument, "findOne", {}>;
+    findByEmail: (email: string) => any;
     /**
      * Find user by phone
      */
-    findByPhone: (phone: string) => mongoose.Query<mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, {}, IUserDocument, "findOne", {}>;
+    findByPhone: (phone: string) => any;
     /**
      * Find users by role
      */
-    findByRole: (role: string) => mongoose.Query<(mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    })[], mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, {}, IUserDocument, "find", {}>;
+    findByRole: (role: string) => any;
     /**
      * Find verified users
      */
-    findVerified: () => mongoose.Query<(mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    })[], mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, {}, IUserDocument, "find", {}>;
+    findVerified: () => any;
     /**
      * Search users by name
      */
-    searchByName: (query: string) => mongoose.Query<(mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    })[], mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, {}, IUserDocument, "find", {}>;
+    searchByName: (query: string) => any;
     /**
      * Find active users
      */
-    findActive: () => mongoose.Query<(mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    })[], mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, {}, IUserDocument, "find", {}>;
+    findActive: () => any;
     /**
      * Count users by role
      */
-    countByRole: (role: string) => mongoose.Query<number, mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, {}, IUserDocument, "countDocuments", {}>;
+    countByRole: (role: string) => any;
     /**
      * Create new user
      */
-    create: (userData: Partial<IUserDocument>) => Promise<mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }>;
+    create: (userData: Partial<IUserDocument>) => any;
     /**
      * Update user by ID
      */
-    updateById: (id: string, updateData: Partial<IUserDocument>) => mongoose.Query<mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, {}, IUserDocument, "findOneAndUpdate", {}>;
+    updateById: (id: string, updateData: Partial<IUserDocument>) => any;
     /**
      * Soft delete user
      */
-    softDelete: (id: string) => mongoose.Query<mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, mongoose.Document<unknown, {}, IUserDocument, {}, {}> & IUserDocument & Required<{
-        _id: unknown;
-    }> & {
-        __v: number;
-    }, {}, IUserDocument, "findOneAndUpdate", {}>;
+    softDelete: (id: string) => any;
     /**
      * Get user stats
      */
-    getStats: () => mongoose.Aggregate<any[]>;
+    getStats: () => any;
 };
 export default UserModel;
 //# sourceMappingURL=user.model.d.ts.map

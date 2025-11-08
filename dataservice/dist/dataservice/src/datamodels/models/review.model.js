@@ -1,14 +1,11 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReviewQueries = exports.ReviewModel = void 0;
-const mongoose_1 = __importDefault(require("mongoose"));
+const connections_1 = require("../connections");
 /**
- * Review model
+ * Review model bound to the database connection
  */
-exports.ReviewModel = mongoose_1.default.model('Review');
+exports.ReviewModel = connections_1.databaseConnection.getReviewModel();
 // Export frequently used query methods
 exports.ReviewQueries = {
     /**

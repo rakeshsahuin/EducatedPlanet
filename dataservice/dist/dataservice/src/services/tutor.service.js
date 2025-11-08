@@ -7,6 +7,12 @@ const datamodels_1 = require("../datamodels");
  * Tutor service for handling tutor-related business logic
  */
 class TutorService {
+    async ensureInitialized() {
+        if (!TutorService.initialized) {
+            await (0, datamodels_1.initializeDatabase)();
+            TutorService.initialized = true;
+        }
+    }
     /**
      * Transform MongoDB document to Tutor interface
      */
@@ -31,6 +37,7 @@ class TutorService {
      * Create a new tutor profile
      */
     async createTutor(tutorData) {
+        await this.ensureInitialized();
         // Validate input
         this.validateTutorData(tutorData);
         // Check if user already has a tutor profile
@@ -61,6 +68,7 @@ class TutorService {
      * Find tutor by ID
      */
     async findTutorById(id) {
+        await this.ensureInitialized();
         const tutorDoc = await datamodels_1.TutorQueries.findById(id);
         return tutorDoc ? this.transformTutorDocument(tutorDoc) : null;
     }
@@ -68,6 +76,7 @@ class TutorService {
      * Search tutors with filters
      */
     async searchTutors(params) {
+        await this.ensureInitialized();
         const { page = 1, limit = 20 } = params;
         const searchResult = await datamodels_1.TutorQueries.search({
             ...params,
@@ -263,6 +272,7 @@ class TutorService {
     }
 }
 exports.TutorService = TutorService;
+TutorService.initialized = false;
 // Export singleton instance
 exports.tutorService = new TutorService();
 //# sourceMappingURL=tutor.service.js.map

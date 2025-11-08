@@ -24,7 +24,7 @@ export declare class DatabaseConnection {
     /**
      * Get singleton instance
      */
-    static getInstance(config?: Partial<DatabaseConfig>): DatabaseConnection;
+    static getInstance(): DatabaseConnection;
     /**
      * Connect to MongoDB
      */
@@ -41,6 +41,10 @@ export declare class DatabaseConnection {
      * Get Mongoose instance
      */
     getMongoose(): typeof mongoose;
+    /**
+     * Get raw MongoDB database instance
+     */
+    getDb(): typeof mongoose.connection.db;
     /**
      * Get User model bound to this connection
      */
@@ -75,7 +79,7 @@ export declare const databaseConnection: DatabaseConnection;
 /**
  * Helper function to initialize database with custom config
  */
-export declare const initializeDatabase: (config?: Partial<DatabaseConfig>) => Promise<void>;
+export declare const initializeDatabase: () => Promise<void>;
 /**
  * Graceful shutdown helper
  */

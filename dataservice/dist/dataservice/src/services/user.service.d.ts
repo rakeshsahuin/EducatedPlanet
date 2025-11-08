@@ -3,6 +3,8 @@ import { User, CreateUserInput, UpdateUserInput, LoginInput, UserSearchParams } 
  * User service for handling user-related business logic
  */
 export declare class UserService {
+    private static initialized;
+    private ensureInitialized;
     /**
      * Transform MongoDB document to User interface
      */

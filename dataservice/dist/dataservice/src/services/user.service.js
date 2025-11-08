@@ -11,6 +11,12 @@ const datamodels_1 = require("../datamodels");
  * User service for handling user-related business logic
  */
 class UserService {
+    async ensureInitialized() {
+        if (!UserService.initialized) {
+            await (0, datamodels_1.initializeDatabase)();
+            UserService.initialized = true;
+        }
+    }
     /**
      * Transform MongoDB document to User interface
      */
@@ -30,6 +36,8 @@ class UserService {
      * Create a new user
      */
     async createUser(userData) {
+        // Ensure database is connected
+        await this.ensureInitialized();
         // Validate input
         this.validateUserData(userData);
         // Check if user already exists
@@ -55,6 +63,7 @@ class UserService {
      * Find user by ID
      */
     async findUserById(id) {
+        await this.ensureInitialized();
         if (!validator_1.default.isMongoId(id)) {
             throw new Error('Invalid user ID');
         }
@@ -85,6 +94,7 @@ class UserService {
      * Search users with filters
      */
     async searchUsers(params) {
+        await this.ensureInitialized();
         const { page = 1, limit = 10 } = params;
         const skip = (page - 1) * limit;
         let query = {};
@@ -261,6 +271,7 @@ class UserService {
     }
 }
 exports.UserService = UserService;
+UserService.initialized = false;
 // Export singleton instance
 exports.userService = new UserService();
 //# sourceMappingURL=user.service.js.map

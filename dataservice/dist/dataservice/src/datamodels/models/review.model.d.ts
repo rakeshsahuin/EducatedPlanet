@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { IReviewDocument } from '../schemas/review-clean.schema';
 /**
- * Review model
+ * Review model bound to the database connection
  */
 export declare const ReviewModel: mongoose.Model<IReviewDocument, {}, {}, {}, mongoose.Document<unknown, {}, IReviewDocument, {}, {}> & IReviewDocument & Required<{
     _id: unknown;

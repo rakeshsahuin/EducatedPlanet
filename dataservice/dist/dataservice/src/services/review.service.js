@@ -7,6 +7,12 @@ const datamodels_1 = require("../datamodels");
  * Review service for handling review-related business logic
  */
 class ReviewService {
+    async ensureInitialized() {
+        if (!ReviewService.initialized) {
+            await (0, datamodels_1.initializeDatabase)();
+            ReviewService.initialized = true;
+        }
+    }
     /**
      * Transform MongoDB document to Review interface
      */
@@ -27,6 +33,7 @@ class ReviewService {
      * Create a new review
      */
     async createReview(reviewData) {
+        await this.ensureInitialized();
         // Validate input
         this.validateReviewData(reviewData);
         // Check if user has already reviewed this tutor
@@ -52,6 +59,7 @@ class ReviewService {
      * Find review by ID
      */
     async findReviewById(id) {
+        await this.ensureInitialized();
         const reviewDoc = await datamodels_1.ReviewQueries.findById(id);
         return reviewDoc ? this.transformReviewDocument(reviewDoc) : null;
     }
@@ -90,6 +98,7 @@ class ReviewService {
      * Search reviews with filters
      */
     async searchReviews(params) {
+        await this.ensureInitialized();
         const { page = 1, limit = 10, tutorId, userId, rating, isApproved, isPublic } = params;
         // Build filter object
         const filter = {};
@@ -240,6 +249,7 @@ class ReviewService {
     }
 }
 exports.ReviewService = ReviewService;
+ReviewService.initialized = false;
 // Export singleton instance
 exports.reviewService = new ReviewService();
 //# sourceMappingURL=review.service.js.map

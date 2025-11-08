@@ -140,6 +140,8 @@ reviewSchema.index({ createdAt: -1 });
 reviewSchema.virtual('reviewUrl').get(function () {
     return `/tutors/${this.tutorId}/reviews/${this._id}`;
 });
-// Register the model
-mongoose_1.default.model('Review', reviewSchema);
+// Register the model only if it doesn't already exist
+if (!mongoose_1.default.models.Review) {
+    mongoose_1.default.model('Review', reviewSchema);
+}
 //# sourceMappingURL=review-clean.schema.js.map

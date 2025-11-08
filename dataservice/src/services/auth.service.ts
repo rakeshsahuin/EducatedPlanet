@@ -11,7 +11,7 @@ let dbInitialized = false;
 async function ensureDbInitialized() {
   if (!dbInitialized) {
     try {
-      await databaseConnection.initialize();
+      await databaseConnection.connect();
       dbInitialized = true;
       console.log('Database initialized in auth service');
     } catch (error) {
@@ -93,7 +93,6 @@ export async function authenticateUser(email: string, password: string): Promise
     };
 
     // Store session in database (using the connection directly since sessions might not be in UserModel)
-    const { databaseConnection } = await import('../datamodels/connections');
     const db = databaseConnection.getDb();
     await db.collection('admin_sessions').insertOne(sessionData);
 
@@ -129,7 +128,6 @@ export async function validateSession(token: string): Promise<UserSessionRespons
     const decoded = jwt.verify(token, JWT_SECRET) as any;
 
     // Check if session exists in database
-    const { databaseConnection } = await import('../datamodels/connections');
     const db = databaseConnection.getDb();
     const session = await db.collection('admin_sessions').findOne({
       token,
@@ -178,7 +176,6 @@ export async function invalidateSession(token: string): Promise<boolean> {
     await ensureDbInitialized();
     console.log('Invalidating session');
 
-    const { databaseConnection } = await import('../datamodels/connections');
     const db = databaseConnection.getDb();
     const result = await db.collection('admin_sessions').deleteOne({ token });
     return result.deletedCount > 0;
@@ -193,6 +190,10 @@ export async function invalidateSession(token: string): Promise<boolean> {
  */
 export async function userExists(email: string): Promise<boolean> {
   try {
+    // Ensure database is initialized
+    await ensureDbInitialized();
+
+    const UserModel = databaseConnection.getUserModel();
     const user = await UserModel.findOne({
       email: email.toLowerCase().trim(),
       isActive: true,

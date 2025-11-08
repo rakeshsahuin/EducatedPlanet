@@ -1,6 +1,6 @@
-import { UserModel } from '../datamodels/models/user.model';
 import { hashPassword, verifyPassword } from '@educatedplanet/common';
 import { IUserDocument } from '../datamodels/schemas/user-clean.schema';
+import { databaseConnection } from '../datamodels/connections';
 
 /**
  * User Repository with authentication-specific methods
@@ -10,6 +10,7 @@ export class UserRepository {
    * Find user by email for authentication
    */
   async findByEmail(email: string): Promise<IUserDocument | null> {
+    const UserModel = databaseConnection.getUserModel();
     return UserModel.findOne({
       email: email.toLowerCase().trim(),
       isActive: true,
@@ -26,6 +27,7 @@ export class UserRepository {
     password: string;
     role?: string;
   }): Promise<IUserDocument> {
+    const UserModel = databaseConnection.getUserModel();
     const hashedPassword = await hashPassword(userData.password);
 
     return UserModel.create({
@@ -61,6 +63,7 @@ export class UserRepository {
    * Update user password
    */
   async updatePassword(userId: string, newPassword: string): Promise<void> {
+    const UserModel = databaseConnection.getUserModel();
     const hashedPassword = await hashPassword(newPassword);
     await UserModel.findByIdAndUpdate(userId, { password: hashedPassword });
   }
@@ -69,6 +72,7 @@ export class UserRepository {
    * Check if user exists by email
    */
   async existsByEmail(email: string): Promise<boolean> {
+    const UserModel = databaseConnection.getUserModel();
     const user = await UserModel.findOne({
       email: email.toLowerCase().trim(),
       isActive: true,

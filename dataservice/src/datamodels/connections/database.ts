@@ -130,6 +130,16 @@ export class DatabaseConnection {
   }
 
   /**
+   * Get raw MongoDB database instance
+   */
+  public getDb(): typeof mongoose.connection.db {
+    if (!this.isConnected) {
+      throw new Error('Database not connected');
+    }
+    return mongoose.connection.db;
+  }
+
+  /**
    * Get User model bound to this connection
    */
   public getUserModel(): Model<IUserDocument> {

@@ -11,8 +11,9 @@ export async function proxy(request: NextRequest) {
   // API routes
   const isApiRoute = pathname.startsWith('/api');
 
-  // Skip middleware for public routes and API routes (except auth API)
-  if (isPublicRoute || (isApiRoute && !pathname.startsWith('/api/auth'))) {
+  // Skip middleware for public routes and all API routes
+  // API routes will handle their own authentication
+  if (isPublicRoute || isApiRoute) {
     return NextResponse.next();
   }
 

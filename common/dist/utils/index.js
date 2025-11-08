@@ -38,4 +38,6 @@ export function truncateText(text, maxLength) {
         return text;
     return text.substring(0, maxLength).trim() + '...';
 }
+// Re-export password utilities
+export * from './password';
 //# sourceMappingURL=index.js.map

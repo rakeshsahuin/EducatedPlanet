@@ -201,6 +201,8 @@ tutorSchema.index({ subjects: 1 });
 tutorSchema.virtual('profileUrl').get(function () {
     return `/tutors/${this._id}`;
 });
-// Register the model
-mongoose_1.default.model('Tutor', tutorSchema);
+// Register the model only if it doesn't already exist
+if (!mongoose_1.default.models.Tutor) {
+    mongoose_1.default.model('Tutor', tutorSchema);
+}
 //# sourceMappingURL=tutor-clean.schema.js.map

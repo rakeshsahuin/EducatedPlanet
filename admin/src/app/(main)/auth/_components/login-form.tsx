@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { PasswordStrength } from "@/components/ui/password-strength";
+import { LoadingOverlay } from "@/components/ui/loading-overlay";
 import { signIn } from "@/lib/auth-client";
 
 const FormSchema = z.object({
@@ -24,6 +24,7 @@ export function LoginForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema as any),
@@ -45,6 +46,8 @@ export function LoginForm() {
         toast.success("Login successful!", {
           description: "Welcome back to EducatedPlanet Admin",
         });
+
+        setIsNavigating(true);
         router.push('/');
         router.refresh();
       } else {
@@ -125,6 +128,7 @@ export function LoginForm() {
           {isLoading ? "Logging in..." : "Login"}
         </Button>
       </form>
+      <LoadingOverlay isLoading={isNavigating} message="Navigating, please wait..." />
     </Form>
   );
 }

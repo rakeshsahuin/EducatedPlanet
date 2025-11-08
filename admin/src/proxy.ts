@@ -1,18 +1,21 @@
-import rateLimit from 'express-rate-limit';
-import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Store rate limit data in memory (for production, use Redis or database)
 const requestCounts = new Map<string, { count: number; resetTime: number }>();
 
 // Rate limit configuration
-const RATE_LIMIT_WINDOW_MS = 2 * 60 * 1000; // 2 minutes
-const RATE_LIMIT_MAX_REQUESTS = 5; // Maximum 5 login attempts per 2 minutes
+const RATE_LIMIT_WINDOW_MS = (parseInt(process.env.RATE_LIMIT_MAX_MIN!) * 60 * 1000);
+const RATE_LIMIT_MAX_REQUESTS = parseInt(process.env.RATE_LIMIT_MAX_REQUESTS!);
 
 /**
  * Rate limiting middleware for authentication endpoints
  */
 export function rateLimitMiddleware(request: NextRequest): Response | null {
+  // Only apply rate limiting to sign-in endpoint
+  if (!request.nextUrl.pathname.startsWith('/api/auth/sign-in')) {
+    return null;
+  }
+
   const ip = request.headers.get('x-forwarded-for') ||
              request.headers.get('x-real-ip') ||
              request.headers.get('cf-connecting-ip') ||

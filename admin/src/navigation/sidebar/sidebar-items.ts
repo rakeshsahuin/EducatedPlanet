@@ -15,6 +15,7 @@ import {
   Banknote,
   Gauge,
   GraduationCap,
+  BookOpen,
   type LucideIcon,
   User,
 } from "lucide-react";
@@ -58,6 +59,11 @@ export const sidebarItems: NavGroup[] = [
         title: "Users",
         url: "/dashboard/users",
         icon: Users,
+      },
+      {
+        title: "Classes",
+        url: "/dashboard/classes",
+        icon: BookOpen,
       },
       {
         title: "CRM",

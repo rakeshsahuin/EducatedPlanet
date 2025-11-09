@@ -7,7 +7,11 @@
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
       "Bash(pnpm build:*)",
-      "mcp__deepcontext__search_codebase"
+      "mcp__deepcontext__search_codebase",
+      "Bash(findstr:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__deepcontext__index_codebase",
+      "mcp__deepcontext__get_indexing_status"
     ],
     "deny": [],
     "ask": []

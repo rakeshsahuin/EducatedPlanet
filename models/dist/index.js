@@ -6,6 +6,10 @@
 export * from './tutor/tutor.types';
 // Export user-related types
 export * from './user/user.types';
+// Export class-related types
+export * from './class/types';
 // Export common types
 export * from './common/common.types';
+export { ClassCategory } from './class/types';
+export { SubjectCategory } from './common/common.types';
 //# sourceMappingURL=index.js.map

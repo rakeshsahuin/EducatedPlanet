@@ -18,7 +18,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ReviewQueries = exports.TutorQueries = exports.UserQueries = exports.ReviewModel = exports.TutorModel = exports.UserModel = exports.reviewSchema = exports.tutorSchema = exports.userSchema = exports.closeDatabase = exports.initializeDatabase = exports.databaseConnection = exports.DatabaseConnection = void 0;
+exports.ClassQueries = exports.ReviewQueries = exports.TutorQueries = exports.UserQueries = exports.ReviewModel = exports.TutorModel = exports.UserModel = exports.reviewSchema = exports.tutorSchema = exports.userSchema = exports.closeDatabase = exports.initializeDatabase = exports.databaseConnection = exports.DatabaseConnection = void 0;
 // Export database connection utilities
 __exportStar(require("./connections"), exports);
 // Export schemas
@@ -42,4 +42,5 @@ Object.defineProperty(exports, "ReviewModel", { enumerable: true, get: function 
 Object.defineProperty(exports, "UserQueries", { enumerable: true, get: function () { return models_1.UserQueries; } });
 Object.defineProperty(exports, "TutorQueries", { enumerable: true, get: function () { return models_1.TutorQueries; } });
 Object.defineProperty(exports, "ReviewQueries", { enumerable: true, get: function () { return models_1.ReviewQueries; } });
+Object.defineProperty(exports, "ClassQueries", { enumerable: true, get: function () { return models_1.ClassQueries; } });
 //# sourceMappingURL=index.js.map

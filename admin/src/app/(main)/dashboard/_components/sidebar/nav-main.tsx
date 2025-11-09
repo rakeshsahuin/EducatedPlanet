@@ -46,9 +46,15 @@ const NavItemExpanded = ({
   isSubmenuOpen: (subItems?: NavMainItem["subItems"]) => boolean;
 }) => {
   return (
-    <Collapsible key={item.title} asChild defaultOpen={isSubmenuOpen(item.subItems)} className="group/collapsible">
+    <Collapsible
+      key={item.title}
+      asChild
+      defaultOpen={isSubmenuOpen(item.subItems)}
+      className="group/collapsible"
+      suppressHydrationWarning
+    >
       <SidebarMenuItem>
-        <CollapsibleTrigger asChild>
+        <CollapsibleTrigger asChild suppressHydrationWarning>
           {item.subItems ? (
             <SidebarMenuButton
               disabled={item.comingSoon}
@@ -76,7 +82,7 @@ const NavItemExpanded = ({
           )}
         </CollapsibleTrigger>
         {item.subItems && (
-          <CollapsibleContent>
+          <CollapsibleContent suppressHydrationWarning>
             <SidebarMenuSub>
               {item.subItems.map((subItem) => (
                 <SidebarMenuSubItem key={subItem.title}>
@@ -106,8 +112,8 @@ const NavItemCollapsed = ({
 }) => {
   return (
     <SidebarMenuItem key={item.title}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+      <DropdownMenu suppressHydrationWarning>
+        <DropdownMenuTrigger asChild suppressHydrationWarning>
           <SidebarMenuButton
             disabled={item.comingSoon}
             tooltip={item.title}
@@ -118,9 +124,9 @@ const NavItemCollapsed = ({
             <ChevronRight />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-50 space-y-1" side="right" align="start">
+        <DropdownMenuContent className="w-50 space-y-1" side="right" align="start" suppressHydrationWarning>
           {item.subItems?.map((subItem) => (
-            <DropdownMenuItem key={subItem.title} asChild>
+            <DropdownMenuItem key={subItem.title} asChild suppressHydrationWarning>
               <SidebarMenuSubButton
                 key={subItem.title}
                 asChild

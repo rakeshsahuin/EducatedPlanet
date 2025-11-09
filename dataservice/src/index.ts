@@ -16,6 +16,9 @@ export { TutorService, tutorService } from './services/tutor.service';
 // Review service
 export { ReviewService, reviewService } from './services/review.service';
 
+// Class service
+export { ClassService, classService } from './services/class.service';
+
 // Auth service
 export {
   authenticateUser,
@@ -33,6 +36,7 @@ export {
   UserQueries,
   TutorQueries,
   ReviewQueries,
+  ClassQueries,
   DatabaseConnection,
   databaseConnection,
   initializeDatabase,
@@ -44,10 +48,12 @@ export {
   type IUserDocument,
   type ITutorDocument,
   type IReviewDocument,
+  type IClassDocument,
 } from './datamodels';
 
 // Export seeder
 export { seedUsers } from './seeder/userseeder';
+export { seedClasses, clearClasses, type ClassSeedData } from './seeder/classseeder';
 
 // Export RSA utilities
 export {
@@ -63,6 +69,7 @@ export type {
   User,
   Tutor,
   Review,
+  Class,
   CreateUserInput,
   UpdateUserInput,
   LoginInput,
@@ -72,5 +79,13 @@ export type {
   TutorSearchParams,
   CreateReviewInput,
   UpdateReviewInput,
-  ReviewSearchParams
+  ReviewSearchParams,
+  CreateClassInput,
+  UpdateClassInput,
+  ClassSearchParams,
+  ClassWithSubClasses,
+  AddSubClassInput,
+  RemoveSubClassInput,
+  ClassMetadata,
+  ClassCategory
 } from '@educatedplanet/models';

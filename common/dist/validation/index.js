@@ -57,4 +57,78 @@ export const reviewSchema = z.object({
     rating: ratingSchema,
     comment: z.string().min(5, 'Comment must be at least 5 characters').max(500)
 });
+// Class validation schemas
+export const classCodeSchema = z.string()
+    .min(2, 'Class code must be at least 2 characters')
+    .max(20, 'Class code must be less than 20 characters')
+    .regex(/^[A-Z0-9-_]+$/, 'Class code can only contain uppercase letters, numbers, hyphens, and underscores');
+export const classNameSchema = z.string()
+    .min(2, 'Class name must be at least 2 characters')
+    .max(100, 'Class name must be less than 100 characters');
+export const classCategorySchema = z.enum([
+    'school',
+    'college',
+    'professional',
+    'competitive',
+    'skill_development',
+    'sports',
+    'entertainment',
+    'art',
+    'health'
+], {
+    errorMap: () => ({ message: 'Please select a valid category' })
+});
+export const classMetadataSchema = z.object({
+    minAge: z.number().int().positive().min(1).max(100).optional(),
+    maxAge: z.number().int().positive().min(1).max(100).optional(),
+    duration: z.string().min(1).max(50).optional(),
+    subjects: z.array(z.string().min(1).max(50)).optional(),
+    prerequisites: z.array(z.string().min(1).max(50)).optional()
+}).refine((data) => {
+    if (data.minAge && data.maxAge && data.minAge > data.maxAge) {
+        return false;
+    }
+    return true;
+}, {
+    message: 'Minimum age cannot be greater than maximum age',
+    path: ['minAge']
+});
+export const createClassSchema = z.object({
+    name: classNameSchema,
+    code: classCodeSchema,
+    category: classCategorySchema,
+    subClasses: z.array(classCodeSchema).optional(),
+    description: z.string().min(10).max(500).optional(),
+    isActive: z.boolean().optional(),
+    sortOrder: z.number().int().min(0).optional(),
+    metadata: classMetadataSchema.optional()
+});
+export const updateClassSchema = z.object({
+    name: classNameSchema.optional(),
+    code: classCodeSchema.optional(),
+    category: classCategorySchema.optional(),
+    subClasses: z.array(classCodeSchema).optional(),
+    description: z.string().min(10).max(500).optional(),
+    isActive: z.boolean().optional(),
+    sortOrder: z.number().int().min(0).optional(),
+    metadata: classMetadataSchema.optional()
+});
+export const classSearchParamsSchema = z.object({
+    query: z.string().optional(),
+    category: classCategorySchema.optional(),
+    hasSubClasses: z.boolean().optional(),
+    isActive: z.boolean().optional(),
+    subClass: z.string().optional(),
+    page: z.number().int().positive().optional(),
+    limit: z.number().int().positive().max(100).optional(),
+    sortBy: z.enum(['name', 'sortOrder', 'createdAt']).optional(),
+    sortOrder: z.enum(['asc', 'desc']).optional()
+});
+export const addSubClassSchema = z.object({
+    subClassCode: classCodeSchema,
+    subClassName: classNameSchema
+});
+export const removeSubClassSchema = z.object({
+    subClassCode: classCodeSchema
+});
 //# sourceMappingURL=index.js.map

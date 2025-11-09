@@ -28,6 +28,7 @@ export {
   type IUserDocument,
   type ITutorDocument,
   type IReviewDocument,
+  type IClassDocument,
 } from './schemas';
 
 export {
@@ -37,4 +38,5 @@ export {
   UserQueries,
   TutorQueries,
   ReviewQueries,
+  ClassQueries,
 } from './models';

@@ -9,6 +9,9 @@ export * from './tutor/tutor.types';
 // Export user-related types
 export * from './user/user.types';
 
+// Export class-related types
+export * from './class/types';
+
 // Export common types
 export * from './common/common.types';
 
@@ -54,6 +57,19 @@ export type {
 } from './user/user.types';
 
 export type {
+  Class,
+  ClassMetadata,
+  CreateClassInput,
+  UpdateClassInput,
+  ClassSearchParams,
+  ClassWithSubClasses,
+  AddSubClassInput,
+  RemoveSubClassInput,
+} from './class/types';
+
+export { ClassCategory } from './class/types';
+
+export type {
   ApiResponse,
   ApiError,
   PaginationParams,
@@ -62,7 +78,6 @@ export type {
   BaseEntity,
   Status,
   VerificationStatus,
-  SubjectCategory,
   Subject,
   ClassLevel,
   BhubaneswarArea,
@@ -77,3 +92,5 @@ export type {
   ColorVariant,
   SizeVariant,
 } from './common/common.types';
+
+export { SubjectCategory } from './common/common.types';

@@ -29,7 +29,8 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { SubjectTable } from "./schema";
+import { SubjectTable, SubjectForm } from "./schema";
+import { SubjectModal } from "./subject-modal";
 
 const getTypeVariant = (isAcademic: boolean) => {
   return isAcademic ? "default" : "secondary";
@@ -253,9 +254,10 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const subject = row.original;
       const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+      const [showEditModal, setShowEditModal] = useState(false);
       const [isDeleting, setIsDeleting] = useState(false);
       const [isToggling, setIsToggling] = useState(false);
 
@@ -339,6 +341,30 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
         }
       };
 
+      const handleEditSubmit = async (data: SubjectForm) => {
+        try {
+          const response = await fetch(`/api/subjects/${subject.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            toast.success('Subject updated successfully');
+            setShowEditModal(false);
+            window.location.reload();
+          } else {
+            toast.error(result.error || 'Failed to update subject');
+          }
+        } catch (error) {
+          toast.error('An error occurred while updating the subject');
+        }
+      };
+
       return (
         <>
           <DropdownMenu>
@@ -351,7 +377,7 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => window.location.href = `/dashboard/subjects/${subject.id}/edit`}
+                onClick={() => setShowEditModal(true)}
               >
                 <Edit className="mr-2 h-4 w-4" />
                 Edit
@@ -383,6 +409,14 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Edit Modal */}
+          <SubjectModal
+            mode="edit"
+            subject={subject}
+            onSubmit={handleEditSubmit}
+            onClose={() => setShowEditModal(false)}
+          />
 
           <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
             <AlertDialogContent>

@@ -67,6 +67,11 @@ export const sidebarItems: NavGroup[] = [
         icon: BookOpen,
       },
       {
+        title: "Subjects",
+        url: "/dashboard/subjects",
+        icon: Target,
+      },
+      {
         title: "CRM",
         url: "/dashboard/crm",
         icon: ChartBar,
@@ -87,24 +92,6 @@ export const sidebarItems: NavGroup[] = [
         url: "/dashboard/coming-soon",
         icon: ShoppingBag,
         comingSoon: true,
-      },
-      {
-        title: "Academy",
-        url: "/dashboard/academy",
-        icon: GraduationCap,
-        subItems: [
-          {
-            title: "Subjects",
-            url: "/dashboard/subjects",
-            icon: Target,
-          },
-          {
-            title: "Courses",
-            url: "/dashboard/coming-soon",
-            icon: BookOpen,
-            comingSoon: true,
-          },
-        ],
       },
       {
         title: "Logistics",

@@ -1,19 +1,24 @@
 /**
  * API Route for Subjects
  * Handles CRUD operations for subjects using dataservice
+ * Admin authentication required
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { subjectService } from '@/lib/static-api';
-import { CreateSubjectInput } from '@educatedplanet/models';
+import { subjectService } from '@educatedplanet/dataservice';
+import { CreateSubjectInput, SubjectSearchParams } from '@educatedplanet/models';
+import { requireRole } from '@/lib/auth-utils';
 
 // GET /api/subjects - Fetch subjects with pagination and filters
 export async function GET(request: NextRequest) {
   try {
+    // Require admin role
+    await requireRole('admin');
+
     const { searchParams } = new URL(request.url);
 
     // Parse query parameters to match SubjectSearchParams
-    const params = {
+    const params: SubjectSearchParams = {
       query: searchParams.get('search') || undefined,
       isAcademic: searchParams.get('isAcademic') ? searchParams.get('isAcademic') === 'true' : undefined,
       isActive: searchParams.get('isActive') ? searchParams.get('isActive') === 'true' : undefined,
@@ -26,7 +31,7 @@ export async function GET(request: NextRequest) {
       sortOrder: searchParams.get('sortOrder') as 'asc' | 'desc' || undefined
     };
 
-    const result = await subjectService.getSubjects(params);
+    const result = await subjectService.searchSubjects(params);
 
     return NextResponse.json({
       success: true,
@@ -40,8 +45,21 @@ export async function GET(request: NextRequest) {
         hasPrevPage: result.pagination?.hasPrevPage || false
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching subjects:', error);
+
+    // Handle auth errors
+    if (error.message?.includes('unauthorized') || error.message?.includes('login')) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Unauthorized',
+          redirect: '/auth/login'
+        },
+        { status: 401 }
+      );
+    }
+
     return NextResponse.json(
       {
         success: false,
@@ -55,19 +73,33 @@ export async function GET(request: NextRequest) {
 // POST /api/subjects - Create a new subject
 export async function POST(request: NextRequest) {
   try {
+    // Require admin role
+    await requireRole('admin');
+
     const body = await request.json();
+
+    // Validate required fields
+    if (!body.name || !body.code) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Name and code are required'
+        },
+        { status: 400 }
+      );
+    }
 
     // Transform input to match CreateSubjectInput
     const subjectData: CreateSubjectInput = {
       name: body.name,
-      code: body.code,
-      classIds: body.classIds,
+      code: body.code.toUpperCase(),
+      classIds: body.classIds || [],
       description: body.description,
-      keywords: body.keywords,
-      isActive: body.isActive,
-      isAcademic: body.isAcademic,
-      sortOrder: body.sortOrder,
-      metadata: body.metadata
+      keywords: body.keywords || [],
+      isActive: body.isActive !== undefined ? body.isActive : true,
+      isAcademic: body.isAcademic !== undefined ? body.isAcademic : true,
+      sortOrder: body.sortOrder || 0,
+      metadata: body.metadata || {}
     };
 
     const newSubject = await subjectService.createSubject(subjectData);
@@ -77,14 +109,38 @@ export async function POST(request: NextRequest) {
       data: newSubject,
       message: 'Subject created successfully'
     }, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating subject:', error);
+
+    // Handle auth errors
+    if (error.message?.includes('unauthorized') || error.message?.includes('login')) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Unauthorized',
+          redirect: '/auth/login'
+        },
+        { status: 401 }
+      );
+    }
+
+    // Handle validation errors
+    if (error.message?.includes('already exists')) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message
+        },
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
       {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to create subject'
       },
-      { status: 400 }
+      { status: 500 }
     );
   }
 }

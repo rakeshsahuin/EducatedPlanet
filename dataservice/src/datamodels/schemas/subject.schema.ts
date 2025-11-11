@@ -23,19 +23,7 @@ const subjectSchemaDefinition = new Schema<ISubjectDocument>({
   },
   classIds: [{
     type: Schema.Types.ObjectId,
-    ref: 'Class',
-    validate: {
-      validator: async function(classIds: string[]) {
-        // Validate that all class IDs exist
-        const { ClassQueries } = await import('../models/class.model');
-        for (const classId of classIds) {
-          const classExists = await ClassQueries.findById(classId);
-          if (!classExists) return false;
-        }
-        return true;
-      },
-      message: 'One or more class IDs are invalid'
-    }
+    ref: 'Class'
   }],
   description: {
     type: String,

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Edit2, X, Hash, BookOpen, GraduationCap, Star, Target, Users, Clock, Award } from "lucide-react";
+import { Plus, Edit2, X, Hash, BookOpen, GraduationCap, Star, Target, Users, Clock, Award, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -40,7 +40,7 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 
 import { SubjectForm, subjectFormSchema } from "./schema";
-import { NewSubject } from "@educatedplanet/models";
+import { NewSubject, Class } from "@educatedplanet/models";
 
 interface SubjectModalProps {
   children?: React.ReactNode;
@@ -50,25 +50,11 @@ interface SubjectModalProps {
   onClose?: () => void;
 }
 
-// Mock classes data - in real app, this would come from API
-const mockClasses = [
-  { id: "1", name: "Class 1", code: "CLASS-1" },
-  { id: "2", name: "Class 2", code: "CLASS-2" },
-  { id: "3", name: "Class 3", code: "CLASS-3" },
-  { id: "4", name: "Class 4", code: "CLASS-4" },
-  { id: "5", name: "Class 5", code: "CLASS-5" },
-  { id: "6", name: "Class 6", code: "CLASS-6" },
-  { id: "7", name: "Class 7", code: "CLASS-7" },
-  { id: "8", name: "Class 8", code: "CLASS-8" },
-  { id: "9", name: "Class 9", code: "CLASS-9" },
-  { id: "10", name: "Class 10", code: "CLASS-10" },
-  { id: "11", name: "Class 11", code: "CLASS-11" },
-  { id: "12", name: "Class 12", code: "CLASS-12" },
-];
-
 export function SubjectModal({ children, mode, subject, onSubmit, onClose }: SubjectModalProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingClasses, setIsLoadingClasses] = useState(false);
+  const [classes, setClasses] = useState<Class[]>([]);
   const [keywords, setKeywords] = useState<string[]>(subject?.keywords || []);
   const [newKeyword, setNewKeyword] = useState("");
   const [selectedClasses, setSelectedClasses] = useState<string[]>(subject?.classIds || []);
@@ -82,6 +68,38 @@ export function SubjectModal({ children, mode, subject, onSubmit, onClose }: Sub
   const [newExam, setNewExam] = useState("");
   const [prerequisites, setPrerequisites] = useState<string[]>(subject?.metadata?.prerequisites || []);
   const [newPrerequisite, setNewPrerequisite] = useState("");
+
+  // Fetch active classes from the database
+  useEffect(() => {
+    const fetchClasses = async () => {
+      if (open) {
+        setIsLoadingClasses(true);
+        try {
+          const response = await fetch('/api/classes?status=active&limit=100', {
+            credentials: 'include'
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+              setClasses(result.data || []);
+            } else {
+              toast.error('Failed to fetch classes');
+            }
+          } else {
+            toast.error('Failed to fetch classes');
+          }
+        } catch (error) {
+          console.error('Error fetching classes:', error);
+          toast.error('Error loading classes');
+        } finally {
+          setIsLoadingClasses(false);
+        }
+      }
+    };
+
+    fetchClasses();
+  }, [open]);
 
   const form = useForm<SubjectForm>({
     resolver: zodResolver(subjectFormSchema as any),
@@ -426,23 +444,35 @@ export function SubjectModal({ children, mode, subject, onSubmit, onClose }: Sub
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-                  {mockClasses.map((cls) => (
-                    <label key={cls.id} className="flex items-center space-x-2 cursor-pointer">
-                      <Checkbox
-                        checked={selectedClasses.includes(cls.id)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setSelectedClasses([...selectedClasses, cls.id]);
-                          } else {
-                            setSelectedClasses(selectedClasses.filter(id => id !== cls.id));
-                          }
-                        }}
-                      />
-                      <span className="text-sm">{cls.name}</span>
-                    </label>
-                  ))}
-                </div>
+                {isLoadingClasses ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                    <span className="ml-2 text-sm text-muted-foreground">Loading classes...</span>
+                  </div>
+                ) : classes.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p className="text-sm">No active classes found.</p>
+                    <p className="text-xs mt-1">Please add classes first before assigning them to subjects.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    {classes.map((cls) => (
+                      <label key={cls.id} className="flex items-center space-x-2 cursor-pointer">
+                        <Checkbox
+                          checked={selectedClasses.includes(cls.id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedClasses([...selectedClasses, cls.id]);
+                            } else {
+                              setSelectedClasses(selectedClasses.filter(id => id !== cls.id));
+                            }
+                          }}
+                        />
+                        <span className="text-sm">{cls.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
 

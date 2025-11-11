@@ -112,8 +112,8 @@ const NavItemCollapsed = ({
 }) => {
   return (
     <SidebarMenuItem key={item.title}>
-      <DropdownMenu suppressHydrationWarning>
-        <DropdownMenuTrigger asChild suppressHydrationWarning>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
           <SidebarMenuButton
             disabled={item.comingSoon}
             tooltip={item.title}

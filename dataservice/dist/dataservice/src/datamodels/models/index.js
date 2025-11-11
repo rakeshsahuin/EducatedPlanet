@@ -3,7 +3,7 @@
  * Model exports for datamodels package
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClassQueries = exports.ReviewQueries = exports.ReviewModel = exports.TutorQueries = exports.TutorModel = exports.UserQueries = exports.UserModel = void 0;
+exports.SubjectQueries = exports.ClassQueries = exports.ReviewQueries = exports.ReviewModel = exports.TutorQueries = exports.TutorModel = exports.UserQueries = exports.UserModel = void 0;
 var user_model_1 = require("./user.model");
 Object.defineProperty(exports, "UserModel", { enumerable: true, get: function () { return user_model_1.UserModel; } });
 Object.defineProperty(exports, "UserQueries", { enumerable: true, get: function () { return user_model_1.UserQueries; } });
@@ -15,4 +15,6 @@ Object.defineProperty(exports, "ReviewModel", { enumerable: true, get: function 
 Object.defineProperty(exports, "ReviewQueries", { enumerable: true, get: function () { return review_model_1.ReviewQueries; } });
 var class_model_1 = require("./class.model");
 Object.defineProperty(exports, "ClassQueries", { enumerable: true, get: function () { return class_model_1.ClassQueries; } });
+var subject_model_1 = require("./subject.model");
+Object.defineProperty(exports, "SubjectQueries", { enumerable: true, get: function () { return subject_model_1.SubjectQueries; } });
 //# sourceMappingURL=index.js.map

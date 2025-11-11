@@ -7,65 +7,7 @@
    - Environments: .env.local
 
    Creating an optimized production build ...
-
-> Build error occurred
-Error: Turbopack build failed with 2 errors:
-./admin/src/app/(main)/dashboard/classes/_components/class-modal.tsx:19:1
-Export ClassForm doesn't exist in target module
-[0m [90m 17 |[39m [36mimport[39m { [33mSeparator[39m } [36mfrom[39m [32m"@/components/ui/separator"[39m[33m;[39m
- [90m 18 |[39m [36mimport[39m { [33mClassCategory[39m } [36mfrom[39m [32m"@educatedplanet/models"[39m[33m;[39m
-[31m[1m>[22m[39m[90m 19 |[39m [36mimport[39m { [33mClassForm[39m[33m,[39m [33mSubClassForm[39m } [36mfrom[39m [32m"./schema"[39m[33m;[39m
- [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
- [90m 20 |[39m [36minterface[39m [33mClassModalProps[39m {
- [90m 21 |[39m   children[33m?[39m[33m:[39m [33mReact[39m[33m.[39m[33mReactNode[39m[33m;[39m
- [90m 22 |[39m   mode[33m:[39m [32m"create"[39m [33m|[39m [32m"edit"[39m[33m;[39m[0m
-
-The export ClassForm was not found in module [project]/admin/src/app/(main)/dashboard/classes/_components/schema.ts [app-client] (ecmascript).
-Did you mean to import classFormSchema?
-All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
-
-Import traces:
-  Client Component Browser:
-    ./admin/src/app/(main)/dashboard/classes/_components/class-modal.tsx [Client Component Browser]
-    ./admin/src/app/(main)/dashboard/classes/_components/classes-table.tsx [Client Component Browser]
-    ./admin/src/app/(main)/dashboard/classes/_components/classes-table.tsx [Server Component]
-    ./admin/src/app/(main)/dashboard/classes/page.tsx [Server Component]
-
-  Client Component SSR:
-    ./admin/src/app/(main)/dashboard/classes/_components/class-modal.tsx [Client Component SSR]
-    ./admin/src/app/(main)/dashboard/classes/_components/classes-table.tsx [Client Component SSR]
-    ./admin/src/app/(main)/dashboard/classes/_components/classes-table.tsx [Server Component]
-    ./admin/src/app/(main)/dashboard/classes/page.tsx [Server Component]
-
-
-./admin/src/app/(main)/dashboard/classes/_components/class-modal.tsx:42:1
-Export ClassForm doesn't exist in target module
-[0m [90m 40 |[39m [36mimport[39m { [33mClassCategory[39m } [36mfrom[39m [32m"@educatedplanet/models"[39m[33m;[39m
- [90m 41 |[39m
-[31m[1m>[22m[39m[90m 42 |[39m [36mimport[39m { [33mClassForm[39m[33m,[39m [33mSubClassForm[39m } [36mfrom[39m [32m"./schema"[39m[33m;[39m
- [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
- [90m 43 |[39m
- [90m 44 |[39m [36minterface[39m [33mClassModalProps[39m {
- [90m 45 |[39m   children[33m?[39m[33m:[39m [33mReact[39m[33m.[39m[33mReactNode[39m[33m;[39m[0m
-
-The export ClassForm was not found in module [project]/admin/src/app/(main)/dashboard/classes/_components/schema.ts [app-ssr] (ecmascript).
-Did you mean to import classFormSchema?
-All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
-
-Import traces:
-  Client Component Browser:
-    ./admin/src/app/(main)/dashboard/classes/_components/class-modal.tsx [Client Component Browser]
-    ./admin/src/app/(main)/dashboard/classes/_components/classes-table.tsx [Client Component Browser]
-    ./admin/src/app/(main)/dashboard/classes/_components/classes-table.tsx [Server Component]
-    ./admin/src/app/(main)/dashboard/classes/page.tsx [Server Component]
-
-  Client Component SSR:
-    ./admin/src/app/(main)/dashboard/classes/_components/class-modal.tsx [Client Component SSR]
-    ./admin/src/app/(main)/dashboard/classes/_components/classes-table.tsx [Client Component SSR]
-    ./admin/src/app/(main)/dashboard/classes/_components/classes-table.tsx [Server Component]
-    ./admin/src/app/(main)/dashboard/classes/page.tsx [Server Component]
-
-
-    at <unknown> (./admin/src/app/(main)/dashboard/classes/_components/class-modal.tsx:19:1)
-    at <unknown> (./admin/src/app/(main)/dashboard/classes/_components/class-modal.tsx:42:1)
- ELIFECYCLE  Command failed with exit code 1.
+ ✓ Compiled successfully in 30.0s
+   Running TypeScript ...
+Next.js build worker exited with code: 3221225794 and signal: null
+ ELIFECYCLE  Command failed with exit code 3221225794.

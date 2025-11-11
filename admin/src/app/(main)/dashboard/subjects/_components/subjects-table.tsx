@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Filter, Download, RefreshCw } from "lucide-react";
+import { Search, Filter, Download, RefreshCw, GraduationCap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
@@ -17,15 +17,14 @@ import {
 } from "@/components/ui/select";
 import { useDataTableInstance } from "@/hooks/use-data-table-instance";
 import { toast } from "sonner";
-import { ClassCategory } from "@educatedplanet/models";
 
-import { classesColumns } from "./columns";
-import { ClassModal } from "./class-modal";
-import type { ClassTable, ClassSearch } from "./schema";
+import { subjectsColumns } from "./columns";
+import { SubjectModal } from "./subject-modal";
+import type { SubjectTable, SubjectSearch } from "./schema";
 
-interface ClassesResponse {
+interface SubjectsResponse {
   success: boolean;
-  data: ClassTable[];
+  data: SubjectTable[];
   pagination: {
     page: number;
     limit: number;
@@ -35,14 +34,15 @@ interface ClassesResponse {
   error?: string;
 }
 
-export function ClassesTable() {
+export function SubjectsTable() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [hasSubClassesFilter, setHasSubClassesFilter] = useState<string>("all");
+  const [isAcademicFilter, setIsAcademicFilter] = useState<string>("all");
+  const [isActiveFilter, setIsActiveFilter] = useState<string>("all");
+  const [difficultyFilter, setDifficultyFilter] = useState<string>("all");
+  const [popularFilter, setPopularFilter] = useState<string>("all");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<ClassTable[]>([]);
+  const [data, setData] = useState<SubjectTable[]>([]);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
@@ -53,23 +53,27 @@ export function ClassesTable() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [refreshing, setRefreshing] = useState(false);
 
-  // Fetch classes from API
-  const fetchClasses = async (params?: Partial<ClassSearch>) => {
+  // Fetch subjects from API
+  const fetchSubjects = async (params?: Partial<SubjectSearch>) => {
     setLoading(true);
     try {
-      const searchParams = new URLSearchParams({
+      const paramsObj: Record<string, string> = {
         page: (params?.page || pagination.page).toString(),
         limit: (params?.limit || pagination.limit).toString(),
         sortBy: params?.sortBy || sortBy,
         sortOrder: params?.sortOrder || sortOrder,
-        ...(searchTerm && { search: searchTerm }),
-        ...(categoryFilter !== "all" && { category: categoryFilter }),
-        ...(statusFilter !== "all" && { status: statusFilter }),
-        ...(hasSubClassesFilter !== "all" && { hasSubClasses: hasSubClassesFilter }),
-      });
+      };
 
-      const response = await fetch(`/api/classes?${searchParams}`);
-      const result: ClassesResponse = await response.json();
+      if (searchTerm) paramsObj.search = searchTerm;
+      if (isAcademicFilter !== "all") paramsObj.isAcademic = (isAcademicFilter === "true").toString();
+      if (isActiveFilter !== "all") paramsObj.isActive = (isActiveFilter === "true").toString();
+      if (difficultyFilter !== "all") paramsObj.difficulty = difficultyFilter;
+      if (popularFilter !== "all") paramsObj.popular = (popularFilter === "true").toString();
+
+      const searchParams = new URLSearchParams(paramsObj);
+
+      const response = await fetch(`/api/subjects?${searchParams}`);
+      const result: SubjectsResponse = await response.json();
 
       if (response.ok) {
         setData(result.data.map(item => ({
@@ -79,10 +83,10 @@ export function ClassesTable() {
         })));
         setPagination(result.pagination);
       } else {
-        toast.error(result.error || "Failed to fetch classes");
+        toast.error(result.error || "Failed to fetch subjects");
       }
     } catch (error) {
-      toast.error("An error occurred while fetching classes");
+      toast.error("An error occurred while fetching subjects");
     } finally {
       setLoading(false);
     }
@@ -90,39 +94,41 @@ export function ClassesTable() {
 
   // Initial fetch and refresh
   useEffect(() => {
-    fetchClasses();
-  }, [searchTerm, categoryFilter, statusFilter, hasSubClassesFilter, sortBy, sortOrder]);
+    fetchSubjects();
+  }, [searchTerm, isAcademicFilter, isActiveFilter, difficultyFilter, popularFilter, sortBy, sortOrder]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await fetchClasses();
+    await fetchSubjects();
     setRefreshing(false);
-    toast.success("Classes refreshed successfully");
+    toast.success("Subjects refreshed successfully");
   };
 
   const handleExport = async () => {
     try {
-      // Get all classes without pagination for export
+      // Get all subjects without pagination for export
       const searchParams = new URLSearchParams({
         limit: "1000", // Large number to get all records
         sortBy: "name",
         sortOrder: "asc",
       });
 
-      const response = await fetch(`/api/classes?${searchParams}`);
+      const response = await fetch(`/api/subjects?${searchParams}`);
       const result = await response.json();
 
       if (response.ok) {
         // Create CSV content
-        const headers = ["Name", "Code", "Category", "Status", "Sub-classes", "Created Date"];
+        const headers = ["Code", "Name", "Type", "Status", "Keywords", "Difficulty", "Classes", "Created Date"];
         const csvContent = [
           headers.join(","),
-          ...result.data.map((item: ClassTable) => [
-            `"${item.name}"`,
+          ...result.data.map((item: SubjectTable) => [
             `"${item.code}"`,
-            `"${item.category}"`,
+            `"${item.name}"`,
+            `"${item.isAcademic ? "Academic" : "Non-Academic"}"`,
             `"${item.isActive ? "Active" : "Inactive"}"`,
-            `"${item.subClasses.length > 0 ? item.subClasses.join("; ") : ""}"`,
+            `"${item.keywords.join("; ")}`,
+            `"${item.metadata?.difficulty || "Not set"}"`,
+            `"${item.classIds.length}"`,
             `"${new Date(item.createdAt).toLocaleDateString()}"`,
           ].join(","))
         ].join("\n");
@@ -132,24 +138,24 @@ export function ClassesTable() {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `classes_export_${new Date().toISOString().split("T")[0]}.csv`;
+        a.download = `subjects_export_${new Date().toISOString().split("T")[0]}.csv`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
 
-        toast.success("Classes exported successfully");
+        toast.success("Subjects exported successfully");
       } else {
-        toast.error(result.error || "Failed to export classes");
+        toast.error(result.error || "Failed to export subjects");
       }
     } catch (error) {
-      toast.error("An error occurred while exporting classes");
+      toast.error("An error occurred while exporting subjects");
     }
   };
 
-  const handleClassSubmit = async (data: any) => {
+  const handleSubjectSubmit = async (data: any) => {
     try {
-      const response = await fetch("/api/classes", {
+      const response = await fetch("/api/subjects", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -160,20 +166,20 @@ export function ClassesTable() {
       const result = await response.json();
 
       if (response.ok) {
-        toast.success("Class created successfully");
+        toast.success("Subject created successfully");
         setShowCreateModal(false);
-        fetchClasses();
+        fetchSubjects();
       } else {
-        toast.error(result.error || "Failed to create class");
+        toast.error(result.error || "Failed to create subject");
       }
     } catch (error) {
-      toast.error("An error occurred while creating the class");
+      toast.error("An error occurred while creating the subject");
     }
   };
 
   const table = useDataTableInstance({
     data,
-    columns: classesColumns,
+    columns: subjectsColumns,
     getRowId: (row) => row.id.toString(),
     defaultPageSize: 10,
     defaultSorting: [{ id: sortBy, desc: sortOrder === "desc" }],
@@ -185,7 +191,10 @@ export function ClassesTable() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>Classes Management</span>
+            <span className="flex items-center gap-2">
+              <GraduationCap className="h-5 w-5" />
+              Subjects Management
+            </span>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -196,13 +205,13 @@ export function ClassesTable() {
                 <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
                 Refresh
               </Button>
-              <ClassModal mode="create" onSubmit={handleClassSubmit}>
-                <Button variant="default">Add New Class</Button>
-              </ClassModal>
+              <SubjectModal mode="create" onSubmit={handleSubjectSubmit}>
+                <Button variant="default">Add New Subject</Button>
+              </SubjectModal>
             </div>
           </CardTitle>
           <CardDescription>
-            Manage and monitor all educational classes on the platform
+            Manage and monitor all educational subjects on the platform
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -210,28 +219,25 @@ export function ClassesTable() {
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search classes..."
+                placeholder="Search subjects..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
             <div className="flex items-center gap-2">
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="All Categories" />
+              <Select value={isAcademicFilter} onValueChange={setIsAcademicFilter}>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  {Object.values(ClassCategory).map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}
-                    </SelectItem>
-                  ))}
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="true">Academic</SelectItem>
+                  <SelectItem value="false">Non-Academic</SelectItem>
                 </SelectContent>
               </Select>
 
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <Select value={isActiveFilter} onValueChange={setIsActiveFilter}>
                 <SelectTrigger className="w-[140px]">
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
@@ -242,14 +248,26 @@ export function ClassesTable() {
                 </SelectContent>
               </Select>
 
-              <Select value={hasSubClassesFilter} onValueChange={setHasSubClassesFilter}>
+              <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
                 <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Sub-classes" />
+                  <SelectValue placeholder="Difficulty" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Classes</SelectItem>
-                  <SelectItem value="true">Has Sub-classes</SelectItem>
-                  <SelectItem value="false">No Sub-classes</SelectItem>
+                  <SelectItem value="all">All Levels</SelectItem>
+                  <SelectItem value="beginner">Beginner</SelectItem>
+                  <SelectItem value="intermediate">Intermediate</SelectItem>
+                  <SelectItem value="advanced">Advanced</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={popularFilter} onValueChange={setPopularFilter}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="Popular" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Subjects</SelectItem>
+                  <SelectItem value="true">Popular</SelectItem>
+                  <SelectItem value="false">Not Popular</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -265,7 +283,7 @@ export function ClassesTable() {
           {/* Table */}
           <DataTable
             table={table}
-            columns={classesColumns}
+            columns={subjectsColumns}
           />
 
           {/* Pagination */}
@@ -274,15 +292,6 @@ export function ClassesTable() {
           />
         </CardContent>
       </Card>
-
-      {/* Create Modal */}
-      {showCreateModal && (
-        <ClassModal
-          mode="create"
-          onSubmit={handleClassSubmit}
-          onClose={() => setShowCreateModal(false)}
-        />
-      )}
     </div>
   );
 }

@@ -19,6 +19,9 @@ export { ReviewService, reviewService } from './services/review.service';
 // Class service
 export { ClassService, classService } from './services/class.service';
 
+// Subject service
+export { SubjectService, subjectService } from './services/subject.service';
+
 // Auth service
 export {
   authenticateUser,
@@ -37,6 +40,7 @@ export {
   TutorQueries,
   ReviewQueries,
   ClassQueries,
+  SubjectQueries,
   DatabaseConnection,
   databaseConnection,
   initializeDatabase,
@@ -44,16 +48,20 @@ export {
   userSchema,
   tutorSchema,
   reviewSchema,
+  classSchema,
+  subjectSchema,
   type DatabaseConfig,
   type IUserDocument,
   type ITutorDocument,
   type IReviewDocument,
   type IClassDocument,
+  type ISubjectDocument,
 } from './datamodels';
 
 // Export seeder
 export { seedUsers } from './seeder/userseeder';
 export { seedClasses, clearClasses, type ClassSeedData } from './seeder/classseeder';
+export { seedSubjects, clearSubjects, type SubjectSeedData } from './seeder/subjectseeder';
 
 // Export RSA utilities
 export {
@@ -87,5 +95,14 @@ export type {
   AddSubClassInput,
   RemoveSubClassInput,
   ClassMetadata,
-  ClassCategory
+  ClassCategory,
+  Subject as NewSubject,
+  SubjectMetadata,
+  CreateSubjectInput,
+  UpdateSubjectInput,
+  SubjectSearchParams,
+  SubjectWithClasses,
+  AddClassToSubjectInput,
+  RemoveClassFromSubjectInput,
+  BulkSubjectOperation
 } from '@educatedplanet/models';

@@ -5,19 +5,24 @@
 
 import { users } from '@/data/users';
 import { tutors, reviews } from '@/data/tutors';
+import { subjects } from '@/data/subjects';
 import {
   User,
   Tutor,
   Review,
+  Subject as NewSubject,
   CreateUserInput,
   UpdateUserInput,
   CreateTutorInput,
   UpdateTutorInput,
   CreateReviewInput,
   UpdateReviewInput,
+  CreateSubjectInput,
+  UpdateSubjectInput,
   UserSearchParams,
   TutorSearchParams,
   ReviewSearchParams,
+  SubjectSearchParams,
   PaginatedResponse,
   PaginationMeta,
   UserRole
@@ -526,11 +531,213 @@ export const dashboardApi = {
   }
 };
 
+/**
+ * Subject API operations using static data
+ */
+export const subjectApi = {
+  // Get all subjects with pagination and filters
+  getSubjects: async (params?: SubjectSearchParams): Promise<PaginatedResponse<NewSubject>> => {
+    try {
+      let filteredSubjects = [...subjects];
+
+      // Apply filters
+      if (params?.query) {
+        filteredSubjects = filteredSubjects.filter(subject =>
+          subject.name.toLowerCase().includes(params.query!.toLowerCase()) ||
+          subject.description.toLowerCase().includes(params.query!.toLowerCase()) ||
+          subject.keywords.some(keyword => keyword.toLowerCase().includes(params.query!.toLowerCase()))
+        );
+      }
+
+      if (params?.isAcademic !== undefined) {
+        filteredSubjects = filteredSubjects.filter(subject => subject.isAcademic === params.isAcademic);
+      }
+
+      if (params?.isActive !== undefined) {
+        filteredSubjects = filteredSubjects.filter(subject => subject.isActive === params.isActive);
+      }
+
+      if (params?.classId) {
+        filteredSubjects = filteredSubjects.filter(subject =>
+          subject.classIds.includes(params.classId!)
+        );
+      }
+
+      if (params?.difficulty) {
+        filteredSubjects = filteredSubjects.filter(subject =>
+          subject.metadata.difficulty === params.difficulty
+        );
+      }
+
+      if (params?.popular !== undefined) {
+        filteredSubjects = filteredSubjects.filter(subject =>
+          subject.metadata.popular === params.popular
+        );
+      }
+
+      // Apply sorting
+      const sortBy = params?.sortBy || 'sortOrder';
+      const sortOrder = params?.sortOrder || 'asc';
+
+      filteredSubjects.sort((a, b) => {
+        let aValue: any = a[sortBy as keyof NewSubject];
+        let bValue: any = b[sortBy as keyof NewSubject];
+
+        if (sortBy === 'metadata' && params?.difficulty) {
+          aValue = a.metadata.difficulty;
+          bValue = b.metadata.difficulty;
+        }
+
+        if (typeof aValue === 'string') {
+          aValue = aValue.toLowerCase();
+          bValue = bValue.toLowerCase();
+        }
+
+        if (sortOrder === 'asc') {
+          return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+        } else {
+          return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+        }
+      });
+
+      const page = params?.page || 1;
+      const limit = params?.limit || 10;
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+      const paginatedSubjects = filteredSubjects.slice(startIndex, endIndex);
+
+      return {
+        items: paginatedSubjects,
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil(filteredSubjects.length / limit),
+          totalItems: filteredSubjects.length,
+          itemsPerPage: limit,
+          hasNextPage: page < Math.ceil(filteredSubjects.length / limit),
+          hasPrevPage: page > 1
+        }
+      };
+    } catch (error) {
+      console.error('Error fetching subjects:', error);
+      throw error;
+    }
+  },
+
+  // Get subject by ID
+  getSubjectById: async (id: string): Promise<NewSubject | null> => {
+    try {
+      return subjects.find(subject => subject.id === id) || null;
+    } catch (error) {
+      console.error('Error fetching subject:', error);
+      throw error;
+    }
+  },
+
+  // Create new subject
+  createSubject: async (subjectData: CreateSubjectInput): Promise<NewSubject> => {
+    try {
+      const newSubject: any = {
+        id: (subjects.length + 1).toString(),
+        name: subjectData.name,
+        code: subjectData.code || subjectData.name.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 8),
+        classIds: subjectData.classIds || [],
+        description: subjectData.description,
+        keywords: subjectData.keywords || [],
+        isActive: subjectData.isActive ?? true,
+        isAcademic: subjectData.isAcademic ?? true,
+        sortOrder: subjectData.sortOrder ?? subjects.length + 1,
+        metadata: subjectData.metadata || {},
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      subjects.push(newSubject);
+      return newSubject;
+    } catch (error) {
+      console.error('Error creating subject:', error);
+      throw error;
+    }
+  },
+
+  // Update subject
+  updateSubject: async (id: string, subjectData: UpdateSubjectInput): Promise<NewSubject | null> => {
+    try {
+      const subjectIndex = subjects.findIndex(subject => subject.id === id);
+      if (subjectIndex === -1) return null;
+
+      const updatedSubject: any = { ...subjects[subjectIndex], ...subjectData, updatedAt: new Date() };
+      subjects[subjectIndex] = updatedSubject;
+      return updatedSubject;
+    } catch (error) {
+      console.error('Error updating subject:', error);
+      throw error;
+    }
+  },
+
+  // Delete subject
+  deleteSubject: async (id: string): Promise<boolean> => {
+    try {
+      const subjectIndex = subjects.findIndex(subject => subject.id === id);
+      if (subjectIndex === -1) return false;
+
+      subjects.splice(subjectIndex, 1);
+      return true;
+    } catch (error) {
+      console.error('Error deleting subject:', error);
+      throw error;
+    }
+  },
+
+  // Toggle academic status
+  toggleAcademicStatus: async (id: string, isAcademic: boolean): Promise<NewSubject | null> => {
+    try {
+      return await subjectApi.updateSubject(id, { isAcademic });
+    } catch (error) {
+      console.error('Error toggling academic status:', error);
+      throw error;
+    }
+  },
+
+  // Toggle active status
+  toggleActiveStatus: async (id: string, isActive: boolean): Promise<NewSubject | null> => {
+    try {
+      return await subjectApi.updateSubject(id, { isActive });
+    } catch (error) {
+      console.error('Error toggling active status:', error);
+      throw error;
+    }
+  },
+
+  // Get subject statistics
+  getSubjectStats: async (): Promise<any> => {
+    try {
+      const total = subjects.length;
+      const academic = subjects.filter(s => s.isAcademic).length;
+      const nonAcademic = total - academic;
+      const active = subjects.filter(s => s.isActive).length;
+      const inactive = total - active;
+      const popular = subjects.filter(s => s.metadata.popular).length;
+
+      return {
+        total,
+        academic,
+        nonAcademic,
+        active,
+        inactive,
+        popular
+      };
+    } catch (error) {
+      console.error('Error fetching subject stats:', error);
+      throw error;
+    }
+  }
+};
+
 // Export all APIs
 export const api = {
   users: userApi,
   tutors: tutorApi,
   reviews: reviewApi,
+  subjects: subjectApi,
   dashboard: dashboardApi
 };
 
@@ -538,3 +745,4 @@ export const api = {
 export const userService = userApi;
 export const tutorService = tutorApi;
 export const reviewService = reviewApi;
+export const subjectService = subjectApi;

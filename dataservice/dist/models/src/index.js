@@ -25,6 +25,8 @@ __exportStar(require("./tutor/tutor.types"), exports);
 __exportStar(require("./user/user.types"), exports);
 // Export class-related types
 __exportStar(require("./class/types"), exports);
+// Export subject-related types
+__exportStar(require("./subject/types"), exports);
 // Export common types
 __exportStar(require("./common/common.types"), exports);
 var types_1 = require("./class/types");

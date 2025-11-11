@@ -25,10 +25,13 @@ export {
   userSchema,
   tutorSchema,
   reviewSchema,
+  classSchema,
+  subjectSchema,
   type IUserDocument,
   type ITutorDocument,
   type IReviewDocument,
   type IClassDocument,
+  type ISubjectDocument,
 } from './schemas';
 
 export {
@@ -39,4 +42,5 @@ export {
   TutorQueries,
   ReviewQueries,
   ClassQueries,
+  SubjectQueries,
 } from './models';

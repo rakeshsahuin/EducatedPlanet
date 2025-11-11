@@ -12,6 +12,9 @@ export * from './user/user.types';
 // Export class-related types
 export * from './class/types';
 
+// Export subject-related types
+export * from './subject/types';
+
 // Export common types
 export * from './common/common.types';
 
@@ -68,6 +71,18 @@ export type {
 } from './class/types';
 
 export { ClassCategory } from './class/types';
+
+export type {
+  Subject as NewSubject,
+  SubjectMetadata,
+  CreateSubjectInput,
+  UpdateSubjectInput,
+  SubjectSearchParams,
+  SubjectWithClasses,
+  AddClassToSubjectInput,
+  RemoveClassFromSubjectInput,
+  BulkSubjectOperation,
+} from './subject/types';
 
 export type {
   ApiResponse,

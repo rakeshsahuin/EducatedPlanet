@@ -8,6 +8,8 @@ export * from './tutor/tutor.types';
 export * from './user/user.types';
 // Export class-related types
 export * from './class/types';
+// Export subject-related types
+export * from './subject/types';
 // Export common types
 export * from './common/common.types';
 export { ClassCategory } from './class/types';

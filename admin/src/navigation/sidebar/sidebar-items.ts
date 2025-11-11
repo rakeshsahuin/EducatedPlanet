@@ -16,6 +16,7 @@ import {
   Gauge,
   GraduationCap,
   BookOpen,
+  Target,
   type LucideIcon,
   User,
 } from "lucide-react";
@@ -89,9 +90,21 @@ export const sidebarItems: NavGroup[] = [
       },
       {
         title: "Academy",
-        url: "/dashboard/coming-soon",
+        url: "/dashboard/academy",
         icon: GraduationCap,
-        comingSoon: true,
+        subItems: [
+          {
+            title: "Subjects",
+            url: "/dashboard/subjects",
+            icon: Target,
+          },
+          {
+            title: "Courses",
+            url: "/dashboard/coming-soon",
+            icon: BookOpen,
+            comingSoon: true,
+          },
+        ],
       },
       {
         title: "Logistics",

@@ -258,8 +258,10 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
       const subject = row.original;
       const [showDeleteDialog, setShowDeleteDialog] = useState(false);
       const [showEditModal, setShowEditModal] = useState(false);
+      const [editingSubject, setEditingSubject] = useState(null);
       const [isDeleting, setIsDeleting] = useState(false);
       const [isToggling, setIsToggling] = useState(false);
+      const [isLoadingSubject, setIsLoadingSubject] = useState(false);
 
       const handleDelete = async () => {
         setIsDeleting(true);
@@ -341,6 +343,25 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
         }
       };
 
+      const handleEditClick = async () => {
+        setIsLoadingSubject(true);
+        try {
+          const response = await fetch(`/api/subjects/${subject.id}`);
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            setEditingSubject(result.data);
+            setShowEditModal(true);
+          } else {
+            toast.error(result.error || 'Failed to fetch subject details');
+          }
+        } catch (error) {
+          toast.error('An error occurred while fetching subject details');
+        } finally {
+          setIsLoadingSubject(false);
+        }
+      };
+
       const handleEditSubmit = async (data: SubjectForm) => {
         try {
           const response = await fetch(`/api/subjects/${subject.id}`, {
@@ -377,10 +398,11 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => setShowEditModal(true)}
+                onClick={handleEditClick}
+                disabled={isLoadingSubject}
               >
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {isLoadingSubject ? 'Loading...' : 'Edit'}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleToggleStatus} disabled={isToggling}>
                 {subject.isActive ? (
@@ -411,12 +433,14 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
           </DropdownMenu>
 
           {/* Edit Modal */}
-          <SubjectModal
-            mode="edit"
-            subject={subject}
-            onSubmit={handleEditSubmit}
-            onClose={() => setShowEditModal(false)}
-          />
+          {showEditModal && (
+            <SubjectModal
+              mode="edit"
+              subject={editingSubject}
+              onSubmit={handleEditSubmit}
+              onClose={() => setShowEditModal(false)}
+            />
+          )}
 
           <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
             <AlertDialogContent>

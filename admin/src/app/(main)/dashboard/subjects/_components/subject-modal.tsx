@@ -69,6 +69,13 @@ export function SubjectModal({ children, mode, subject, onSubmit, onClose }: Sub
   const [prerequisites, setPrerequisites] = useState<string[]>(subject?.metadata?.prerequisites || []);
   const [newPrerequisite, setNewPrerequisite] = useState("");
 
+  // Auto-open modal in edit mode when subject is provided
+  useEffect(() => {
+    if (mode === "edit" && subject) {
+      setOpen(true);
+    }
+  }, [mode, subject]);
+
   // Fetch active classes from the database
   useEffect(() => {
     const fetchClasses = async () => {
@@ -249,14 +256,11 @@ export function SubjectModal({ children, mode, subject, onSubmit, onClose }: Sub
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        {children || (
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Subject
-          </Button>
-        )}
-      </DialogTrigger>
+      {children && (
+        <DialogTrigger asChild>
+          {children}
+        </DialogTrigger>
+      )} 
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

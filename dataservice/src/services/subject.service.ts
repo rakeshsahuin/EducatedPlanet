@@ -10,6 +10,7 @@ import {
   BulkSubjectOperation
 } from '@educatedplanet/models';
 import { ISubjectDocument, SubjectQueries } from '../datamodels/models/subject.model';
+import { ClassQueries } from '../datamodels/models/class.model';
 import { databaseConnection } from '../datamodels/connections';
 
 export class SubjectService {
@@ -134,7 +135,6 @@ export class SubjectService {
     await this.ensureInitialized();
 
     // Validate class exists
-    const { ClassQueries } = await import('../datamodels/models/class.model');
     const classExists = await ClassQueries.findById(input.classId);
     if (!classExists) {
       throw new Error('Class not found');
@@ -165,7 +165,6 @@ export class SubjectService {
       subjects.map(async (doc) => {
         const classDetails = await Promise.all(
           doc.classIds.map(async (classId: string) => {
-            const { ClassQueries } = await import('../datamodels/models/class.model');
             return ClassQueries.findById(classId);
           })
         );

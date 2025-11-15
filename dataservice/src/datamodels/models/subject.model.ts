@@ -11,6 +11,7 @@ import {
   BulkSubjectOperation
 } from '@educatedplanet/models';
 import { subjectSchemaDefinition } from '../schemas/subject.schema';
+import { ClassQueries, getClassModel } from './class.model';
 
 export interface ISubjectDocument extends Omit<NewSubject, 'id'>, Document {
   // MongoDB specific fields
@@ -104,6 +105,9 @@ export const SubjectQueries = {
     sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
 
     const skip = (page - 1) * limit;
+
+    // Ensure Class model is registered before populate
+    getClassModel();
 
     const [subjects, total] = await Promise.all([
       getSubjectModel().find(filter)

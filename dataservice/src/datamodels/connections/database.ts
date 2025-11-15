@@ -2,6 +2,10 @@ import mongoose, { ConnectOptions, Model } from 'mongoose';
 import { userSchema, IUserDocument } from '../schemas/user-clean.schema';
 import { tutorSchema, ITutorDocument } from '../schemas/tutor-clean.schema';
 import { reviewSchema, IReviewDocument } from '../schemas/review-clean.schema';
+import { classSchemaDefinition } from '../schemas/class.schema';
+import { subjectSchemaDefinition } from '../schemas/subject.schema';
+import type { IClassDocument } from '../models/class.model';
+import type { ISubjectDocument } from '../models/subject.model';
 
 /**
  * Database connection configuration interface
@@ -173,6 +177,30 @@ export class DatabaseConnection {
     }
     // Register model with this connection
     return this.getMongoose().model<IReviewDocument>('Review', reviewSchema);
+  }
+
+  /**
+   * Get Class model bound to this connection
+   */
+  public getClassModel(): Model<IClassDocument> {
+    // Check if model already exists for this connection
+    if (this.getMongoose().models.Class) {
+      return this.getMongoose().models.Class;
+    }
+    // Register model with this connection
+    return this.getMongoose().model<IClassDocument>('Class', classSchemaDefinition);
+  }
+
+  /**
+   * Get Subject model bound to this connection
+   */
+  public getSubjectModel(): Model<ISubjectDocument> {
+    // Check if model already exists for this connection
+    if (this.getMongoose().models.Subject) {
+      return this.getMongoose().models.Subject;
+    }
+    // Register model with this connection
+    return this.getMongoose().model<ISubjectDocument>('Subject', subjectSchemaDefinition);
   }
 
   /**

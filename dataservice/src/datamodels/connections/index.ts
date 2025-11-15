@@ -18,4 +18,6 @@ export const getModel = {
   user: () => databaseConnection.getUserModel(),
   tutor: () => databaseConnection.getTutorModel(),
   review: () => databaseConnection.getReviewModel(),
+  class: () => databaseConnection.getClassModel(),
+  subject: () => databaseConnection.getSubjectModel(),
 };

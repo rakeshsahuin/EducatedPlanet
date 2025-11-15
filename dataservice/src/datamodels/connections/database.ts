@@ -41,6 +41,8 @@ export class DatabaseConnection {
   private static instance: DatabaseConnection;
   private isConnected = false;
   private connectionConfig: DatabaseConfig;
+  private eventHandlersSetup = false;
+  private maxListeners = 20; // Increase from default of 10
 
   private constructor() {
     this.connectionConfig = {
@@ -72,26 +74,16 @@ export class DatabaseConnection {
       console.log('Connecting to MongoDB...');
       console.log(`URI: ${this.connectionConfig.uri.replace(/\/\/.*@/, '//***:***@')}`);
 
+      // Increase max listeners before connecting
+      mongoose.connection.setMaxListeners(this.maxListeners);
+
       await mongoose.connect(this.connectionConfig.uri, this.connectionConfig.options);
 
       this.isConnected = true;
       console.log('✅ Connected to MongoDB successfully');
 
-      // Set up connection event listeners
-      mongoose.connection.on('error', (error) => {
-        console.error('❌ MongoDB connection error:', error);
-        this.isConnected = false;
-      });
-
-      mongoose.connection.on('disconnected', () => {
-        console.log('⚠️ MongoDB disconnected');
-        this.isConnected = false;
-      });
-
-      mongoose.connection.on('reconnected', () => {
-        console.log('🔄 MongoDB reconnected');
-        this.isConnected = true;
-      });
+      // Set up connection event listeners (only once)
+      this.setupEventHandlers();
 
     } catch (error) {
       console.error('❌ Failed to connect to MongoDB:', error);
@@ -247,6 +239,63 @@ export class DatabaseConnection {
       name: db.databaseName,
       collections: collections.map(col => col.name),
     };
+  }
+
+  /**
+   * Setup event handlers for MongoDB connection (only once)
+   */
+  private setupEventHandlers(): void {
+    // Only setup event handlers once to prevent memory leaks
+    if (this.eventHandlersSetup) {
+      return;
+    }
+
+    const connection = mongoose.connection;
+
+    // Remove any existing listeners to prevent duplicates
+    connection.removeAllListeners('error');
+    connection.removeAllListeners('disconnected');
+    connection.removeAllListeners('reconnected');
+
+    connection.on('error', (error) => {
+      console.error('❌ MongoDB connection error:', error);
+      this.isConnected = false;
+    });
+
+    connection.on('disconnected', () => {
+      console.log('⚠️ MongoDB disconnected');
+      this.isConnected = false;
+    });
+
+    connection.on('reconnected', () => {
+      console.log('🔄 MongoDB reconnected');
+      this.isConnected = true;
+    });
+
+    // Handle development hot reload cleanup
+    if (process.env.NODE_ENV === 'development') {
+      process.once('beforeExit', async () => {
+        await this.cleanup();
+      });
+    }
+
+    this.eventHandlersSetup = true;
+    console.log('MongoDB event handlers setup completed');
+  }
+
+  /**
+   * Clean up event handlers and connection
+   */
+  public async cleanup(): Promise<void> {
+    const connection = mongoose.connection;
+
+    // Remove all mongoose connection listeners
+    connection.removeAllListeners();
+
+    this.eventHandlersSetup = false;
+    this.isConnected = false;
+
+    console.log('MongoDB event handlers cleaned up');
   }
 }
 

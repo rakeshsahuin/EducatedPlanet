@@ -97,6 +97,19 @@ export function SubjectsTable() {
     fetchSubjects();
   }, [searchTerm, isAcademicFilter, isActiveFilter, difficultyFilter, popularFilter, sortBy, sortOrder]);
 
+  // Listen for refresh events from other components
+  useEffect(() => {
+    const handleRefresh = () => {
+      fetchSubjects();
+    };
+
+    window.addEventListener('refreshSubjectsTable', handleRefresh);
+
+    return () => {
+      window.removeEventListener('refreshSubjectsTable', handleRefresh);
+    };
+  }, [searchTerm, isAcademicFilter, isActiveFilter, difficultyFilter, popularFilter, sortBy, sortOrder]);
+
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchSubjects();

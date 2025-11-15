@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Edit2, X, BookOpen, Hash, Calendar, Users } from "lucide-react";
@@ -58,6 +58,13 @@ export function ClassModal({ children, mode, class: classItem, onSubmit, onClose
   const [newSubject, setNewSubject] = useState("");
   const [prerequisites, setPrerequisites] = useState<string[]>(classItem?.metadata?.prerequisites || []);
   const [newPrerequisite, setNewPrerequisite] = useState("");
+
+  // Auto-open modal in edit mode when class is provided
+  useEffect(() => {
+    if (mode === "edit" && classItem) {
+      setOpen(true);
+    }
+  }, [mode, classItem]);
 
   const form = useForm<ClassForm>({
     resolver: zodResolver(classFormSchema as any),

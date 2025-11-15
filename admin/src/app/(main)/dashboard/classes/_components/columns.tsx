@@ -29,8 +29,9 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { ClassTable } from "./schema";
+import { ClassTable, ClassForm } from "./schema";
 import { ClassCategory } from "@educatedplanet/models";
+import { ClassModal } from "./class-modal";
 
 // Category helpers
 const getCategoryVariant = (category: ClassCategory) => {
@@ -245,7 +246,10 @@ export const classesColumns: ColumnDef<ClassTable>[] = [
     cell: ({ row }) => {
       const classItem = row.original;
       const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+      const [showEditModal, setShowEditModal] = useState(false);
+      const [editingClass, setEditingClass] = useState(null);
       const [isDeleting, setIsDeleting] = useState(false);
+      const [isLoadingClass, setIsLoadingClass] = useState(false);
 
       const handleDelete = async () => {
         setIsDeleting(true);
@@ -258,8 +262,8 @@ export const classesColumns: ColumnDef<ClassTable>[] = [
 
           if (response.ok) {
             toast.success('Class deleted successfully');
-            // Refresh the table
-            window.location.reload();
+            // Trigger table refresh
+            window.dispatchEvent(new CustomEvent('refreshClassesTable'));
           } else {
             toast.error(result.error || 'Failed to delete class');
           }
@@ -268,6 +272,50 @@ export const classesColumns: ColumnDef<ClassTable>[] = [
         } finally {
           setIsDeleting(false);
           setShowDeleteDialog(false);
+        }
+      };
+
+      const handleEditClick = async () => {
+        setIsLoadingClass(true);
+        try {
+          const response = await fetch(`/api/classes/${classItem.id}`);
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            setEditingClass(result.data);
+            setShowEditModal(true);
+          } else {
+            toast.error(result.error || 'Failed to fetch class details');
+          }
+        } catch (error) {
+          toast.error('An error occurred while fetching class details');
+        } finally {
+          setIsLoadingClass(false);
+        }
+      };
+
+      const handleEditSubmit = async (data: ClassForm) => {
+        try {
+          const response = await fetch(`/api/classes/${classItem.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            toast.success('Class updated successfully');
+            setShowEditModal(false);
+            // Trigger table refresh
+            window.dispatchEvent(new CustomEvent('refreshClassesTable'));
+          } else {
+            toast.error(result.error || 'Failed to update class');
+          }
+        } catch (error) {
+          toast.error('An error occurred while updating the class');
         }
       };
 
@@ -287,7 +335,8 @@ export const classesColumns: ColumnDef<ClassTable>[] = [
 
           if (response.ok) {
             toast.success(`Class ${!classItem.isActive ? 'activated' : 'deactivated'} successfully`);
-            window.location.reload();
+            // Trigger table refresh
+            window.dispatchEvent(new CustomEvent('refreshClassesTable'));
           } else {
             toast.error(result.error || 'Failed to update class');
           }
@@ -308,13 +357,11 @@ export const classesColumns: ColumnDef<ClassTable>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => {
-                  // TODO: Implement edit functionality
-                  toast.info('Edit functionality coming soon');
-                }}
+                onClick={handleEditClick}
+                disabled={isLoadingClass}
               >
                 <Edit className="mr-2 h-4 w-4" />
-                Edit
+                {isLoadingClass ? 'Loading...' : 'Edit'}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={handleToggleStatus}
@@ -367,6 +414,16 @@ export const classesColumns: ColumnDef<ClassTable>[] = [
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+
+          {/* Edit Modal */}
+          {showEditModal && (
+            <ClassModal
+              mode="edit"
+              class={editingClass}
+              onSubmit={handleEditSubmit}
+              onClose={() => setShowEditModal(false)}
+            />
+          )}
         </>
       );
     },

@@ -93,6 +93,19 @@ export function ClassesTable() {
     fetchClasses();
   }, [searchTerm, categoryFilter, statusFilter, hasSubClassesFilter, sortBy, sortOrder]);
 
+  // Listen for refresh events from other components
+  useEffect(() => {
+    const handleRefresh = () => {
+      fetchClasses();
+    };
+
+    window.addEventListener('refreshClassesTable', handleRefresh);
+
+    return () => {
+      window.removeEventListener('refreshClassesTable', handleRefresh);
+    };
+  }, [searchTerm, categoryFilter, statusFilter, hasSubClassesFilter, sortBy, sortOrder]);
+
   const handleRefresh = async () => {
     setRefreshing(true);
     await fetchClasses();

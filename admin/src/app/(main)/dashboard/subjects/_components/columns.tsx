@@ -274,8 +274,8 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
 
           if (response.ok) {
             toast.success('Subject deleted successfully');
-            // Refresh the table
-            window.location.reload();
+            // Trigger table refresh
+            window.dispatchEvent(new CustomEvent('refreshSubjectsTable'));
           } else {
             toast.error(result.error || 'Failed to delete subject');
           }
@@ -304,7 +304,8 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
 
           if (response.ok) {
             toast.success(`Subject ${!subject.isActive ? 'activated' : 'deactivated'} successfully`);
-            window.location.reload();
+            // Trigger table refresh
+            window.dispatchEvent(new CustomEvent('refreshSubjectsTable'));
           } else {
             toast.error(result.error || 'Failed to update subject');
           }
@@ -334,7 +335,8 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
 
           if (response.ok) {
             toast.success(`Subject ${!subject.metadata?.popular ? 'marked as' : 'unmarked as'} popular`);
-            window.location.reload();
+            // Trigger table refresh
+            window.dispatchEvent(new CustomEvent('refreshSubjectsTable'));
           } else {
             toast.error(result.error || 'Failed to update subject');
           }
@@ -377,7 +379,8 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
           if (response.ok) {
             toast.success('Subject updated successfully');
             setShowEditModal(false);
-            window.location.reload();
+            // Trigger table refresh
+            window.dispatchEvent(new CustomEvent('refreshSubjectsTable'));
           } else {
             toast.error(result.error || 'Failed to update subject');
           }

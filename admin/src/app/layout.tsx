@@ -43,7 +43,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       className={themeMode === "dark" ? "dark" : ""}
       suppressHydrationWarning
     >
-      <body className={`${geistMono.className} min-h-screen antialiased`}>
+      <body className={`${geistMono.className} min-h-screen antialiased`} suppressHydrationWarning>
         <PreferencesStoreProvider themeMode={themeMode}>
           <ProvidersWrapper>
             <CustomQueryClientProvider>

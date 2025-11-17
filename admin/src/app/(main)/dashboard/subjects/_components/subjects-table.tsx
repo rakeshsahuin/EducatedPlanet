@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Filter, Download, RefreshCw, GraduationCap } from "lucide-react";
+import { Search, Filter, Download, RefreshCw, GraduationCap, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
@@ -293,11 +293,23 @@ export function SubjectsTable() {
             </div>
           </div>
 
-          {/* Table */}
-          <DataTable
-            table={table}
-            columns={subjectsColumns}
-          />
+          {/* Table with Loading Overlay */}
+          <div className="relative">
+            <DataTable
+              table={table}
+              columns={subjectsColumns}
+            />
+
+            {/* Loading Overlay */}
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-10">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span>Loading subjects...</span>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Pagination */}
           <DataTablePagination

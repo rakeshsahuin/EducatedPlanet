@@ -6,7 +6,8 @@ export const userTableSchema = z.object({
   phone: z.string().min(1, "Phone is required"),
   role: z.enum(["user", "tutor", "sub-admin", "admin"]),
   avatar: z.string().optional(),
-  isVerified: z.boolean(),
+  isEmailVerified: z.boolean(),
+  isPhoneVerified: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -20,7 +21,8 @@ export const userFormSchema = z.object({
   phone: z.string().min(1, "Phone is required"),
   role: z.enum(["user", "tutor", "sub-admin", "admin"]),
   avatar: z.string().optional(),
-  isVerified: z.boolean(),
+  isEmailVerified: z.boolean(),
+  isPhoneVerified: z.boolean(),
 });
 
 export type UserForm = z.infer<typeof userFormSchema>;

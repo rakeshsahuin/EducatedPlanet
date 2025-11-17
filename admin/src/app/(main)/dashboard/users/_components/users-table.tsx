@@ -54,7 +54,7 @@ export function UsersTable() {
       }
 
       if (statusFilter !== "all") {
-        params.append('verificationStatus', statusFilter === "verified" ? "true" : "false");
+        params.append('verificationStatus', statusFilter);
       }
 
       const response = await fetch(`/api/users?${params}`);
@@ -212,8 +212,9 @@ export function UsersTable() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="verified">Verified</SelectItem>
-                  <SelectItem value="unverified">Unverified</SelectItem>
+                  <SelectItem value="verified">Fully Verified</SelectItem>
+                  <SelectItem value="partial">Partially Verified</SelectItem>
+                  <SelectItem value="unverified">Not Verified</SelectItem>
                 </SelectContent>
               </Select>
 

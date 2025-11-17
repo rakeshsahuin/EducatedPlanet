@@ -58,7 +58,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (body.email) updateData.email = body.email;
     if (body.phone) updateData.phone = body.phone;
     if (body.role) updateData.role = body.role;
-    if (body.isVerified !== undefined) updateData.isVerified = body.isVerified;
+    if (body.isEmailVerified !== undefined) updateData.isEmailVerified = body.isEmailVerified;
+    if (body.isPhoneVerified !== undefined) updateData.isPhoneVerified = body.isPhoneVerified;
 
     const updatedUser = await userApi.updateUser(id, updateData);
 

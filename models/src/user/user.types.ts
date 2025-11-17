@@ -8,7 +8,8 @@ export interface User {
   phone: string;
   role: UserRole;
   avatar?: string;
-  isVerified: boolean;
+  isEmailVerified: boolean;
+  isPhoneVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -141,6 +142,9 @@ export interface UpdateUserInput {
   email?: string;
   phone?: string;
   role?: UserRole;
+  avatar?: string;
+  isEmailVerified?: boolean;
+  isPhoneVerified?: boolean;
 }
 
 /**

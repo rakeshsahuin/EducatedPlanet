@@ -13,11 +13,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     // Parse query parameters to match UserSearchParams
+    const verificationStatus = searchParams.get('verificationStatus');
     const params = {
       query: searchParams.get('search') || undefined,
       role: searchParams.get('role') || undefined,
-      isEmailVerified: searchParams.get('verificationStatus') ? searchParams.get('verificationStatus') === 'email' : undefined,
-      isPhoneVerified: searchParams.get('verificationStatus') ? searchParams.get('verificationStatus') === 'phone' : undefined,
+      isEmailVerified: verificationStatus === 'verified' ? true : verificationStatus === 'unverified' ? false : undefined,
+      isPhoneVerified: verificationStatus === 'verified' ? true : verificationStatus === 'unverified' ? false : undefined,
       isActive: searchParams.get('status') ? searchParams.get('status') === 'active' : undefined,
       page: searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1,
       limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 10
@@ -62,6 +63,15 @@ export async function POST(request: NextRequest) {
     };
 
     const newUser = await userApi.createUser(userData);
+
+    // If verification fields are provided, update them
+    if (body.isEmailVerified !== undefined || body.isPhoneVerified !== undefined) {
+      const updateData: any = {};
+      if (body.isEmailVerified !== undefined) updateData.isEmailVerified = body.isEmailVerified;
+      if (body.isPhoneVerified !== undefined) updateData.isPhoneVerified = body.isPhoneVerified;
+
+      await userApi.updateUser(newUser.id, updateData);
+    }
 
     // Remove password from response if it exists
     const { password, ...userWithoutPassword } = newUser as any;

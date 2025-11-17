@@ -44,7 +44,8 @@ const userFormSchema = z.object({
   phone: z.string().min(1, "Phone is required"),
   role: z.enum(["user", "tutor", "sub-admin", "admin"]),
   avatar: z.string().optional(),
-  isVerified: z.boolean(),
+  isEmailVerified: z.boolean(),
+  isPhoneVerified: z.boolean(),
 });
 
 type UserFormData = z.infer<typeof userFormSchema>;
@@ -62,14 +63,15 @@ export function UserModal({ children, user, mode, onSubmit, onClose }: UserModal
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<UserFormData>({
-    resolver: zodResolver(userFormSchema as any),
+    resolver: zodResolver(userFormSchema),
     defaultValues: {
       name: user?.name || "",
       email: user?.email || "",
       phone: user?.phone || "",
       role: user?.role || "user",
       avatar: user?.avatar || "",
-      isVerified: user?.isVerified || false,
+      isEmailVerified: false,
+      isPhoneVerified: false,
     },
   });
 
@@ -84,7 +86,8 @@ export function UserModal({ children, user, mode, onSubmit, onClose }: UserModal
         phone: user.phone || "",
         role: user.role || "user",
         avatar: user.avatar || "",
-        isVerified: user.isVerified || false,
+        isEmailVerified: false,
+        isPhoneVerified: false,
       });
     }
   }, [mode, user, form]);
@@ -243,7 +246,7 @@ export function UserModal({ children, user, mode, onSubmit, onClose }: UserModal
 
             <FormField
               control={form.control}
-              name="isVerified"
+              name="isEmailVerified"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                   <FormControl>
@@ -253,9 +256,30 @@ export function UserModal({ children, user, mode, onSubmit, onClose }: UserModal
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>Verified User</FormLabel>
+                    <FormLabel>Email Verified</FormLabel>
                     <p className="text-sm text-muted-foreground">
-                      Mark this user as verified
+                      Mark this user's email as verified
+                    </p>
+                  </div>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="isPhoneVerified"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Phone Verified</FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      Mark this user's phone as verified
                     </p>
                   </div>
                 </FormItem>

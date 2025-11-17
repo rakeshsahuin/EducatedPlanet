@@ -135,28 +135,34 @@ export const usersColumns: ColumnDef<UserTable>[] = [
     },
   },
   {
-    accessorKey: "isVerified",
+    accessorKey: "verificationStatus",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title="Verification Status" />
     ),
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        {row.original.isVerified ? (
-          <>
-            <UserCheck className="h-4 w-4 text-green-600" />
-            <span className="text-sm text-green-600">Verified</span>
-          </>
-        ) : (
-          <>
-            <UserX className="h-4 w-4 text-orange-600" />
-            <span className="text-sm text-orange-600">Not Verified</span>
-          </>
-        )}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const { isEmailVerified, isPhoneVerified } = row.original;
+      return (
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${isEmailVerified ? 'bg-green-600' : 'bg-orange-600'}`} />
+            <span className={`text-xs ${isEmailVerified ? 'text-green-600' : 'text-orange-600'}`}>
+              Email {isEmailVerified ? 'Verified' : 'Not Verified'}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${isPhoneVerified ? 'bg-green-600' : 'bg-orange-600'}`} />
+            <span className={`text-xs ${isPhoneVerified ? 'text-green-600' : 'text-orange-600'}`}>
+              Phone {isPhoneVerified ? 'Verified' : 'Not Verified'}
+            </span>
+          </div>
+        </div>
+      );
+    },
     filterFn: (row, id, value) => {
       if (value === "all") return true;
-      return value === "verified" ? row.original.isVerified : !row.original.isVerified;
+      if (value === "verified") return row.original.isEmailVerified && row.original.isPhoneVerified;
+      if (value === "partial") return row.original.isEmailVerified || row.original.isPhoneVerified;
+      return true;
     },
   },
   {

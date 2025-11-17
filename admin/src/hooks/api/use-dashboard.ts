@@ -3,7 +3,7 @@
  */
 
 import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
-import { dashboardApi } from '@/lib/static-api';
+import { dashboardApi } from '@/lib/api-client';
 
 // Query keys
 export const dashboardKeys = {

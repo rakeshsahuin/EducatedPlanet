@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -42,7 +42,7 @@ const userFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address").optional().or(z.literal("")),
   phone: z.string().min(1, "Phone is required"),
-  role: z.enum(["user", "tutor", "admin"]),
+  role: z.enum(["user", "tutor", "sub-admin", "admin"]),
   avatar: z.string().optional(),
   isVerified: z.boolean(),
 });
@@ -54,9 +54,10 @@ interface UserModalProps {
   user?: User;
   mode: "create" | "edit";
   onSubmit?: (data: UserFormData) => void;
+  onClose?: () => void;
 }
 
-export function UserModal({ children, user, mode, onSubmit }: UserModalProps) {
+export function UserModal({ children, user, mode, onSubmit, onClose }: UserModalProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,20 +73,42 @@ export function UserModal({ children, user, mode, onSubmit }: UserModalProps) {
     },
   });
 
+  // Auto-open modal in edit mode when user data is provided
+  useEffect(() => {
+    if (mode === "edit" && user) {
+      setOpen(true);
+      // Reset form with user data
+      form.reset({
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        role: user.role || "user",
+        avatar: user.avatar || "",
+        isVerified: user.isVerified || false,
+      });
+    }
+  }, [mode, user, form]);
+
   const handleSubmit = async (data: UserFormData) => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      onSubmit?.(data);
-      toast.success(`User ${mode === "create" ? "created" : "updated"} successfully`);
+      await onSubmit?.(data);
+      if (mode === "create") {
+        form.reset();
+      }
       setOpen(false);
-      form.reset();
+      onClose?.();
     } catch (error) {
-      toast.error(`Failed to ${mode} user`);
+      // Error handling is done in the parent component
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      onClose?.();
     }
   };
 
@@ -95,15 +118,17 @@ export function UserModal({ children, user, mode, onSubmit }: UserModalProps) {
     : "Update user information and settings";
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children || (
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Add User
-          </Button>
-        )}
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      {mode === "create" && (
+        <DialogTrigger asChild>
+          {children || (
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Add User
+            </Button>
+          )}
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -198,7 +223,7 @@ export function UserModal({ children, user, mode, onSubmit }: UserModalProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Role</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a role" />
@@ -207,6 +232,7 @@ export function UserModal({ children, user, mode, onSubmit }: UserModalProps) {
                     <SelectContent>
                       <SelectItem value="user">User</SelectItem>
                       <SelectItem value="tutor">Tutor</SelectItem>
+                      <SelectItem value="sub-admin">Sub-Admin</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>
                   </Select>

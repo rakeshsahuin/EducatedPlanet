@@ -3,6 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, Edit, Trash2, Eye, UserCheck, UserX } from "lucide-react";
 import { format } from "date-fns";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
@@ -17,13 +19,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
-import { UserTable } from "./schema";
+import { UserTable, UserForm } from "./schema";
+import { UserModal } from "./user-modal";
+import type { User } from "@educatedplanet/models";
 
 const getRoleVariant = (role: string) => {
   switch (role) {
     case "admin":
       return "destructive";
+    case "sub-admin":
+      return "outline";
     case "tutor":
       return "default";
     case "user":
@@ -37,6 +53,8 @@ const getRoleLabel = (role: string) => {
   switch (role) {
     case "admin":
       return "Admin";
+    case "sub-admin":
+      return "Sub-Admin";
     case "tutor":
       return "Tutor";
     case "user":
@@ -168,48 +186,188 @@ export const usersColumns: ColumnDef<UserTable>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const user = row.original;
+      const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+      const [showEditModal, setShowEditModal] = useState(false);
+      const [editingUser, setEditingUser] = useState<User | null>(null);
+      const [isDeleting, setIsDeleting] = useState(false);
+      const [isLoadingUser, setIsLoadingUser] = useState(false);
+
+      const handleDelete = async () => {
+        setIsDeleting(true);
+        try {
+          const response = await fetch(`/api/users/${user.id}`, {
+            method: 'DELETE',
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            toast.success('User deleted successfully');
+            // Trigger table refresh
+            window.dispatchEvent(new CustomEvent('refreshUsersTable'));
+          } else {
+            toast.error(result.error || 'Failed to delete user');
+          }
+        } catch (error) {
+          toast.error('An error occurred while deleting the user');
+        } finally {
+          setIsDeleting(false);
+          setShowDeleteDialog(false);
+        }
+      };
+
+      const handleEditClick = async () => {
+        setIsLoadingUser(true);
+        try {
+          const response = await fetch(`/api/users/${user.id}`);
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            setEditingUser(result.data);
+            setShowEditModal(true);
+          } else {
+            toast.error(result.error || 'Failed to fetch user details');
+          }
+        } catch (error) {
+          toast.error('An error occurred while fetching user details');
+        } finally {
+          setIsLoadingUser(false);
+        }
+      };
+
+      const handleEditSubmit = async (data: UserForm) => {
+        try {
+          const response = await fetch(`/api/users/${user.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            toast.success('User updated successfully');
+            setShowEditModal(false);
+            // Trigger table refresh
+            window.dispatchEvent(new CustomEvent('refreshUsersTable'));
+          } else {
+            toast.error(result.error || 'Failed to update user');
+          }
+        } catch (error) {
+          toast.error('An error occurred while updating the user');
+        }
+      };
+
+      const handleToggleVerification = async () => {
+        try {
+          const response = await fetch(`/api/users/${user.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              isVerified: !user.isVerified
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            toast.success(`User ${!user.isVerified ? 'verified' : 'unverified'} successfully`);
+            // Trigger table refresh
+            window.dispatchEvent(new CustomEvent('refreshUsersTable'));
+          } else {
+            toast.error(result.error || 'Failed to update user');
+          }
+        } catch (error) {
+          toast.error('An error occurred while updating the user');
+        }
+      };
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
-            >
-              <Eye className="mr-2 h-4 w-4" />
-              Copy user ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Edit className="mr-2 h-4 w-4" />
-              Edit user
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              {user.isVerified ? (
-                <>
-                  <UserX className="mr-2 h-4 w-4" />
-                  Unverify user
-                </>
-              ) : (
-                <>
-                  <UserCheck className="mr-2 h-4 w-4" />
-                  Verify user
-                </>
-              )}
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive focus:text-destructive">
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete user
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(user.id)}
+              >
+                <Eye className="mr-2 h-4 w-4" />
+                Copy user ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleEditClick}
+                disabled={isLoadingUser}
+              >
+                <Edit className="mr-2 h-4 w-4" />
+                {isLoadingUser ? 'Loading...' : 'Edit user'}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleToggleVerification}
+              >
+                {user.isVerified ? (
+                  <>
+                    <UserX className="mr-2 h-4 w-4" />
+                    Unverify user
+                  </>
+                ) : (
+                  <>
+                    <UserCheck className="mr-2 h-4 w-4" />
+                    Verify user
+                  </>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => setShowDeleteDialog(true)}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete user
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the user "{user.name}".
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete'}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          {/* Edit Modal */}
+          {showEditModal && (
+            <UserModal
+              mode="edit"
+              user={editingUser!}
+              onSubmit={handleEditSubmit}
+              onClose={() => setShowEditModal(false)}
+            />
+          )}
+        </>
       );
     },
     enableSorting: false,

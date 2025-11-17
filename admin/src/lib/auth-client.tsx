@@ -10,6 +10,7 @@ export interface User {
   email: string;
   name: string;
   role: string;
+  avatar?: string;
 }
 
 export interface Session {
@@ -81,12 +82,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       const data = await response.json();
 
+      console.log('Auth checkSession response:', data);
+
       // Check if data exists and has user property
       if (data && data.user) {
+        console.log('Setting user from session:', data.user);
         setUser(data.user);
         setSession(data);
       } else {
         // Clear session if no valid data
+        console.log('No user in session data');
         setUser(null);
         setSession(null);
       }

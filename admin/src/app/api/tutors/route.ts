@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { tutorService } from '@/lib/static-api';
+import { tutorApi } from '@/lib/api';
 import { CreateTutorInput } from '@educatedplanet/models';
 
 // GET /api/tutors - Fetch tutors with pagination and filters
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 10
     };
 
-    const result = await tutorService.getTutors(params);
+    const result = await tutorApi.getTutors(params);
 
     return NextResponse.json({
       success: true,
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
       userId: body.userId
     };
 
-    const newTutor = await tutorService.createTutor(tutorData);
+    const newTutor = await tutorApi.createTutor(tutorData);
 
     return NextResponse.json({
       success: true,

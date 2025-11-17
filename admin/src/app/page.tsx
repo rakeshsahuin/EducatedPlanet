@@ -5,7 +5,6 @@ import { cookies } from "next/headers";
 import { AppSidebar } from "@/app/(main)/dashboard/_components/sidebar/app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { users } from "@/data/users";
 import { cn } from "@/lib/utils";
 import { getPreference } from "@/server/server-actions";
 import {
@@ -26,6 +25,7 @@ import { ChartAreaInteractive } from "@/app/(main)/dashboard/default/_components
 import { DataTable } from "@/app/(main)/dashboard/default/_components/data-table";
 import data from "@/app/(main)/dashboard/default/_components/data.json";
 import { SectionCards } from "@/app/(main)/dashboard/default/_components/section-cards";
+import { requireAuth } from "@/lib/auth-utils";
 
 async function DashboardLayout({ children }: Readonly<{ children: ReactNode }>) {
   const cookieStore = await cookies();
@@ -45,9 +45,11 @@ async function DashboardLayout({ children }: Readonly<{ children: ReactNode }>) 
     navbarStyle,
   };
 
+  const session = await requireAuth();
+
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <AppSidebar variant={sidebarVariant} collapsible={sidebarCollapsible} />
+      <AppSidebar variant={sidebarVariant} collapsible={sidebarCollapsible} user={session?.user} />
       <SidebarInset
         data-content-layout={contentLayout}
         className={cn(
@@ -73,7 +75,7 @@ async function DashboardLayout({ children }: Readonly<{ children: ReactNode }>) 
             </div>
             <div className="flex items-center gap-2">
               <ThemeSwitcher />
-              <AccountSwitcher users={users} />
+              <AccountSwitcher user={session?.user} />
             </div>
           </div>
         </header>

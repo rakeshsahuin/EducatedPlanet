@@ -3,7 +3,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
-import { userApi } from '@/lib/static-api';
+import { userApi } from '@/lib/api-client';
 import {
   User,
   CreateUserInput,

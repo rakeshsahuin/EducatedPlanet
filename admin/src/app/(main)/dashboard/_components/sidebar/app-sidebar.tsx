@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 import { Settings, CircleHelp, Search, Database, ClipboardList, File, Command } from "lucide-react";
 
 import {
@@ -15,8 +13,8 @@ import {
 } from "@/components/ui/sidebar";
 import { LoadingLink } from "@/components/ui/loading-link";
 import { APP_CONFIG } from "@/config/app-config";
-import { rootUser } from "@/data/users";
 import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
+import { User } from "@/lib/auth-utils";
 
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
@@ -58,7 +56,11 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  user?: User | null;
+}
+
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -79,7 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={rootUser} />
+        {user && <NavUser user={user} />}
       </SidebarFooter>
     </Sidebar>
   );

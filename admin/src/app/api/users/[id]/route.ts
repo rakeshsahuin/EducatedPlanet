@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { userService } from '@/lib/api';
+import { userApi } from '@/lib/api';
 import { UpdateUserInput } from '@educatedplanet/models';
 
 interface RouteParams {
@@ -15,7 +15,7 @@ interface RouteParams {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const user = await userService.findUserById(id);
+    const user = await userApi.getUserById(id);
 
     if (!user) {
       return NextResponse.json(
@@ -54,14 +54,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Transform the input to match UpdateUserInput
     const updateData: any = {};
-    if (body.firstName || body.lastName) {
-      updateData.name = `${body.firstName || ''} ${body.lastName || ''}`.trim();
-    }
+    if (body.name) updateData.name = body.name;
     if (body.email) updateData.email = body.email;
     if (body.phone) updateData.phone = body.phone;
     if (body.role) updateData.role = body.role;
+    if (body.isVerified !== undefined) updateData.isVerified = body.isVerified;
 
-    const updatedUser = await userService.updateUser(id, updateData);
+    const updatedUser = await userApi.updateUser(id, updateData);
 
     if (!updatedUser) {
       return NextResponse.json(
@@ -97,7 +96,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const deleted = await userService.deleteUser(id);
+    const deleted = await userApi.deleteUser(id);
 
     if (!deleted) {
       return NextResponse.json(

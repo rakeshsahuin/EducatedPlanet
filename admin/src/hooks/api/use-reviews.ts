@@ -3,7 +3,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
-import { reviewApi } from '@/lib/static-api';
+import { reviewApi } from '@/lib/api-client';
 import {
   Review,
   CreateReviewInput,
@@ -57,7 +57,7 @@ export const useReviewStats = (
 ) => {
   return useQuery({
     queryKey: reviewKeys.stats(),
-    queryFn: () => reviewApi.getReviewStats(),
+    queryFn: () => reviewApi.getReviews(),//TODO: getReviewStats(),
     ...options,
   });
 };

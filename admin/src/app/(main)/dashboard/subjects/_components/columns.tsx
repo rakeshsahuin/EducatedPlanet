@@ -31,6 +31,7 @@ import { toast } from "sonner";
 
 import { SubjectTable, SubjectForm } from "./schema";
 import { SubjectModal } from "./subject-modal";
+import type { NewSubject } from "@educatedplanet/models";
 
 const getTypeVariant = (isAcademic: boolean) => {
   return isAcademic ? "default" : "secondary";
@@ -258,7 +259,7 @@ export const subjectsColumns: ColumnDef<SubjectTable>[] = [
       const subject = row.original;
       const [showDeleteDialog, setShowDeleteDialog] = useState(false);
       const [showEditModal, setShowEditModal] = useState(false);
-      const [editingSubject, setEditingSubject] = useState(null);
+      const [editingSubject, setEditingSubject] = useState<NewSubject | undefined>(undefined);
       const [isDeleting, setIsDeleting] = useState(false);
       const [isToggling, setIsToggling] = useState(false);
       const [isLoadingSubject, setIsLoadingSubject] = useState(false);

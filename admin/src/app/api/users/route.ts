@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { userService } from '@/lib/static-api';
+import { userApi } from '@/lib/api';
 import { CreateUserInput } from '@educatedplanet/models';
 
 // GET /api/users - Fetch users with pagination and filters
@@ -16,14 +16,14 @@ export async function GET(request: NextRequest) {
     const params = {
       query: searchParams.get('search') || undefined,
       role: searchParams.get('role') || undefined,
-      isEmailVerified: searchParams.get('verificationStatus') === 'email',
-      isPhoneVerified: searchParams.get('verificationStatus') === 'phone',
-      isActive: searchParams.get('status') === 'active',
+      isEmailVerified: searchParams.get('verificationStatus') ? searchParams.get('verificationStatus') === 'email' : undefined,
+      isPhoneVerified: searchParams.get('verificationStatus') ? searchParams.get('verificationStatus') === 'phone' : undefined,
+      isActive: searchParams.get('status') ? searchParams.get('status') === 'active' : undefined,
       page: searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1,
       limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 10
     };
 
-    const result = await userService.getUsers(params);
+    const result = await userApi.getUsers(params);
 
     return NextResponse.json({
       success: true,
@@ -54,14 +54,14 @@ export async function POST(request: NextRequest) {
 
     // Transform input to match CreateUserInput
     const userData: CreateUserInput = {
-      name: `${body.firstName} ${body.lastName}`.trim(),
+      name: body.name,
       email: body.email,
       phone: body.phone,
       role: body.role || 'user',
-      password: body.password
+      ...(body.password && { password: body.password })
     };
 
-    const newUser = await userService.createUser(userData);
+    const newUser = await userApi.createUser(userData);
 
     // Remove password from response if it exists
     const { password, ...userWithoutPassword } = newUser as any;

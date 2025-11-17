@@ -96,6 +96,7 @@ export interface Subject {
   icon?: string;
   color?: string;
   popular: boolean;
+  code: string;
 }
 
 /**

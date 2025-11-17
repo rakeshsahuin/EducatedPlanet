@@ -4,11 +4,6 @@
  */
 
 import {
-  UserService,
-  TutorService,
-  ReviewService
-} from '@educatedplanet/dataservice';
-import {
   User,
   Tutor,
   Review,
@@ -26,10 +21,21 @@ import {
   PaginationMeta
 } from '@educatedplanet/models';
 
-// Initialize services (they handle their own database connections)
-const userService = new UserService();
-const tutorService = new TutorService();
-const reviewService = new ReviewService();
+// Import services dynamically to avoid client-side bundling
+let UserService: any, TutorService: any, ReviewService: any;
+let userService: any, tutorService: any, reviewService: any;
+
+if (typeof window === 'undefined') {
+  // Server-side only
+  const dataservice = require('@educatedplanet/dataservice');
+  UserService = dataservice.UserService;
+  TutorService = dataservice.TutorService;
+  ReviewService = dataservice.ReviewService;
+
+  userService = new UserService();
+  tutorService = new TutorService();
+  reviewService = new ReviewService();
+}
 
 // Transform search results to match PaginatedResponse format
 const transformUserSearchResult = (result: any): PaginatedResponse<User> => {
@@ -232,7 +238,7 @@ export const tutorApi = {
         averageRating: 0
       };
 
-      result.forEach(stat => {
+      result.forEach((stat: any) => {
         stats[stat._id] = stat.count;
         if (stat._id !== 'total') {
           stats.total += stat.count;

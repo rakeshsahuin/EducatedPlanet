@@ -3,7 +3,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
-import { tutorApi } from '@/lib/static-api';
+import { tutorApi } from '@/lib/api-client';
 import {
   Tutor,
   CreateTutorInput,

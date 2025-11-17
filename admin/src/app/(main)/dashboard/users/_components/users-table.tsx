@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Filter, Download } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, Filter, Download, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,6 @@ import { useDataTableInstance } from "@/hooks/use-data-table-instance";
 import { toast } from "sonner";
 
 import { usersColumns } from "./columns";
-import { usersData } from "./users-data";
 import { UserModal } from "./user-modal";
 import type { UserTable } from "./schema";
 
@@ -29,50 +28,136 @@ export function UsersTable() {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showCreateModal, setShowCreateModal] = useState(false);
-
-  // Filter data based on search and filters
-  const filteredData = usersData.filter((user) => {
-    const matchesSearch = searchTerm === "" ||
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.phone.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesRole = roleFilter === "all" || user.role === roleFilter;
-    const matchesStatus = statusFilter === "all" ||
-      (statusFilter === "verified" && user.isVerified) ||
-      (statusFilter === "unverified" && !user.isVerified);
-
-    return matchesSearch && matchesRole && matchesStatus;
+  const [users, setUsers] = useState<UserTable[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 10,
   });
 
+  // Fetch users from API
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      params.append('page', pagination.currentPage.toString());
+      params.append('limit', pagination.itemsPerPage.toString());
+
+      if (searchTerm) {
+        params.append('search', searchTerm);
+      }
+
+      if (roleFilter !== "all") {
+        params.append('role', roleFilter);
+      }
+
+      if (statusFilter !== "all") {
+        params.append('verificationStatus', statusFilter === "verified" ? "true" : "false");
+      }
+
+      const response = await fetch(`/api/users?${params}`);
+      const result = await response.json();
+
+      if (result.success) {
+        // Transform data to match UserTable interface
+        const transformedData = result.data.map((user: any) => ({
+          ...user,
+          createdAt: new Date(user.createdAt),
+          updatedAt: new Date(user.updatedAt),
+        }));
+        setUsers(transformedData);
+        if (result.pagination) {
+          setPagination(prev => ({
+            ...prev,
+            currentPage: result.pagination.page || 1,
+            totalPages: result.pagination.totalPages || 1,
+            totalItems: result.pagination.total || 0,
+            itemsPerPage: result.pagination.limit || 10,
+          }));
+        }
+      } else {
+        toast.error(result.error || "Failed to fetch users");
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      toast.error("An error occurred while fetching users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch users on component mount and when filters or page changes
+  useEffect(() => {
+    fetchUsers();
+  }, [searchTerm, roleFilter, statusFilter, pagination.currentPage]);
+
+  // Listen for refresh events
+  useEffect(() => {
+    const handleRefresh = () => {
+      fetchUsers();
+    };
+    window.addEventListener('refreshUsersTable', handleRefresh);
+    return () => {
+      window.removeEventListener('refreshUsersTable', handleRefresh);
+    };
+  }, [searchTerm, roleFilter, statusFilter, pagination.currentPage]);
+
   const table = useDataTableInstance({
-    data: filteredData,
+    data: users,
     columns: usersColumns,
     getRowId: (row) => row.id.toString(),
     defaultPageSize: 10,
     defaultSorting: [{ id: "createdAt", desc: true }],
+    defaultPageIndex: pagination.currentPage - 1,
+    pageCount: pagination.totalPages,
+    onPaginationChange: (updater) => {
+      if (typeof updater === 'function') {
+        const newPagination = updater({ pageIndex: pagination.currentPage - 1, pageSize: pagination.itemsPerPage });
+        setPagination(prev => ({
+          ...prev,
+          currentPage: newPagination.pageIndex + 1,
+        }));
+      } else {
+        setPagination(prev => ({
+          ...prev,
+          currentPage: updater.pageIndex + 1,
+        }));
+      }
+    },
   });
 
   const handleExport = () => {
     toast.success("Users data exported successfully");
   };
 
-  const handleUserSubmit = (data: any) => {
-    // In a real app, this would update the backend
-    console.log("User data:", data);
-  };
+  const handleUserSubmit = async (data: any) => {
+    try {
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-  const handleDeleteUser = (userId: string) => {
-    if (confirm("Are you sure you want to delete this user?")) {
-      toast.success("User deleted successfully");
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success('User created successfully');
+        setShowCreateModal(false);
+        // Trigger table refresh
+        window.dispatchEvent(new CustomEvent('refreshUsersTable'));
+      } else {
+        toast.error(result.error || 'Failed to create user');
+      }
+    } catch (error) {
+      toast.error('An error occurred while creating the user');
     }
   };
 
-  const handleVerifyUser = (userId: string, verify: boolean) => {
-    toast.success(`User ${verify ? "verified" : "unverified"} successfully`);
-  };
-
-  const uniqueRoles = Array.from(new Set(usersData.map(user => user.role)));
+  const uniqueRoles = ["user", "tutor", "sub-admin", "admin"];
 
   return (
     <div className="space-y-6">
@@ -82,7 +167,11 @@ export function UsersTable() {
           <CardTitle className="flex items-center justify-between">
             <span>Users Management</span>
             <div className="flex items-center gap-2">
-              <UserModal mode="create" onSubmit={handleUserSubmit}>
+              <UserModal
+                mode="create"
+                onSubmit={handleUserSubmit}
+                onClose={() => setShowCreateModal(false)}
+              >
                 <Button variant="default">Add New User</Button>
               </UserModal>
             </div>
@@ -111,7 +200,7 @@ export function UsersTable() {
                   <SelectItem value="all">All Roles</SelectItem>
                   {uniqueRoles.map((role) => (
                     <SelectItem key={role} value={role}>
-                      {role.charAt(0).toUpperCase() + role.slice(1)}
+                      {role === 'sub-admin' ? 'Sub-Admin' : role.charAt(0).toUpperCase() + role.slice(1)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -188,7 +277,11 @@ export function UsersTable() {
 
           {/* Results Count */}
           <div className="text-sm text-muted-foreground">
-            Showing {filteredData.length} of {usersData.length} users
+            {loading ? (
+              "Loading users..."
+            ) : (
+              `Showing ${users.length} of ${pagination.totalItems} users`
+            )}
           </div>
         </CardContent>
       </Card>
@@ -205,8 +298,20 @@ export function UsersTable() {
           <DataTableViewOptions table={table} />
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="overflow-hidden rounded-md border">
-            <DataTable table={table} columns={usersColumns} />
+          <div className="relative">
+            <div className="overflow-hidden rounded-md border">
+              <DataTable table={table} columns={usersColumns} />
+            </div>
+
+            {/* Loading Overlay */}
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-10">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span>Loading users...</span>
+                </div>
+              </div>
+            )}
           </div>
           <DataTablePagination table={table} />
         </CardContent>

@@ -16,7 +16,7 @@ export interface User {
 /**
  * User roles in the platform
  */
-export type UserRole = 'user' | 'tutor' | 'admin';
+export type UserRole = 'user' | 'tutor' | 'sub-admin' | 'admin';
 
 /**
  * User registration data

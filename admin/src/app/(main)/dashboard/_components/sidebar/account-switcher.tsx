@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { BadgeCheck, Bell, CreditCard, LogOut } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,49 +16,21 @@ import {
   DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import { cn, getInitials } from "@/lib/utils";
-import { useAuth } from "@/lib/auth-client";
+import { User } from "@/lib/auth-utils";
+import { signOut } from "@/lib/auth-client";
 
-export function AccountSwitcher({
-  users,
-}: {
-  readonly users: ReadonlyArray<{
-    readonly id: string;
-    readonly name: string;
-    readonly email: string;
-    readonly avatar: string;
-    readonly role: string;
-  }>;
-}) {
+interface AccountSwitcherProps {
+  user?: User | null;
+}
+
+export function AccountSwitcher({ user }: AccountSwitcherProps) {
   const router = useRouter();
-  const { user, signOut } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  // Use session user if available, otherwise fallback to first user
-  const [activeUser, setActiveUser] = useState(() => {
-    if (user) {
-      return {
-        id: user.id,
-        name: user.name || 'Admin User',
-        email: user.email || '',
-        avatar: '', // No image field in our custom auth
-        role: user.role || 'admin',
-      };
-    }
-    return users[0];
-  });
-
-  // Update active user when session changes
-  useEffect(() => {
-    if (user) {
-      setActiveUser({
-        id: user.id,
-        name: user.name || 'Admin User',
-        email: user.email || '',
-        avatar: '',
-        role: user.role || 'admin',
-      });
-    }
-  }, [user]);
+  // If no user, don't render anything
+  if (!user) {
+    return null;
+  }
 
   const handleLogout = async () => {
     if (isLoggingOut) return;
@@ -79,12 +51,12 @@ export function AccountSwitcher({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="size-9 rounded-lg">
-          <AvatarImage src={activeUser.avatar || undefined} alt={activeUser.name} />
-          <AvatarFallback className="rounded-lg">{getInitials(activeUser.name)}</AvatarFallback>
+          {/* Avatar property is not in User type, so we'll show only fallback */}
+          <AvatarFallback className="rounded-lg">{getInitials(user.name)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-56 space-y-1 rounded-lg" side="bottom" align="end" sideOffset={4}>
-        {users.map((user) => (
+        {/* {users.map((user) => (
           <DropdownMenuItem
             key={user.email}
             className={cn("p-0", user.id === activeUser.id && "bg-accent/50 border-l-primary border-l-2")}
@@ -101,7 +73,7 @@ export function AccountSwitcher({
               </div>
             </div>
           </DropdownMenuItem>
-        ))}
+        ))} */}
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>

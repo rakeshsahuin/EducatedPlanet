@@ -58,10 +58,7 @@ export {
   type ISubjectDocument,
 } from './datamodels';
 
-// Export seeder
-export { seedUsers } from './seeder/userseeder';
-export { seedClasses, clearClasses, type ClassSeedData } from './seeder/classseeder';
-export { seedSubjects, clearSubjects, type SubjectSeedData } from './seeder/subjectseeder';
+// Note: Seeder exports are removed as they should only be used on server-side
 
 // Export RSA utilities
 export {

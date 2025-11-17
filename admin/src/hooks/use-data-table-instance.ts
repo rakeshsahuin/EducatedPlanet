@@ -22,6 +22,8 @@ type UseDataTableInstanceProps<TData, TValue> = {
   defaultPageSize?: number;
   defaultSorting?: SortingState;
   getRowId?: (row: TData, index: number) => string;
+  pageCount?: number;
+  onPaginationChange?: (updater: any) => void;
 };
 
 export function useDataTableInstance<TData, TValue>({
@@ -32,6 +34,8 @@ export function useDataTableInstance<TData, TValue>({
   defaultPageSize,
   defaultSorting,
   getRowId,
+  pageCount,
+  onPaginationChange,
 }: UseDataTableInstanceProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -52,13 +56,14 @@ export function useDataTableInstance<TData, TValue>({
       columnFilters,
       pagination,
     },
+    pageCount: pageCount,
     enableRowSelection,
     getRowId: getRowId ?? ((row) => (row as any).id.toString()),
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    onPaginationChange: setPagination,
+    onPaginationChange: onPaginationChange ?? setPagination,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

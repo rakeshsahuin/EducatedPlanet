@@ -6,6 +6,7 @@ import {
   Calendar,
   Kanban,
   ReceiptText,
+  NotebookTabs,
   Users,
   Lock,
   Fingerprint,
@@ -17,6 +18,7 @@ import {
   GraduationCap,
   BookOpen,
   Target,
+  UserCheck,
   type LucideIcon,
   User,
 } from "lucide-react";
@@ -62,6 +64,11 @@ export const sidebarItems: NavGroup[] = [
         icon: Users,
       },
       {
+        title: "Tutors",
+        url: "/dashboard/tutors",
+        icon: UserCheck,
+      },
+      {
         title: "Classes",
         url: "/dashboard/classes",
         icon: BookOpen,
@@ -103,6 +110,18 @@ export const sidebarItems: NavGroup[] = [
   },
   {
     id: 2,
+    label: "CMS",
+    items: [
+      {
+        title: "Pages",
+        url: "/dashboard/cms/pages",
+        icon: NotebookTabs,
+        comingSoon: true,
+      },
+    ],
+  },
+  {
+    id: 3,
     label: "Pages",
     items: [
       {
@@ -160,7 +179,7 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
-    id: 3,
+    id: 4,
     label: "Misc",
     items: [
       {

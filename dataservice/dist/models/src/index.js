@@ -21,6 +21,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SubjectCategory = exports.ClassCategory = void 0;
 // Export tutor-related types
 __exportStar(require("./tutor/tutor.types"), exports);
+__exportStar(require("./tutor/admin.types"), exports);
 // Export user-related types
 __exportStar(require("./user/user.types"), exports);
 // Export class-related types

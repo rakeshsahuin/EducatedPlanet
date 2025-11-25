@@ -1,5 +1,5 @@
 import { betterAuth } from 'better-auth';
-import { mongodbAdapter } from 'mongodb';
+import { mongodbAdapter } from 'better-auth/adapters/mongodb';
 import { MongoClient } from 'mongodb';
 import { hashPassword, verifyPassword } from '@educatedplanet/common';
 

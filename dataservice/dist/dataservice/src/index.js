@@ -4,7 +4,7 @@
  * Exports all services and database management functionality
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.regenerateRSAKeys = exports.encryptWithPublicKey = exports.decryptWithPrivateKey = exports.getPublicKey = exports.initializeRSAKeys = exports.clearSubjects = exports.seedSubjects = exports.clearClasses = exports.seedClasses = exports.seedUsers = exports.subjectSchema = exports.classSchema = exports.reviewSchema = exports.tutorSchema = exports.userSchema = exports.closeDatabase = exports.initializeDatabase = exports.databaseConnection = exports.DatabaseConnection = exports.SubjectQueries = exports.ClassQueries = exports.ReviewQueries = exports.TutorQueries = exports.UserQueries = exports.ReviewModel = exports.TutorModel = exports.UserModel = exports.userExists = exports.invalidateSession = exports.validateSession = exports.authenticateUser = exports.subjectService = exports.SubjectService = exports.classService = exports.ClassService = exports.reviewService = exports.ReviewService = exports.tutorService = exports.TutorService = exports.userService = exports.UserService = exports.databaseService = exports.DatabaseService = void 0;
+exports.regenerateRSAKeys = exports.encryptWithPublicKey = exports.decryptWithPrivateKey = exports.getPublicKey = exports.initializeRSAKeys = exports.subjectSchema = exports.classSchema = exports.reviewSchema = exports.tutorSchema = exports.userSchema = exports.closeDatabase = exports.initializeDatabase = exports.databaseConnection = exports.DatabaseConnection = exports.SubjectQueries = exports.ClassQueries = exports.ReviewQueries = exports.TutorQueries = exports.UserQueries = exports.ReviewModel = exports.TutorModel = exports.UserModel = exports.userExists = exports.invalidateSession = exports.validateSession = exports.authenticateUser = exports.subjectService = exports.SubjectService = exports.classService = exports.ClassService = exports.reviewService = exports.ReviewService = exports.AdminAnalyticsService = exports.AdminTutorService = exports.tutorService = exports.TutorService = exports.userService = exports.UserService = exports.databaseService = exports.DatabaseService = void 0;
 // Database service
 var database_service_1 = require("./services/database.service");
 Object.defineProperty(exports, "DatabaseService", { enumerable: true, get: function () { return database_service_1.DatabaseService; } });
@@ -17,6 +17,12 @@ Object.defineProperty(exports, "userService", { enumerable: true, get: function 
 var tutor_service_1 = require("./services/tutor.service");
 Object.defineProperty(exports, "TutorService", { enumerable: true, get: function () { return tutor_service_1.TutorService; } });
 Object.defineProperty(exports, "tutorService", { enumerable: true, get: function () { return tutor_service_1.tutorService; } });
+// Admin tutor service
+var admin_tutor_service_1 = require("./services/admin-tutor.service");
+Object.defineProperty(exports, "AdminTutorService", { enumerable: true, get: function () { return admin_tutor_service_1.AdminTutorService; } });
+// Admin analytics service
+var admin_analytics_service_1 = require("./services/admin-analytics.service");
+Object.defineProperty(exports, "AdminAnalyticsService", { enumerable: true, get: function () { return admin_analytics_service_1.AdminAnalyticsService; } });
 // Review service
 var review_service_1 = require("./services/review.service");
 Object.defineProperty(exports, "ReviewService", { enumerable: true, get: function () { return review_service_1.ReviewService; } });
@@ -54,15 +60,7 @@ Object.defineProperty(exports, "tutorSchema", { enumerable: true, get: function 
 Object.defineProperty(exports, "reviewSchema", { enumerable: true, get: function () { return datamodels_1.reviewSchema; } });
 Object.defineProperty(exports, "classSchema", { enumerable: true, get: function () { return datamodels_1.classSchema; } });
 Object.defineProperty(exports, "subjectSchema", { enumerable: true, get: function () { return datamodels_1.subjectSchema; } });
-// Export seeder
-var userseeder_1 = require("./seeder/userseeder");
-Object.defineProperty(exports, "seedUsers", { enumerable: true, get: function () { return userseeder_1.seedUsers; } });
-var classseeder_1 = require("./seeder/classseeder");
-Object.defineProperty(exports, "seedClasses", { enumerable: true, get: function () { return classseeder_1.seedClasses; } });
-Object.defineProperty(exports, "clearClasses", { enumerable: true, get: function () { return classseeder_1.clearClasses; } });
-var subjectseeder_1 = require("./seeder/subjectseeder");
-Object.defineProperty(exports, "seedSubjects", { enumerable: true, get: function () { return subjectseeder_1.seedSubjects; } });
-Object.defineProperty(exports, "clearSubjects", { enumerable: true, get: function () { return subjectseeder_1.clearSubjects; } });
+// Note: Seeder exports are removed as they should only be used on server-side
 // Export RSA utilities
 var rsa_keys_1 = require("./utils/rsa-keys");
 Object.defineProperty(exports, "initializeRSAKeys", { enumerable: true, get: function () { return rsa_keys_1.initializeRSAKeys; } });

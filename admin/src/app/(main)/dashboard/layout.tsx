@@ -1,10 +1,9 @@
 import { ReactNode } from "react";
 
-import { cookies } from "next/headers";
-
 import { AppSidebar } from "@/app/(main)/dashboard/_components/sidebar/app-sidebar";
+import { SidebarProviderWrapper } from "@/app/(main)/dashboard/_components/sidebar-provider-wrapper";
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { getPreference } from "@/server/server-actions";
 import { requireAuth } from "@/lib/auth-utils";
@@ -22,12 +21,11 @@ import {
 import { AccountSwitcher } from "./_components/sidebar/account-switcher";
 import { SearchDialog } from "./_components/sidebar/search-dialog";
 import { ThemeSwitcher } from "./_components/sidebar/theme-switcher";
+import { ClientOnly } from "@/components/ui/client-only";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
   // Require authentication for all dashboard routes
   const session = await requireAuth();
-  const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
 
   const [sidebarVariant, sidebarCollapsible, contentLayout, navbarStyle] = await Promise.all([
     getPreference<SidebarVariant>("sidebar_variant", SIDEBAR_VARIANT_VALUES, "inset"),
@@ -44,7 +42,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
   };
 
   return (
-    <SidebarProvider defaultOpen={defaultOpen} suppressHydrationWarning>
+    <SidebarProviderWrapper>
       <AppSidebar
         variant={sidebarVariant}
         collapsible={sidebarCollapsible}
@@ -67,20 +65,22 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
             "data-[navbar-style=sticky]:bg-background/50 data-[navbar-style=sticky]:sticky data-[navbar-style=sticky]:top-0 data-[navbar-style=sticky]:z-50 data-[navbar-style=sticky]:overflow-hidden data-[navbar-style=sticky]:rounded-t-[inherit] data-[navbar-style=sticky]:backdrop-blur-md",
           )}
         >
-          <div className="flex w-full items-center justify-between px-4 lg:px-6">
-            <div className="flex items-center gap-1 lg:gap-2">
-              <SidebarTrigger className="-ml-1" />
-              <Separator orientation="vertical" className="mx-2 data-[orientation=vertical]:h-4" />
-              <SearchDialog />
+          <ClientOnly fallback={<div className="flex w-full items-center justify-between px-4 lg:px-6 h-12" />}>
+            <div className="flex w-full items-center justify-between px-4 lg:px-6">
+              <div className="flex items-center gap-1 lg:gap-2">
+                <SidebarTrigger className="-ml-1" />
+                <Separator orientation="vertical" className="mx-2 data-[orientation=vertical]:h-4" />
+                <SearchDialog />
+              </div>
+              <div className="flex items-center gap-2">
+                <ThemeSwitcher />
+                <AccountSwitcher user={session?.user} />
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <ThemeSwitcher />
-              <AccountSwitcher user={session?.user} />
-            </div>
-          </div>
+          </ClientOnly>
         </header>
         <div className="h-full p-4 md:p-6">{children}</div>
       </SidebarInset>
-    </SidebarProvider>
+    </SidebarProviderWrapper>
   );
 }

@@ -98,6 +98,3 @@ export async function isAuthenticated(): Promise<boolean> {
   const session = await getServerSession();
   return !!session && !!session.user;
 }
-
-// Export types
-export type { Session, User };

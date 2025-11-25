@@ -4,6 +4,7 @@
  */
 // Export tutor-related types
 export * from './tutor/tutor.types';
+export * from './tutor/admin.types';
 // Export user-related types
 export * from './user/user.types';
 // Export class-related types

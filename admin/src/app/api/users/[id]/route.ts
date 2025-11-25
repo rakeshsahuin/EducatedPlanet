@@ -5,7 +5,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { userApi } from '@/lib/api';
-import { UpdateUserInput } from '@educatedplanet/models';
 
 interface RouteParams {
   params: Promise<{ id: string }>;

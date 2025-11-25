@@ -10,6 +10,8 @@ export interface DatabaseConfig {
 export declare class DatabaseService {
     private static instance;
     private isConnected;
+    private eventHandlersSetup;
+    private maxListeners;
     private constructor();
     /**
      * Get singleton instance of DatabaseService
@@ -44,6 +46,10 @@ export declare class DatabaseService {
      * Setup event handlers for MongoDB connection
      */
     private setupEventHandlers;
+    /**
+     * Clean up event handlers and connection
+     */
+    cleanup(): Promise<void>;
 }
 export declare const databaseService: DatabaseService;
 //# sourceMappingURL=database.service.d.ts.map

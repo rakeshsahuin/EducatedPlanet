@@ -16,5 +16,7 @@ exports.getModel = {
     user: () => database_1.databaseConnection.getUserModel(),
     tutor: () => database_1.databaseConnection.getTutorModel(),
     review: () => database_1.databaseConnection.getReviewModel(),
+    class: () => database_1.databaseConnection.getClassModel(),
+    subject: () => database_1.databaseConnection.getSubjectModel(),
 };
 //# sourceMappingURL=index.js.map

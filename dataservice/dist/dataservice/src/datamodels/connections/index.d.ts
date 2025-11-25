@@ -18,5 +18,15 @@ export declare const getModel: {
     }> & {
         __v: number;
     }, any>;
+    class: () => import("mongoose").Model<import("..").IClassDocument, {}, {}, {}, import("mongoose").Document<unknown, {}, import("..").IClassDocument, {}, {}> & import("..").IClassDocument & Required<{
+        _id: unknown;
+    }> & {
+        __v: number;
+    }, any>;
+    subject: () => import("mongoose").Model<import("..").ISubjectDocument, {}, {}, {}, import("mongoose").Document<unknown, {}, import("..").ISubjectDocument, {}, {}> & import("..").ISubjectDocument & Required<{
+        _id: unknown;
+    }> & {
+        __v: number;
+    }, any>;
 };
 //# sourceMappingURL=index.d.ts.map

@@ -13,6 +13,12 @@ export { UserService, userService } from './services/user.service';
 // Tutor service
 export { TutorService, tutorService } from './services/tutor.service';
 
+// Admin tutor service
+export { AdminTutorService } from './services/admin-tutor.service';
+
+// Admin analytics service
+export { AdminAnalyticsService } from './services/admin-analytics.service';
+
 // Review service
 export { ReviewService, reviewService } from './services/review.service';
 

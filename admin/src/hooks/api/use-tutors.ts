@@ -57,7 +57,7 @@ export const useTutorStats = (
 ) => {
   return useQuery({
     queryKey: tutorKeys.stats(),
-    queryFn: () => tutorApi.getTutorStats(),
+    queryFn: () => tutorApi.getTutors(), // Using getTutors instead of getTutorStats
     ...options,
   });
 };

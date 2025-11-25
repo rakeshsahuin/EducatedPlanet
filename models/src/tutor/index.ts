@@ -3,3 +3,4 @@
  */
 
 export * from './tutor.types';
+export * from './admin.types';

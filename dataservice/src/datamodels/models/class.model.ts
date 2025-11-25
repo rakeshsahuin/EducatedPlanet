@@ -18,20 +18,23 @@ export interface IClassModel extends Model<IClassDocument> {
 }
 
 // Create the model using singleton pattern to prevent overwriting
-let ClassModel: IClassModel;
+let _ClassModel: IClassModel;
 
 export function getClassModel(): IClassModel {
-  if (!ClassModel) {
+  if (!_ClassModel) {
     try {
       // Try to get existing model
-      ClassModel = model<IClassDocument>('Class') as IClassModel;
+      _ClassModel = model<IClassDocument>('Class') as IClassModel;
     } catch (error) {
       // Create new model if it doesn't exist
-      ClassModel = model<IClassDocument>('Class', classSchemaDefinition) as IClassModel;
+      _ClassModel = model<IClassDocument>('Class', classSchemaDefinition) as IClassModel;
     }
   }
-  return ClassModel;
+  return _ClassModel;
 }
+
+// Legacy export for backward compatibility
+export const ClassModel = getClassModel();
 
 
 // Queries object - using model getter to prevent compilation issues

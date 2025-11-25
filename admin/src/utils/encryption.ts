@@ -19,7 +19,7 @@ export async function getPublicKey(): Promise<string> {
   }
 
   // Create new promise to fetch the public key
-  publicKeyPromise = (async () => {
+  const promise = (async (): Promise<string> => {
     try {
       const response = await fetch('/api/auth/public-key');
       if (!response.ok) {
@@ -30,7 +30,7 @@ export async function getPublicKey(): Promise<string> {
         throw new Error('Invalid public key response');
       }
       cachedPublicKey = data.publicKey;
-      return cachedPublicKey;
+      return cachedPublicKey!;
     } catch (error) {
       console.error('Error fetching public key:', error);
       throw new Error('Failed to fetch encryption key');
@@ -40,7 +40,8 @@ export async function getPublicKey(): Promise<string> {
     }
   })();
 
-  return publicKeyPromise;
+  publicKeyPromise = promise;
+  return promise;
 }
 
 /**

@@ -8,14 +8,15 @@ export interface User {
     phone: string;
     role: UserRole;
     avatar?: string;
-    isVerified: boolean;
+    isEmailVerified: boolean;
+    isPhoneVerified: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
 /**
  * User roles in the platform
  */
-export type UserRole = 'user' | 'tutor' | 'admin';
+export type UserRole = 'user' | 'tutor' | 'sub-admin' | 'admin';
 /**
  * User registration data
  */
@@ -125,6 +126,9 @@ export interface UpdateUserInput {
     email?: string;
     phone?: string;
     role?: UserRole;
+    avatar?: string;
+    isEmailVerified?: boolean;
+    isPhoneVerified?: boolean;
 }
 /**
  * Input for user authentication

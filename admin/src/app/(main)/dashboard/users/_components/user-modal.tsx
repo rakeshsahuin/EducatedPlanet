@@ -63,15 +63,15 @@ export function UserModal({ children, user, mode, onSubmit, onClose }: UserModal
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<UserFormData>({
-    resolver: zodResolver(userFormSchema),
+    resolver: zodResolver(userFormSchema as any),
     defaultValues: {
       name: user?.name || "",
       email: user?.email || "",
       phone: user?.phone || "",
       role: user?.role || "user",
       avatar: user?.avatar || "",
-      isEmailVerified: false,
-      isPhoneVerified: false,
+      isEmailVerified: user?.isEmailVerified || false,
+      isPhoneVerified: user?.isPhoneVerified || false,
     },
   });
 
@@ -86,8 +86,8 @@ export function UserModal({ children, user, mode, onSubmit, onClose }: UserModal
         phone: user.phone || "",
         role: user.role || "user",
         avatar: user.avatar || "",
-        isEmailVerified: false,
-        isPhoneVerified: false,
+        isEmailVerified: user.isEmailVerified || false,
+        isPhoneVerified: user.isPhoneVerified || false,
       });
     }
   }, [mode, user, form]);

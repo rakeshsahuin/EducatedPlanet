@@ -20,13 +20,7 @@ const customPasswordHash = {
 
 // Better Auth server configuration
 export const authConfig = betterAuth({
-  database: mongodbAdapter(db, {
-    // Custom collection names and field mappings
-    usersCollection: 'users',
-    accountsCollection: 'accounts',
-    sessionsCollection: 'sessions',
-    verificationTokensCollection: 'verificationTokens',
-  }),
+  database: mongodbAdapter(db),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false, // Admin users don't need email verification

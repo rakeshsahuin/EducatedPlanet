@@ -2,6 +2,8 @@ import mongoose, { ConnectOptions, Model } from 'mongoose';
 import { IUserDocument } from '../schemas/user-clean.schema';
 import { ITutorDocument } from '../schemas/tutor-clean.schema';
 import { IReviewDocument } from '../schemas/review-clean.schema';
+import type { IClassDocument } from '../models/class.model';
+import type { ISubjectDocument } from '../models/subject.model';
 /**
  * Database connection configuration interface
  */
@@ -20,6 +22,8 @@ export declare class DatabaseConnection {
     private static instance;
     private isConnected;
     private connectionConfig;
+    private eventHandlersSetup;
+    private maxListeners;
     private constructor();
     /**
      * Get singleton instance
@@ -58,6 +62,14 @@ export declare class DatabaseConnection {
      */
     getReviewModel(): Model<IReviewDocument>;
     /**
+     * Get Class model bound to this connection
+     */
+    getClassModel(): Model<IClassDocument>;
+    /**
+     * Get Subject model bound to this connection
+     */
+    getSubjectModel(): Model<ISubjectDocument>;
+    /**
      * Health check for database connection
      */
     healthCheck(): Promise<{
@@ -71,6 +83,14 @@ export declare class DatabaseConnection {
         name: string;
         collections: string[];
     }>;
+    /**
+     * Setup event handlers for MongoDB connection (only once)
+     */
+    private setupEventHandlers;
+    /**
+     * Clean up event handlers and connection
+     */
+    cleanup(): Promise<void>;
 }
 /**
  * Export singleton instance

@@ -268,21 +268,22 @@ export const usersColumns: ColumnDef<UserTable>[] = [
 
       const handleToggleVerification = async () => {
         try {
+
           const response = await fetch(`/api/users/${user.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              isVerified: !user.isVerified
+              isEmailVerified: !user.isEmailVerified,
+              isPhoneVerified: !user.isPhoneVerified
             }),
           });
 
           const result = await response.json();
 
           if (response.ok) {
-            toast.success(`User ${!user.isVerified ? 'verified' : 'unverified'} successfully`);
-            // Trigger table refresh
+            toast.success(`User verification updated successfully`);
             window.dispatchEvent(new CustomEvent('refreshUsersTable'));
           } else {
             toast.error(result.error || 'Failed to update user');
@@ -320,7 +321,7 @@ export const usersColumns: ColumnDef<UserTable>[] = [
               <DropdownMenuItem
                 onClick={handleToggleVerification}
               >
-                {user.isVerified ? (
+                {user.isEmailVerified && user.isPhoneVerified ? (
                   <>
                     <UserX className="mr-2 h-4 w-4" />
                     Unverify user

@@ -30,18 +30,21 @@ export interface ISubjectModel extends Model<ISubjectDocument> {
 }
 
 // Singleton pattern for model
-let SubjectModel: ISubjectModel;
+let _SubjectModel: ISubjectModel;
 
 export function getSubjectModel(): ISubjectModel {
-  if (!SubjectModel) {
+  if (!_SubjectModel) {
     try {
-      SubjectModel = model<ISubjectDocument>('Subject') as ISubjectModel;
+      _SubjectModel = model<ISubjectDocument>('Subject') as ISubjectModel;
     } catch (error) {
-      SubjectModel = model<ISubjectDocument>('Subject', subjectSchemaDefinition) as ISubjectModel;
+      _SubjectModel = model<ISubjectDocument>('Subject', subjectSchemaDefinition) as ISubjectModel;
     }
   }
-  return SubjectModel;
+  return _SubjectModel;
 }
+
+// Legacy export for backward compatibility
+export const SubjectModel = getSubjectModel();
 
 // Queries object - following ClassQueries pattern
 export const SubjectQueries = {
@@ -207,7 +210,7 @@ export const SubjectQueries = {
       _id: { $in: classIds }
     }).select('_id name code');
 
-    const existingIds = existingClasses.map(c => c._id.toString());
+    const existingIds = existingClasses.map(c => (c as any)._id.toString());
     const missingIds = classIds.filter(id => !existingIds.includes(id));
 
     return {

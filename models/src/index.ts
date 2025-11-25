@@ -5,6 +5,7 @@
 
 // Export tutor-related types
 export * from './tutor/tutor.types';
+export * from './tutor/admin.types';
 
 // Export user-related types
 export * from './user/user.types';
@@ -40,6 +41,13 @@ export type {
   UpdateReviewInput,
   ReviewSearchParams,
 } from './tutor/tutor.types';
+
+export type {
+  SubjectOption,
+  ClassOption,
+  SubjectsResponse,
+  SubjectsClassesResponse,
+} from './tutor/admin.types';
 
 export type {
   User,

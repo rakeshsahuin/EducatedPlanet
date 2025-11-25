@@ -121,6 +121,18 @@ export const userApi = {
 
     return true;
   },
+
+  // Get user statistics
+  getUserStats: async (): Promise<any> => {
+    const response = await fetch('/api/admin/analytics/users');
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to fetch user stats');
+    }
+
+    return result.data;
+  },
 };
 
 /**
@@ -208,6 +220,27 @@ export const tutorApi = {
     }
 
     return true;
+  },
+
+  // Verify tutor
+  verifyTutor: async (id: string, approvedBy?: string): Promise<Tutor> => {
+    const response = await fetch(`/api/admin/tutors/bulk-approve`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-admin-id': approvedBy || 'admin',
+      },
+      body: JSON.stringify({ tutorIds: [id] }),
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to verify tutor');
+    }
+
+    // Return the updated tutor - you might need to fetch it again
+    return await tutorApi.getTutorById(id) as Tutor;
   },
 };
 

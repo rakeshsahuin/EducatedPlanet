@@ -95,14 +95,38 @@ export interface TutorData {
     personalWebsite?: string;
   };
   location: {
-    areas: string[];
-    city: string;
-    state: string;
+    // Existing fields for backward compatibility
+    areas?: string[];
+    city?: string;
+    state?: string;
+
+    // New structured address
+    address: {
+      maplink?: string;
+      address1?: string;
+      locality: string;
+      city: string;
+      state: string;
+      country?: string;
+      zip?: string;
+      digipin?: string;
+      coordinates: {
+        lat: number;
+        lng: number;
+      };
+    };
+
+    // New availability range
+    availabilityRange: {
+      value: number;
+      unit: 'km' | 'miles';
+    };
+
+    // Keep existing for geospatial queries
     coordinates?: {
       type: 'Point';
       coordinates: [number, number];
     };
-    travelRadius?: number;
   };
   pricing: {
     oneToOne: {

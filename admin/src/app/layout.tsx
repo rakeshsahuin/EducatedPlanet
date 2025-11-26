@@ -6,6 +6,7 @@ import { GeistMono } from "geist/font/mono";
 import { Toaster } from "@/components/ui/sonner";
 import { CustomQueryClientProvider } from "@/components/providers/query-client-provider";
 import { ProvidersWrapper } from "@/components/providers/providers-wrapper";
+import { GoogleMapsProvider } from "@/components/providers/GoogleMapsProvider";
 import { APP_CONFIG } from "@/config/app-config";
 import { getPreference } from "@/server/server-actions";
 import { PreferencesStoreProvider } from "@/stores/preferences/preferences-provider";
@@ -47,10 +48,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <PreferencesStoreProvider themeMode={themeMode}>
           <ProvidersWrapper>
             <CustomQueryClientProvider>
-              <AuthProvider>
-                {children}
-                <Toaster />
-              </AuthProvider>
+              <GoogleMapsProvider>
+                <AuthProvider>
+                  {children}
+                  <Toaster />
+                </AuthProvider>
+              </GoogleMapsProvider>
             </CustomQueryClientProvider>
           </ProvidersWrapper>
         </PreferencesStoreProvider>

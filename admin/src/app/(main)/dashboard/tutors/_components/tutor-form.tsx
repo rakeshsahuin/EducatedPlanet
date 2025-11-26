@@ -43,6 +43,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, Plus, X, Upload } from "lucide-react";
+import { LocationForm } from "@/components/forms/LocationForm";
 
 interface TutorFormProps {
   initialData?: Partial<TutorFormValues>;
@@ -96,10 +97,8 @@ const AGE_GROUPS = [
 export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedAreas, setSelectedAreas] = useState<string[]>(initialData?.location?.areas || []);
   const [selectedTimes, setSelectedTimes] = useState<string[]>(initialData?.availability?.preferredTimes || []);
   const [selectedAgeGroups, setSelectedAgeGroups] = useState<string[]>(initialData?.ageGroups || []);
-  const [selectedCity, setSelectedCity] = useState<string>(initialData?.location?.city || "");
   const [selectedTeachingMode, setSelectedTeachingMode] = useState<TeachingMode>(
     initialData?.teachingModes?.[0] || "offline"
   );
@@ -125,9 +124,21 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
       }],
       teachingModes: initialData?.teachingModes || ["offline"],
       location: {
+        // New structured address
+        address: initialData?.location?.address || {
+          locality: "",
+          city: "",
+          state: "",
+          coordinates: { lat: 0, lng: 0 },
+        },
+        // Availability range
+        availabilityRange: initialData?.location?.availabilityRange || {
+          value: 5,
+          unit: "km",
+        },
+        // Legacy fields for backward compatibility
         city: initialData?.location?.city || "",
         areas: initialData?.location?.areas || [],
-        fullAddress: initialData?.location?.fullAddress || "",
       },
       pricing: {
         oneToOne: {
@@ -184,7 +195,6 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
   });
 
   const watchedTeachingModes = form.watch("teachingModes");
-  const watchedCity = form.watch("location.city");
 
   // Update derived states when form values change
   useEffect(() => {
@@ -192,10 +202,6 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
       setSelectedTeachingMode(watchedTeachingModes[0]);
     }
   }, [watchedTeachingModes]);
-
-  useEffect(() => {
-    setSelectedCity(watchedCity);
-  }, [watchedCity]);
 
   // Handle subject field updates
   const handleSubjectChange = (index: number, value: TutorSubject) => {
@@ -240,8 +246,19 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
         teachingModes: [selectedTeachingMode],
         location: {
           ...data.location,
-          city: selectedCity,
-          areas: selectedAreas,
+          // New location structure is already in data.location
+          address: data.location.address,
+          availabilityRange: data.location.availabilityRange,
+          // Update coordinates for geospatial queries from address
+          coordinates: data.location.address?.coordinates
+            ? {
+                type: "Point" as const,
+                coordinates: [
+                  data.location.address.coordinates.lng,
+                  data.location.address.coordinates.lat,
+                ],
+              }
+            : undefined,
         },
         availability: {
           ...data.availability,
@@ -274,16 +291,6 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const addArea = (area: string) => {
-    if (area && !selectedAreas.includes(area)) {
-      setSelectedAreas([...selectedAreas, area]);
-    }
-  };
-
-  const removeArea = (area: string) => {
-    setSelectedAreas(selectedAreas.filter(a => a !== area));
   };
 
   const addTime = (time: string) => {
@@ -414,6 +421,9 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                 />
               </CardContent>
             </Card>
+
+            {/* Location Information */}
+            <LocationForm />
           </TabsContent>
 
           <TabsContent value="teaching" className="space-y-6">
@@ -501,78 +511,6 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                         <span className="text-sm font-medium">{mode.label}</span>
                       </label>
                     ))}
-                  </div>
-                </div>
-
-                {/* Location */}
-                <div>
-                  <Label className="text-base font-medium">Location</Label>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Preferred teaching location
-                  </p>
-                  <div className="space-y-3">
-                    <Select value={selectedCity} onValueChange={setSelectedCity}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select city" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {CITY_OPTIONS.map((city) => (
-                          <SelectItem key={city} value={city}>
-                            {city}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {selectedCity === "Bhubaneswar" && (
-                      <div>
-                        <Label className="text-sm">Areas in Bhubaneswar</Label>
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {selectedAreas.map((area) => (
-                            <Badge key={area} variant="secondary" className="gap-1">
-                              <span>{area}</span>
-                              <button
-                                type="button"
-                                onClick={() => removeArea(area)}
-                                className="ml-1 hover:bg-secondary-foreground/20 rounded-full p-0.5"
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </Badge>
-                          ))}
-                        </div>
-                        <Select onValueChange={addArea}>
-                          <SelectTrigger className="w-full mt-2">
-                            <SelectValue placeholder="Add areas" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {BHUBANESWAR_AREAS.filter(
-                              (area) => !selectedAreas.includes(area)
-                            ).map((area) => (
-                              <SelectItem key={area} value={area}>
-                                {area}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-                    <FormField
-                      control={form.control}
-                      name="location.fullAddress"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Full Address (Optional)</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="Enter complete address"
-                              className="resize-none"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </div>
                 </div>
 

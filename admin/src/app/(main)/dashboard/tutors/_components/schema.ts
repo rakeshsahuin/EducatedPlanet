@@ -70,12 +70,33 @@ export const tutorFormSchema = z.object({
   subjects: z.array(subjectSchema).min(1, "At least one subject is required"),
   teachingModes: z.array(z.enum(["online", "offline", "both"])).min(1, "Select at least one teaching mode"),
   location: z.object({
-    city: z.string().min(1, "City is required"),
-    areas: z.array(z.string()).min(1, "At least one area is required"),
-    fullAddress: z.string().optional(),
+    // New structured address
+    address: z.object({
+      maplink: z.string().optional(),
+      address1: z.string().optional(),
+      locality: z.string().min(1, "Locality/Area is required"),
+      city: z.string().min(1, "City is required"),
+      state: z.string().min(1, "State is required"),
+      country: z.string().optional(),
+      zip: z.string().optional(),
+      digipin: z.string().optional(),
+      coordinates: z.object({
+        lat: z.number(),
+        lng: z.number(),
+      }),
+    }),
+    // Availability range
+    availabilityRange: z.object({
+      value: z.number().min(0.1, "Range must be greater than 0").max(100, "Range cannot exceed 100"),
+      unit: z.enum(['km', 'miles']),
+    }),
+    // Optional legacy fields for backward compatibility
+    city: z.string().optional(),
+    areas: z.array(z.string()).optional(),
+    // Coordinates for geospatial queries
     coordinates: z.object({
-      latitude: z.number().optional(),
-      longitude: z.number().optional(),
+      type: z.literal('Point'),
+      coordinates: z.tuple([z.number(), z.number()]),
     }).optional(),
   }),
   pricing: z.object({

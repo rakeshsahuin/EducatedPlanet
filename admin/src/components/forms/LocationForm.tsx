@@ -1,7 +1,5 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import { useGoogleMaps } from "@/components/providers/GoogleMapsProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -19,37 +17,31 @@ interface LocationFormProps {
 }
 
 export function LocationForm({ className }: LocationFormProps) {
-  const { setValue, watch, formState: { errors } } = useFormContext();
+  const { setValue, watch, formState: { errors }, control } = useFormContext();
   const { isLoaded: isMapsLoaded } = useGoogleMaps();
-  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
-  // Watch location field
-  const location = watch("location");
-  const selectedRange = location?.availabilityRange;
-
-  // Update selectedAddress when form location changes
-  useEffect(() => {
-    setSelectedAddress(location?.address || null);
-  }, [location?.address]);
+  // Use useWatch for better reactivity with nested objects
+  let location = useWatch({ name: "location" });
+  let address = useWatch({ name: "location.address" });
+  let availabilityRange = useWatch({ name: "location.availabilityRange" });
 
   // Handle address change
   const handleAddressChange = (address: Address | null) => {
     if (address) {
-      setValue("location.address", address, { shouldValidate: true });
-      // Update coordinates for geospatial queries
+      setValue("location.address", address, { shouldValidate: true, shouldDirty: true });
       setValue("location.coordinates", {
         type: "Point",
         coordinates: [address.coordinates.lng, address.coordinates.lat],
-      });
+      }, { shouldDirty: true });
     } else {
-      setValue("location.address", null);
-      setValue("location.coordinates", null);
+      setValue("location.address", null, { shouldDirty: true });
+      setValue("location.coordinates", null, { shouldDirty: true });
     }
   };
 
   // Handle range change
   const handleRangeChange = (range: { value: number; unit: 'km' | 'miles' }) => {
-    setValue("location.availabilityRange", range, { shouldValidate: true });
+    setValue("location.availabilityRange", range, { shouldValidate: true, shouldDirty: true });
   };
 
   return (
@@ -76,7 +68,7 @@ export function LocationForm({ className }: LocationFormProps) {
             </p>
 
             <LocationSearch
-              value={selectedAddress ?? undefined}
+              value={address ?? undefined}
               onChange={handleAddressChange}
               placeholder="Search for your area, locality, or landmark..."
               error={(errors.location as any)?.address?.message as string}
@@ -96,7 +88,7 @@ export function LocationForm({ className }: LocationFormProps) {
             </p>
 
             <MapSelector
-              value={selectedAddress ?? undefined}
+              value={address ?? undefined}
               onChange={handleAddressChange}
               className="w-full"
             />
@@ -107,14 +99,14 @@ export function LocationForm({ className }: LocationFormProps) {
           {/* Availability Range */}
           <div>
             <TravelRadius
-              value={selectedRange}
+              value={availabilityRange}
               onChange={handleRangeChange}
               error={(errors.location as any)?.availabilityRange?.message as string}
             />
           </div>
 
           {/* Selected Location Summary */}
-          {selectedAddress && (
+          {address && (
             <>
               <Separator />
               <div className="space-y-2">
@@ -123,40 +115,40 @@ export function LocationForm({ className }: LocationFormProps) {
                   <div className="space-y-1">
                     <p className="text-sm font-medium">Address</p>
                     <p className="text-sm text-muted-foreground">
-                      {selectedAddress.address1 && `${selectedAddress.address1}, `}
-                      {selectedAddress.locality}
+                      {address?.address1 && `${address.address1}, `}
+                      {address?.locality}
                     </p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm font-medium">City & State</p>
                     <p className="text-sm text-muted-foreground">
-                      {selectedAddress.city}, {selectedAddress.state}
+                      {address?.city}, {address?.state}
                     </p>
                   </div>
-                  {selectedAddress.zip && (
+                  {location.address?.zip && (
                     <div className="space-y-1">
                       <p className="text-sm font-medium">PIN Code</p>
-                      <p className="text-sm text-muted-foreground">{selectedAddress.zip}</p>
+                      <p className="text-sm text-muted-foreground">{address.zip}</p>
                     </div>
                   )}
-                  {selectedRange && (
+                  {availabilityRange && (
                     <div className="space-y-1">
                       <p className="text-sm font-medium">Travel Range</p>
                       <p className="text-sm text-muted-foreground">
-                        Up to {selectedRange.value} {selectedRange.unit}
+                        Up to {availabilityRange.value} {availabilityRange.unit}
                       </p>
                     </div>
                   )}
                 </div>
 
                 {/* Map Link */}
-                {selectedAddress.maplink && (
+                {address?.maplink && (
                   <Alert>
                     <MapPin className="h-4 w-4" />
                     <AlertDescription>
                       View this location on{" "}
                       <a
-                        href={selectedAddress.maplink}
+                        href={address.maplink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary hover:underline"

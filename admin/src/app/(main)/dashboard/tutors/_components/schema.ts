@@ -1,5 +1,5 @@
 import z from "zod";
-import { TutorStatus, TeachingMode, TutorSubject } from "@educatedplanet/models";
+import { TutorStatus, TeachingMode, TutorSubject, PhotoData } from "@educatedplanet/models";
 
 // Table display schema
 export const tutorTableSchema = z.object({
@@ -189,6 +189,14 @@ export const tutorFormSchema = z.object({
     accountNumber: z.string().optional(),
     ifsc: z.string().optional(),
     accountName: z.string().optional(),
+  }).optional(),
+  photo: z.object({
+    id: z.string(),
+    filename: z.string(),
+    url: z.string().url(),
+    uploaded: z.string(),
+    variants: z.array(z.string()),
+    metadata: z.record(z.any()).optional()
   }).optional(),
 });
 

@@ -1,5 +1,3 @@
-import { LoadScript } from '@googlemaps/js-api-loader';
-
 // Interface for structured address
 export interface Address {
   maplink?: string;

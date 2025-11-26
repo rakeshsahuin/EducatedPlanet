@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useGoogleMaps } from "@/components/providers/GoogleMapsProvider";
 import { Loader2, Crosshair, MapPin, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -178,23 +178,27 @@ function MapComponent({
           </div>
         )}
 
-        <google.maps.Map
-          mapContainerStyle={{ width: "100%", height: "100%" }}
-          center={initialLocation || getDefaultMapCenter()}
-          zoom={initialLocation ? 15 : 12}
-          onLoad={handleMapLoad}
-          options={{
-            mapTypeControl: true,
-            streetViewControl: true,
-            fullscreenControl: false,
-            zoomControl: true,
-            styles: [
-              {
-                featureType: "poi",
-                elementType: "labels",
-                stylers: [{ visibility: "off" }],
-              },
-            ],
+        <div
+          style={{ width: "100%", height: "100%" }}
+          ref={(mapElement) => {
+            if (mapElement) {
+              const mapInstance = new google.maps.Map(mapElement, {
+                center: initialLocation || getDefaultMapCenter(),
+                zoom: initialLocation ? 15 : 12,
+                mapTypeControl: true,
+                streetViewControl: true,
+                fullscreenControl: false,
+                zoomControl: true,
+                styles: [
+                  {
+                      featureType: "poi",
+                      elementType: "labels",
+                      stylers: [{ visibility: "off" }],
+                    },
+                  ],
+              });
+              handleMapLoad(mapInstance);
+            }
           }}
         />
       </div>
@@ -209,6 +213,11 @@ export function MapSelector({ value, onChange, disabled, className }: MapSelecto
     value?.coordinates || null
   );
   const { isLoaded } = useGoogleMaps();
+
+  // Sync internal state with prop value
+  useEffect(() => {
+    setSelectedLocation(value?.coordinates || null);
+  }, [value]);
 
   // Handle location selection from map
   const handleLocationSelect = useCallback(
@@ -233,10 +242,7 @@ export function MapSelector({ value, onChange, disabled, className }: MapSelecto
           const place = result[0];
           const address = extractAddressComponents({
             address_components: place.address_components,
-            geometry: {
-              location: { lat, lng },
-              viewport: place.geometry?.viewport,
-            },
+            geometry: place.geometry,
             formatted_address: place.formatted_address,
           });
 

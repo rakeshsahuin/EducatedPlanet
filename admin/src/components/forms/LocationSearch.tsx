@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useGoogleMaps } from "@/components/providers/GoogleMapsProvider";
 import usePlacesAutocomplete, {
   getGeocode,
@@ -34,6 +34,11 @@ export function LocationSearch({
   const inputRef = useRef<HTMLInputElement>(null);
   const { isLoaded } = useGoogleMaps();
 
+  // Sync internal state with prop value
+  useEffect(() => {
+    setSelectedAddress(value || null);
+  }, [value]);
+
   // Only initialize usePlacesAutocomplete when Google Maps is loaded
   const {
     ready,
@@ -47,7 +52,6 @@ export function LocationSearch({
       componentRestrictions: { country: ["in"] },
       // Bias to current location if available
       types: ["address"],
-      fields: ["address_components", "formatted_address", "geometry", "place_id"],
     },
     debounce: 300,
     cache: 24 * 60 * 60 * 1000, // 24 hours
@@ -83,7 +87,7 @@ export function LocationSearch({
         });
 
         // Extract structured address
-        const address = extractAddressComponents(placeDetails);
+        const address = extractAddressComponents(placeDetails as any);
         if (address) {
           setSelectedAddress(address);
           onChange(address);
@@ -238,7 +242,7 @@ export function LocationSearch({
 // Helper to highlight matched text in suggestions
 function highlightMatchedText(
   text: string,
-  matchedSubstrings?: google.maps.places.AutocompleteStructuredFormatting['main_text_matched_substrings']
+  matchedSubstrings?: any[]
 ): React.ReactNode {
   if (!matchedSubstrings || matchedSubstrings.length === 0) {
     return text;
@@ -247,18 +251,18 @@ function highlightMatchedText(
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
 
-  matchedSubstrings.forEach(({ offset, length }) => {
+  matchedSubstrings.forEach((substring: any) => {
     // Add text before match
-    if (offset > lastIndex) {
-      parts.push(text.slice(lastIndex, offset));
+    if (substring.offset > lastIndex) {
+      parts.push(text.slice(lastIndex, substring.offset));
     }
     // Add matched text
     parts.push(
-      <span key={offset} className="font-semibold">
-        {text.slice(offset, offset + length)}
+      <span key={substring.offset} className="font-semibold">
+        {text.slice(substring.offset, substring.offset + substring.length)}
       </span>
     );
-    lastIndex = offset + length;
+    lastIndex = substring.offset + substring.length;
   });
 
   // Add remaining text

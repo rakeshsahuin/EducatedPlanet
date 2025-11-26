@@ -34,6 +34,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { FormProvider as RHFFormProvider } from "react-hook-form";
 import {
   Tabs,
   TabsContent,
@@ -44,6 +45,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, Plus, X, Upload } from "lucide-react";
 import { LocationForm } from "@/components/forms/LocationForm";
+import { TutorPhotoUpload } from "@/components/forms/TutorPhotoUpload";
+import { PhotoData } from "@educatedplanet/models";
+import { uploadTutorPhoto } from "@/lib/image-upload";
 
 interface TutorFormProps {
   initialData?: Partial<TutorFormValues>;
@@ -102,6 +106,8 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
   const [selectedTeachingMode, setSelectedTeachingMode] = useState<TeachingMode>(
     initialData?.teachingModes?.[0] || "offline"
   );
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string>('');
 
   // Fetch subjects from API
   const { subjects, loading: dataLoading } = useSubjectsAndClasses();
@@ -240,6 +246,21 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
   const onSubmit = async (data: z.infer<typeof tutorFormSchema>) => {
     setIsLoading(true);
     try {
+      // Upload photo first if selected
+      let photoData;
+      if (photoFile && !data.photo?.metadata?.isTemporary) {
+        const uploadResult = await uploadTutorPhoto(photoFile, tutorId);
+        if (!uploadResult.success) {
+          toast.error(uploadResult.error || 'Failed to upload photo');
+          setIsLoading(false);
+          return;
+        }
+        photoData = uploadResult.data;
+      } else if (data.photo && !data.photo.metadata?.isTemporary) {
+        // Use existing photo
+        photoData = data.photo;
+      }
+
       // Transform form data for API
       const transformedData = {
         ...data,
@@ -265,6 +286,8 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
           preferredTimes: selectedTimes,
         },
         ageGroups: selectedAgeGroups,
+        // Add photo data if available
+        ...(photoData && { photo: photoData }),
       };
 
       const payload = transformedData;
@@ -330,7 +353,39 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                 <CardTitle>Personal Information</CardTitle>
                 <CardDescription>Basic details about the tutor</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
+                {/* Profile Photo Section */}
+                <div className="flex flex-col items-center">
+                  <FormField
+                    control={form.control}
+                    name="photo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <TutorPhotoUpload
+                            value={field.value}
+                            onChange={(photo) => {
+                              field.onChange(photo);
+                              // Store the actual file for upload
+                              if (photo?.metadata?.originalFile) {
+                                setPhotoFile(photo.metadata.originalFile);
+                                setPhotoPreviewUrl(photo.url);
+                              } else {
+                                setPhotoFile(null);
+                                setPhotoPreviewUrl('');
+                              }
+                            }}
+                            disabled={isLoading}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <Separator />
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -423,7 +478,9 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
             </Card>
 
             {/* Location Information */}
-            <LocationForm />
+            <RHFFormProvider {...form}>
+              <LocationForm />
+            </RHFFormProvider>
           </TabsContent>
 
           <TabsContent value="teaching" className="space-y-6">

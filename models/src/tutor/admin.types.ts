@@ -2,6 +2,18 @@ import { TutorSearchParams, TeachingMode } from './tutor.types';
 import { Types } from 'mongoose';
 
 /**
+ * Photo data structure for Cloudflare image upload
+ */
+export interface PhotoData {
+  id: string;
+  filename: string;
+  url: string;
+  uploaded: string;
+  variants: string[];
+  metadata?: Record<string, any>;
+}
+
+/**
  * Tutor status enum
  */
 export type TutorStatus = 'pending' | 'approved' | 'rejected' | 'suspended';
@@ -57,7 +69,7 @@ export interface TutorData {
     title: string;
     shortDescription: string;
     longDescription: string;
-    photo?: string;
+    photo?: PhotoData | string;
     experienceYears?: number;
   };
   subjects: Array<{

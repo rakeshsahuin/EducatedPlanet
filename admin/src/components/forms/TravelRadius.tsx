@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -41,6 +41,11 @@ export function TravelRadius({
   error,
 }: TravelRadiusProps) {
   const [customValue, setCustomValue] = useState(value.value.toString());
+
+  // Sync internal state with prop value
+  useEffect(() => {
+    setCustomValue(value.value.toString());
+  }, [value.value]);
 
   // Handle preset selection
   const handlePresetClick = (presetValue: number, presetUnit: 'km' | 'miles') => {

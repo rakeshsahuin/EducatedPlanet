@@ -27,6 +27,7 @@ export function TutorPhotoUpload({
 }: TutorPhotoUploadProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [forceRerender, setForceRerender] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageSelect = (file: File, preview: string) => {
@@ -57,8 +58,7 @@ export function TutorPhotoUpload({
 
   const handleRemovePhoto = () => {
     if (value?.metadata?.originalFile) {
-      // Clean up object URL if it exists
-      if (value.url.startsWith('blob:')) {
+      if (value.url && value.url.startsWith('blob:')) {
         URL.revokeObjectURL(value.url);
       }
     }
@@ -67,6 +67,8 @@ export function TutorPhotoUpload({
       setPreviewUrl('');
     }
     onChange(undefined);
+    // Force a re-render to ensure the AvatarFallback is shown
+    setForceRerender(prev => prev + 1);
   };
 
   // Get initials for fallback
@@ -84,19 +86,23 @@ export function TutorPhotoUpload({
   const hasPhoto = !!(value && !value.metadata?.isTemporary);
   const hasTempPhoto = !!(value && value.metadata?.isTemporary);
   const displayImage = value?.url || previewUrl;
+  const hasValidImage = !!(displayImage && displayImage.length > 0 && displayImage !== '');
 
   return (
     <TooltipProvider>
       <div className="flex flex-col items-center space-y-4">
         <div className="relative group">
-          <Avatar className="w-32 h-32 border-4 border-background shadow-lg">
-            {displayImage ? (
+          <Avatar
+            key={`${hasValidImage}-${forceRerender}`}
+            className="w-32 h-32 border-4 border-background shadow-lg"
+          >
+            {hasValidImage && (
               <AvatarImage
                 src={displayImage}
                 alt="Tutor profile"
                 className="object-cover"
               />
-            ) : null}
+            )}
             <AvatarFallback className="text-2xl font-semibold bg-primary/10 text-primary">
               <User className="w-12 h-12" />
             </AvatarFallback>

@@ -58,6 +58,21 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
+    // Check if we need to change user role
+    if (body.changeUserRole && body.userId) {
+      try {
+        // Update user role to 'tutor'
+        await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/users/${body.userId}/role`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role: 'tutor' })
+        });
+      } catch (roleError) {
+        console.error('Error updating user role:', roleError);
+        // Still proceed with tutor creation but log the error
+      }
+    }
+
     // Transform input to match CreateTutorInput
     const tutorData: CreateTutorInput = {
       name: body.name,

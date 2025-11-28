@@ -43,11 +43,19 @@ import {
 } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, Plus, X, Upload } from "lucide-react";
+import { Loader2, Plus, X, Upload, Info, Globe, Twitter, Facebook, Instagram, Github, GraduationCap, Youtube } from "lucide-react";
 import { LocationForm } from "@/components/forms/LocationForm";
 import { TutorPhotoUpload } from "@/components/forms/TutorPhotoUpload";
+import { UserSearchSelect } from "@/components/forms/UserSearchSelect";
+import { RoleChangeDialog } from "@/components/dialogs/RoleChangeDialog";
 import { PhotoData } from "@educatedplanet/models";
 import { uploadTutorPhoto } from "@/lib/image-upload";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface TutorFormProps {
   initialData?: Partial<TutorFormValues>;
@@ -93,28 +101,41 @@ const PREFERRED_TIMES = [
   "Night (9PM - 11PM)"
 ];
 
-const AGE_GROUPS = [
-  "Under 10 years", "10-12 years", "13-15 years", "16-18 years",
-  "18-21 years", "21-25 years", "Above 25 years"
-];
 
 export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTimes, setSelectedTimes] = useState<string[]>(initialData?.availability?.preferredTimes || []);
-  const [selectedAgeGroups, setSelectedAgeGroups] = useState<string[]>(initialData?.ageGroups || []);
-  const [selectedTeachingMode, setSelectedTeachingMode] = useState<TeachingMode>(
+    const [selectedTeachingMode, setSelectedTeachingMode] = useState<TeachingMode>(
     initialData?.teachingModes?.[0] || "offline"
   );
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string>('');
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [showRoleChangeDialog, setShowRoleChangeDialog] = useState(false);
+  const [isChangingRole, setIsChangingRole] = useState(false);
 
   // Fetch subjects from API
   const { subjects, loading: dataLoading } = useSubjectsAndClasses();
 
+  // Initialize selectedUser for edit mode
+  useEffect(() => {
+    if (mode === "edit" && initialData?.userId) {
+      // For edit mode, we'll create a minimal user object with the existing data
+      const existingUser = {
+        id: initialData.userId,
+        name: initialData.name || "",
+        email: initialData.email || "",
+        phone: initialData.phone || ""
+      };
+      setSelectedUser(existingUser);
+    }
+  }, [mode, initialData]);
+
   const form = useForm<z.infer<typeof tutorFormSchema>>({
     resolver: zodResolver(tutorFormSchema as any),
     defaultValues: {
+      userId: initialData?.userId || "",
       name: initialData?.name || "",
       email: initialData?.email || "",
       phone: initialData?.phone || "",
@@ -167,12 +188,16 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
         weekends: initialData?.availability?.weekends ?? true,
         preferredTimes: initialData?.availability?.preferredTimes || [],
       },
-      ageGroups: initialData?.ageGroups || [],
-      resumeLink: initialData?.resumeLink || "",
+        resumeLink: initialData?.resumeLink || "",
       socialLinks: {
         linkedin: initialData?.socialLinks?.linkedin || "",
         youtube: initialData?.socialLinks?.youtube || "",
         website: initialData?.socialLinks?.website || "",
+        onlineCourses: initialData?.socialLinks?.onlineCourses || "",
+        twitter: initialData?.socialLinks?.twitter || "",
+        facebook: initialData?.socialLinks?.facebook || "",
+        instagram: initialData?.socialLinks?.instagram || "",
+        github: initialData?.socialLinks?.github || "",
       },
       bankDetails: {
         accountNumber: initialData?.bankDetails?.accountNumber || "",
@@ -243,7 +268,8 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
     });
   };
 
-  const onSubmit = async (data: z.infer<typeof tutorFormSchema>) => {
+  // Handle the actual form submission
+  const handleFormSubmit = async (data: z.infer<typeof tutorFormSchema>, changeUserRole: boolean = false) => {
     setIsLoading(true);
     try {
       // Upload photo first if selected
@@ -285,9 +311,10 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
           ...data.availability,
           preferredTimes: selectedTimes,
         },
-        ageGroups: selectedAgeGroups,
-        // Add photo data if available
+          // Add photo data if available
         ...(photoData && { photo: photoData }),
+        // Include user role change flag
+        changeUserRole: mode === "create" && changeUserRole && selectedUser?.role === "user"
       };
 
       const payload = transformedData;
@@ -316,6 +343,28 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
     }
   };
 
+  const onSubmit = async (data: z.infer<typeof tutorFormSchema>) => {
+    // Check if we need to change user role (only for new tutors)
+    if (mode === "create" && selectedUser && selectedUser.role === "user") {
+      setShowRoleChangeDialog(true);
+      return;
+    }
+
+    // Otherwise, submit directly
+    await handleFormSubmit(data);
+  };
+
+  // Handle role change confirmation
+  const handleRoleChangeConfirm = async () => {
+    if (!selectedUser) return;
+
+    setIsChangingRole(true);
+    const data = form.getValues();
+    await handleFormSubmit(data, true);
+    setShowRoleChangeDialog(false);
+    setIsChangingRole(false);
+  };
+
   const addTime = (time: string) => {
     if (time && !selectedTimes.includes(time)) {
       setSelectedTimes([...selectedTimes, time]);
@@ -326,19 +375,78 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
     setSelectedTimes(selectedTimes.filter(t => t !== time));
   };
 
-  const addAgeGroup = (group: string) => {
-    if (group && !selectedAgeGroups.includes(group)) {
-      setSelectedAgeGroups([...selectedAgeGroups, group]);
+  
+  // Handle user selection
+  const handleUserSelect = (user: any) => {
+    setSelectedUser(user);
+    if (user) {
+      // Auto-populate form fields with user data
+      form.setValue("name", user.name);
+      form.setValue("email", user.email || "");
+      form.setValue("phone", user.phone);
+      form.setValue("userId", user.id);
+    } else {
+      // Clear fields when user is deselected
+      form.setValue("name", "");
+      form.setValue("email", "");
+      form.setValue("phone", "");
+      form.setValue("userId", "");
     }
-  };
-
-  const removeAgeGroup = (group: string) => {
-    setSelectedAgeGroups(selectedAgeGroups.filter(g => g !== group));
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* Description and User Selection */}
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Fill in the details to create a new tutor profile. All fields marked with * are required.
+          </p>
+
+          {/* User Selection */}
+          <FormField
+            control={form.control}
+            name="userId"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-center gap-2">
+                  <FormLabel>Select User *</FormLabel>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={(e) => e.preventDefault()}
+                          className="inline-flex"
+                        >
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">
+                          Once a tutor profile is linked to a user, this association cannot be changed.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                <FormControl>
+                  <UserSearchSelect
+                    value={selectedUser}
+                    onChange={(user) => {
+                      field.onChange(user?.id || "");
+                      handleUserSelect(user);
+                    }}
+                    disabled={mode === "edit"}
+                    required={true}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <Tabs defaultValue="basic" className="w-full" suppressHydrationWarning>
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basic">Basic Info</TabsTrigger>
@@ -784,89 +892,176 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                   </div>
                 </div>
 
-                <Separator />
-
-                {/* Age Groups */}
-                <div>
-                  <Label className="text-base font-medium">Preferred Age Groups</Label>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Select age groups you prefer to teach
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {selectedAgeGroups.map((group) => (
-                      <Badge key={group} variant="default" className="gap-1">
-                        <span>{group}</span>
-                        <button
-                          type="button"
-                          onClick={() => removeAgeGroup(group)}
-                          className="ml-1 hover:bg-primary-foreground/20 rounded-full p-0.5"
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
-                  <Select onValueChange={addAgeGroup}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Add age groups" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {AGE_GROUPS.filter(
-                        (group) => !selectedAgeGroups.includes(group)
-                      ).map((group) => (
-                        <SelectItem key={group} value={group}>
-                          {group}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <Separator />
-
+  
                 {/* Social Links */}
                 <div>
                   <Label className="text-base font-medium">Social Links (Optional)</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                    <FormField
-                      control={form.control}
-                      name="socialLinks.linkedin"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>LinkedIn Profile</FormLabel>
-                          <FormControl>
-                            <Input placeholder="LinkedIn URL" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="socialLinks.youtube"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>YouTube Channel</FormLabel>
-                          <FormControl>
-                            <Input placeholder="YouTube URL" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="socialLinks.website"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Personal Website</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Website URL" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    {/* Professional Networks */}
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">Professional Networks</Label>
+                      <FormField
+                        control={form.control}
+                        name="socialLinks.linkedin"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <Globe className="h-4 w-4" />
+                              LinkedIn Profile
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="https://linkedin.com/in/..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Video Platforms */}
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">Video Platforms</Label>
+                      <FormField
+                        control={form.control}
+                        name="socialLinks.youtube"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <Youtube className="h-4 w-4 text-red-600" />
+                              YouTube Channel
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="https://youtube.com/..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Online Courses */}
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">Educational Platforms</Label>
+                      <FormField
+                        control={form.control}
+                        name="socialLinks.onlineCourses"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <GraduationCap className="h-4 w-4 text-blue-600" />
+                              Online Courses
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="https://udemy.com/..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Personal Website */}
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">Personal</Label>
+                      <FormField
+                        control={form.control}
+                        name="socialLinks.website"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <Globe className="h-4 w-4" />
+                              Personal Website
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="https://yourwebsite.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Social Media */}
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">Social Media</Label>
+                      <FormField
+                        control={form.control}
+                        name="socialLinks.twitter"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <Twitter className="h-4 w-4 text-blue-400" />
+                              Twitter/X
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="https://x.com/..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">&nbsp;</Label>
+                      <FormField
+                        control={form.control}
+                        name="socialLinks.facebook"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <Facebook className="h-4 w-4 text-blue-600" />
+                              Facebook
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="https://facebook.com/..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">&nbsp;</Label>
+                      <FormField
+                        control={form.control}
+                        name="socialLinks.instagram"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <Instagram className="h-4 w-4 text-pink-600" />
+                              Instagram
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="https://instagram.com/..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Development */}
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-muted-foreground">Development</Label>
+                      <FormField
+                        control={form.control}
+                        name="socialLinks.github"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center gap-2">
+                              <Github className="h-4 w-4" />
+                              GitHub
+                            </FormLabel>
+                            <FormControl>
+                              <Input placeholder="https://github.com/..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -890,6 +1085,16 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
           </Button>
         </div>
       </form>
+
+      {/* Role Change Dialog */}
+      <RoleChangeDialog
+        open={showRoleChangeDialog}
+        onOpenChange={setShowRoleChangeDialog}
+        userName={selectedUser?.name || ""}
+        userEmail={selectedUser?.email}
+        onConfirm={handleRoleChangeConfirm}
+        isLoading={isChangingRole}
+      />
     </Form>
   );
 }

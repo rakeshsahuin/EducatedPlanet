@@ -61,6 +61,7 @@ const subjectSchema = z.object({
 
 // Form schema for creating/editing tutors
 export const tutorFormSchema = z.object({
+  userId: z.string().min(1, "User selection is required"),
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Phone must be at least 10 digits"),
@@ -178,12 +179,16 @@ export const tutorFormSchema = z.object({
     weekends: z.boolean(),
     preferredTimes: z.array(z.string()),
   }),
-  ageGroups: z.array(z.string()).optional(),
-  resumeLink: z.string().url().optional(),
+    resumeLink: z.string().url().optional(),
   socialLinks: z.object({
     linkedin: z.string().url().optional(),
     youtube: z.string().url().optional(),
     website: z.string().url().optional(),
+    onlineCourses: z.string().url().optional(),
+    twitter: z.string().url().optional(),
+    facebook: z.string().url().optional(),
+    instagram: z.string().url().optional(),
+    github: z.string().url().optional(),
   }).optional(),
   bankDetails: z.object({
     accountNumber: z.string().optional(),

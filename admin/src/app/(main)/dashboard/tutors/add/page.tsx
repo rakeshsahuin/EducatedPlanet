@@ -27,9 +27,6 @@ export default async function AddTutorPage() {
       <Card>
         <CardHeader>
           <CardTitle>Tutor Information</CardTitle>
-          <CardDescription>
-            Fill in the details to create a new tutor profile. All fields marked with * are required.
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <TutorForm mode="create" />

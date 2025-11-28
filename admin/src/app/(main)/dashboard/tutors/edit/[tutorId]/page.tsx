@@ -49,6 +49,7 @@ export default async function EditTutorPage({
 
   // Transform the data to match the form structure
   const transformedData = {
+    userId: tutorData.userId || "",
     name: tutorData.approved?.basicInfo?.name || "",
     email: tutorData.approved?.contact?.email || "",
     phone: tutorData.approved?.contact?.phone || "",
@@ -59,9 +60,18 @@ export default async function EditTutorPage({
     classes: tutorData.approved?.teaching?.classes || [],
     teachingModes: tutorData.approved?.teaching?.teachingModes || ["offline"],
     location: {
+      address: {
+        locality: tutorData.approved?.location?.areas?.[0] || "",
+        city: tutorData.approved?.location?.city || "",
+        state: "",
+        coordinates: { lat: 0, lng: 0 },
+      },
+      availabilityRange: {
+        value: 5,
+        unit: "km",
+      },
       city: tutorData.approved?.location?.city || "",
       areas: tutorData.approved?.location?.areas || [],
-      fullAddress: tutorData.approved?.location?.fullAddress || "",
     },
     pricing: {
       oneToOne: {
@@ -85,12 +95,16 @@ export default async function EditTutorPage({
       preferredTimes: tutorData.approved?.availability?.preferredTimes || [],
     },
     teachingSince: tutorData.approved?.teachingSince || new Date().getFullYear(),
-    ageGroups: tutorData.approved?.ageGroups || [],
-    resumeLink: tutorData.approved?.resumeLink || "",
+      resumeLink: tutorData.approved?.resumeLink || "",
     socialLinks: {
       linkedin: tutorData.approved?.socialLinks?.linkedin || "",
       youtube: tutorData.approved?.socialLinks?.youtube || "",
       website: tutorData.approved?.socialLinks?.website || "",
+      onlineCourses: tutorData.approved?.socialLinks?.onlineCourses || "",
+      twitter: tutorData.approved?.socialLinks?.twitter || "",
+      facebook: tutorData.approved?.socialLinks?.facebook || "",
+      instagram: tutorData.approved?.socialLinks?.instagram || "",
+      github: tutorData.approved?.socialLinks?.github || "",
     },
     bankDetails: {
       accountNumber: tutorData.approved?.bankDetails?.accountNumber || "",

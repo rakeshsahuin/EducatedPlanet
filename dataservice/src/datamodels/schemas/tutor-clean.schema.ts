@@ -295,6 +295,14 @@ const tutorSchema = new Schema<ITutorDocument>({
         type: String,
         default: null
       },
+      gallery: [{
+        id: { type: String, required: true },
+        filename: { type: String, required: true },
+        url: { type: String, required: true },
+        uploaded: { type: String, required: true },
+        variants: [{ type: String }],
+        metadata: { type: Schema.Types.Mixed }
+      }],
       experienceYears: {
         type: Number,
         min: [0, 'Experience cannot be negative'],

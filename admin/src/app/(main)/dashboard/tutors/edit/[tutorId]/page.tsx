@@ -95,6 +95,7 @@ export default async function EditTutorPage({
       preferredTimes: tutorData.approved?.availability?.preferredTimes || [],
     },
     teachingSince: tutorData.approved?.teachingSince || new Date().getFullYear(),
+    gallery: tutorData.approved?.gallery || [],
       resumeLink: tutorData.approved?.resumeLink || "",
     socialLinks: {
       linkedin: tutorData.approved?.socialLinks?.linkedin || "",

@@ -47,9 +47,10 @@ import { Loader2, Plus, X, Upload, Info, Globe, Twitter, Facebook, Instagram, Gi
 import { LocationForm } from "@/components/forms/LocationForm";
 import { TutorPhotoUpload } from "@/components/forms/TutorPhotoUpload";
 import { UserSearchSelect } from "@/components/forms/UserSearchSelect";
+import { GalleryContainer } from "@/components/forms/GalleryContainer";
 import { RoleChangeDialog } from "@/components/dialogs/RoleChangeDialog";
 import { PhotoData } from "@educatedplanet/models";
-import { uploadTutorPhoto } from "@/lib/image-upload";
+import { uploadTutorPhoto, uploadGalleryImages } from "@/lib/image-upload";
 import {
   Tooltip,
   TooltipContent,
@@ -188,6 +189,7 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
         weekends: initialData?.availability?.weekends ?? true,
         preferredTimes: initialData?.availability?.preferredTimes || [],
       },
+      gallery: initialData?.gallery || [],
         resumeLink: initialData?.resumeLink || "",
       socialLinks: {
         linkedin: initialData?.socialLinks?.linkedin || "",
@@ -287,6 +289,33 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
         photoData = data.photo;
       }
 
+      // Upload gallery images if any
+      let galleryData: PhotoData[] = [];
+      if (data.gallery && data.gallery.length > 0) {
+        // Filter only temporary images that need uploading
+        const tempImages = data.gallery.filter(img => img.metadata?.isTemporary);
+
+        if (tempImages.length > 0) {
+          const filesToUpload = tempImages.map(img => img.metadata?.originalFile).filter(Boolean) as File[];
+
+          if (filesToUpload.length > 0) {
+            const uploadResult = await uploadGalleryImages(filesToUpload, tutorId);
+            if (uploadResult.data && uploadResult.data.length > 0) {
+              // Keep existing non-temporary images and add newly uploaded ones
+              const existingImages = data.gallery.filter(img => !img.metadata?.isTemporary);
+              galleryData = [...existingImages, ...uploadResult.data];
+            } else {
+              toast.error('Failed to upload gallery images');
+              setIsLoading(false);
+              return;
+            }
+          }
+        } else {
+          // All images are already uploaded
+          galleryData = data.gallery;
+        }
+      }
+
       // Transform form data for API
       const transformedData = {
         ...data,
@@ -311,7 +340,8 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
           ...data.availability,
           preferredTimes: selectedTimes,
         },
-          // Add photo data if available
+        gallery: galleryData,
+        // Add photo data if available
         ...(photoData && { photo: photoData }),
         // Include user role change flag
         changeUserRole: mode === "create" && changeUserRole && selectedUser?.role === "user"
@@ -319,7 +349,8 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
 
       const payload = transformedData;
 
-      const url = mode === "edit" ? `/api/tutors/${tutorId}` : "/api/tutors";
+      // Use admin API endpoints for authenticated operations
+      const url = mode === "edit" ? `/api/admin/tutors/${tutorId}` : "/api/admin/tutors";
       const method = mode === "edit" ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -331,6 +362,15 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
       const result = await response.json();
 
       if (response.ok) {
+        // Clean up blob URLs for temporary images
+        if (data.gallery) {
+          data.gallery.forEach(img => {
+            if (img.metadata?.isTemporary && img.url.startsWith('blob:')) {
+              URL.revokeObjectURL(img.url);
+            }
+          });
+        }
+
         toast.success(`Tutor ${mode === "edit" ? "updated" : "created"} successfully`);
         router.push("/dashboard/tutors");
       } else {
@@ -892,7 +932,35 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                   </div>
                 </div>
 
-  
+                <Separator />
+
+                {/* Gallery Section */}
+                <FormField
+                  control={form.control}
+                  name="gallery"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base font-medium">Gallery Images</FormLabel>
+                      <FormControl>
+                        <GalleryContainer
+                          value={field.value || []}
+                          onChange={field.onChange}
+                          tutorId={tutorId}
+                          disabled={isLoading}
+                          maxImages={20}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Add up to 20 images to showcase your work, classroom, certificates, etc.
+                        Images will maintain their original aspect ratio.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Separator />
+
                 {/* Social Links */}
                 <div>
                   <Label className="text-base font-medium">Social Links (Optional)</Label>

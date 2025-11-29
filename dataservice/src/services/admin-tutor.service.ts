@@ -267,6 +267,113 @@ export class AdminTutorService {
   }
 
   /**
+   * Create a new tutor profile
+   */
+  static async createTutor(
+    tutorData: any,
+    adminId: string
+  ): Promise<TutorAdmin> {
+    // Transform form data to match the database schema
+    const transformedData = {
+      userId: new Types.ObjectId(tutorData.userId),
+      approved: {
+        basicInfo: {
+          firstName: tutorData.name.split(' ').slice(0, -1).join(' ') || tutorData.name,
+          lastName: tutorData.name.split(' ').slice(-1).join(' ') || '',
+          title: tutorData.title || 'Tutor',
+          shortDescription: tutorData.shortDescription || '',
+          longDescription: tutorData.longDescription || '',
+          photo: tutorData.photo?.url || null,
+          experienceYears: 0 // Will be calculated from experience array if provided
+        },
+        teaching: {
+          subjects: tutorData.subjects || [],
+          teachingModes: tutorData.teachingModes || ['offline'],
+          classes: [], // Will be populated from subjects if needed
+          experience: tutorData.experience || [],
+          ageGroups: [] // Legacy field, not used anymore
+        },
+        contact: {
+          phone: tutorData.phone || '',
+          email: tutorData.email || '',
+          preferredContact: 'phone'
+        },
+        location: {
+          city: tutorData.location?.city || 'Bhubaneswar',
+          state: 'Odisha',
+          areas: tutorData.location?.areas || [],
+          coordinates: tutorData.location?.address?.coordinates
+            ? {
+                type: 'Point' as const,
+                coordinates: [
+                  tutorData.location.address.coordinates.lng,
+                  tutorData.location.address.coordinates.lat
+                ]
+              }
+            : undefined
+        },
+        pricing: {
+          oneToOne: {
+            hourlyRate: tutorData.pricing?.oneToOne?.hourlyRate || 500,
+            currency: 'INR'
+          },
+          groupSession: {
+            hourlyRate: tutorData.pricing?.group?.hourlyRate || 300,
+            maxStudents: tutorData.pricing?.group?.maxStudents || 5,
+            ratePerStudent: tutorData.pricing?.group?.hourlyRate || 300
+          },
+          onlineClass: {
+            hourlyRate: tutorData.pricing?.online?.hourlyRate || 400,
+            platformFee: 0
+          },
+          trialClass: {
+            enabled: false,
+            duration: 30,
+            price: 0
+          }
+        },
+        socialMediaLinks: {
+          linkedin: tutorData.socialLinks?.linkedin || null,
+          youtube: tutorData.socialLinks?.youtube || null,
+          facebook: tutorData.socialLinks?.facebook || null,
+          instagram: tutorData.socialLinks?.instagram || null,
+          personalWebsite: tutorData.socialLinks?.website || null
+        },
+        gallery: tutorData.gallery || [],
+        availability: {
+          weekdays: tutorData.availability?.weekdays ?? true,
+          weekends: tutorData.availability?.weekends ?? true,
+          flexible: true
+        }
+      },
+      status: {
+        current: 'pending' as const,
+        submittedAt: new Date()
+      },
+      analytics: {
+        profileViews: 0,
+        contactViews: 0,
+        connects: 0,
+        responseRate: 0,
+        lastActive: new Date()
+      },
+      rating: {
+        average: 0,
+        count: 0,
+        distribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+      },
+      isVerified: false,
+      isFeatured: false,
+      isActive: true,
+      isDeleted: false,
+      lastModifiedBy: new Types.ObjectId(adminId)
+    };
+
+    const tutor = await TutorModel.create(transformedData);
+    return tutor.toObject() as TutorAdmin;
+  }
+
+  /**
    * Increment analytics
    */
   static async incrementProfileViews(tutorId: string): Promise<void> {

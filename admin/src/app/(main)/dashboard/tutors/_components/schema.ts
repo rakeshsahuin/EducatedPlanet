@@ -179,6 +179,14 @@ export const tutorFormSchema = z.object({
     weekends: z.boolean(),
     preferredTimes: z.array(z.string()),
   }),
+  gallery: z.array(z.object({
+    id: z.string(),
+    filename: z.string(),
+    url: z.string().url(),
+    uploaded: z.string(),
+    variants: z.array(z.string()),
+    metadata: z.record(z.any()).optional()
+  })).max(20, "Maximum 20 images allowed").optional(),
     resumeLink: z.string().url().optional(),
   socialLinks: z.object({
     linkedin: z.string().url().optional(),

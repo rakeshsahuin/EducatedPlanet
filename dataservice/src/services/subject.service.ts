@@ -112,13 +112,13 @@ export class SubjectService {
     await SubjectQueries.deleteById(id);
   }
 
-  async getSubjectById(id: string): Promise<NewSubject> {
+  async getSubjectById(id: string): Promise<NewSubject | null> {
     await this.ensureInitialized();
     const doc = await SubjectQueries.findById(id);
     return doc ? this.transformSubjectDocument(doc) : null;
   }
 
-  async getSubjectByCode(code: string): Promise<NewSubject> {
+  async getSubjectByCode(code: string): Promise<NewSubject | null> {
     await this.ensureInitialized();
     const doc = await SubjectQueries.findByCode(code);
     return doc ? this.transformSubjectDocument(doc) : null;
@@ -171,23 +171,24 @@ export class SubjectService {
 
         return {
           ...this.transformSubjectDocument(doc),
-          classDetails: classDetails.filter(Boolean).map(classDoc => {
-            // Transform the class document similar to how classes are transformed
-            const classData = {
-              id: classDoc._id?.toString() || classDoc.id,
-              name: classDoc.name,
-              code: classDoc.code,
-              category: classDoc.category,
-              subClasses: classDoc.subClasses || [],
-              description: classDoc.description || '',
-              isActive: classDoc.isActive,
-              sortOrder: classDoc.sortOrder,
-              metadata: classDoc.metadata || {},
-              createdAt: classDoc.createdAt ? new Date(classDoc.createdAt) : new Date(),
-              updatedAt: classDoc.updatedAt ? new Date(classDoc.updatedAt) : new Date()
-            };
-            return classData;
-          })
+          classDetails: classDetails
+            .filter((classDoc): classDoc is NonNullable<typeof classDoc> => classDoc !== null)
+            .map(classDoc => {
+              // Transform the class document similar to how classes are transformed
+              return {
+                id: classDoc._id?.toString() || classDoc.id,
+                name: classDoc.name,
+                code: classDoc.code,
+                category: classDoc.category,
+                subClasses: classDoc.subClasses || [],
+                description: classDoc.description || '',
+                isActive: classDoc.isActive,
+                sortOrder: classDoc.sortOrder,
+                metadata: classDoc.metadata || {},
+                createdAt: classDoc.createdAt ? new Date(classDoc.createdAt) : new Date(),
+                updatedAt: classDoc.updatedAt ? new Date(classDoc.updatedAt) : new Date()
+              };
+            })
         };
       })
     );

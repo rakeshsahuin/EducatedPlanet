@@ -24,18 +24,23 @@ export class TutorService {
    * Transform MongoDB document to Tutor interface
    */
   private transformTutorDocument(tutorDoc: ITutorDocument): Tutor {
+    const approved = tutorDoc.approved;
     return {
       id: (tutorDoc._id as Types.ObjectId).toString(),
-      name: tutorDoc.name,
-      title: tutorDoc.title,
-      photo: tutorDoc.photo,
-      subjects: tutorDoc.subjects,
-      teachingModes: tutorDoc.teachingModes,
-      location: tutorDoc.location,
-      experience: tutorDoc.experience,
-      price: tutorDoc.price,
+      name: `${approved.basicInfo.firstName} ${approved.basicInfo.lastName}`,
+      title: approved.basicInfo.title,
+      photo: approved.basicInfo.photo || '',
+      subjects: approved.subjects.map(s => s.subjectId.toString()),
+      teachingModes: approved.teachingModes,
+      location: approved.location,
+      experience: approved.experience.map(e => `${e.title} at ${e.institution}`).join(', ') || '',
+      price: {
+        min: approved.pricing.oneToOne.hourlyRate,
+        max: approved.pricing.groupSession.ratePerStudent,
+        currency: approved.pricing.oneToOne.currency
+      },
       rating: tutorDoc.rating || { average: 0, count: 0 },
-      isVerified: tutorDoc.verification?.isApproved || false,
+      isVerified: tutorDoc.isVerified,
       createdAt: tutorDoc.createdAt,
       updatedAt: tutorDoc.updatedAt
     };
@@ -59,17 +64,18 @@ export class TutorService {
 
     // Create tutor profile
     const tutorDoc = await TutorQueries.create({
-      ...tutorData,
       userId: tutorData.userId ? new Types.ObjectId(tutorData.userId) : undefined,
-      status: 'pending', // New profiles need approval
-      isActive: true,
-      verification: {
-        isApproved: false
+      status: {
+        current: 'pending', // New profiles need approval
+        submittedAt: new Date()
       },
+      isActive: true,
+      isVerified: false,
       analytics: {
         profileViews: 0,
         contactViews: 0,
-        connects: 0
+        connects: 0,
+        responseRate: 0
       }
     });
 

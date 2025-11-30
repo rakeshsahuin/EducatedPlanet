@@ -44,7 +44,7 @@ export class TutorQueries {
         .skip(skip)
         .limit(limit)
         .populate('userId', 'name email phone')
-        .lean<TutorAdmin[]>(),
+        .lean(),
       TutorModel.countDocuments(query)
     ]);
 
@@ -145,7 +145,7 @@ export class TutorQueries {
         .skip(skip)
         .limit(limit)
         .populate('userId', 'name email')
-        .lean<TutorAdmin[]>(),
+        .lean(),
       TutorModel.countDocuments(searchQuery)
     ]);
 
@@ -156,11 +156,13 @@ export class TutorQueries {
    * Get tutor by ID for admin view
    */
   static async getTutorByIdForAdmin(tutorId: string) {
-    return await TutorModel.findById(tutorId)
+    const tutor = await TutorModel.findById(tutorId)
       .populate('userId')
       .populate('approved.subjects.subjectId')
       .populate('approved.subjects.classIds')
-      .lean<TutorAdmin>();
+      .lean();
+
+    return tutor;
   }
 
   /**
@@ -170,7 +172,7 @@ export class TutorQueries {
     const result = await this.searchTutors(filters);
 
     const listItems: TutorAdminListItem[] = result.tutors.map(tutor => ({
-      id: tutor._id.toString(),
+      id: tutor._id?.toString() || tutor.id,
       userId: tutor.userId.toString(),
       name: `${tutor.approved.basicInfo.firstName} ${tutor.approved.basicInfo.lastName}`,
       email: tutor.approved.contactDetails.email,
@@ -374,10 +376,10 @@ export class TutorQueries {
     })
     .populate('userId', 'name email')
     .populate('approved.subjects.subjectId')
-    .lean<TutorAdmin[]>();
+    .lean();
 
     return tutors.map(tutor => ({
-      ID: tutor._id,
+      ID: tutor._id?.toString() || tutor.id,
       Name: `${tutor.approved.basicInfo.firstName} ${tutor.approved.basicInfo.lastName}`,
       Email: tutor.approved.contactDetails.email,
       Phone: tutor.approved.contactDetails.phone,

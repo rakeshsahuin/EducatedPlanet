@@ -49,7 +49,9 @@ export class AdminTutorService {
    * Get tutor by ID with all details
    */
   static async getTutorById(tutorId: string): Promise<TutorAdmin | null> {
-    return await TutorQueries.getTutorByIdForAdmin(tutorId);
+    const tutor = await TutorQueries.getTutorByIdForAdmin(tutorId);
+    if (!tutor) return null;
+    return this.transformTutorToAdminInterface(tutor);
   }
 
   /**
@@ -81,7 +83,7 @@ export class AdminTutorService {
       throw new Error('Tutor not found');
     }
 
-    return tutor as TutorAdmin;
+    return this.transformTutorToAdminInterface(tutor);
   }
 
   /**
@@ -105,7 +107,7 @@ export class AdminTutorService {
       throw new Error('Tutor not found');
     }
 
-    return tutor as TutorAdmin;
+    return this.transformTutorToAdminInterface(tutor);
   }
 
   /**
@@ -130,7 +132,7 @@ export class AdminTutorService {
       throw new Error('Tutor not found');
     }
 
-    return tutor as TutorAdmin;
+    return this.transformTutorToAdminInterface(tutor);
   }
 
   /**
@@ -155,7 +157,7 @@ export class AdminTutorService {
       throw new Error('Tutor not found');
     }
 
-    return tutor as TutorAdmin;
+    return this.transformTutorToAdminInterface(tutor);
   }
 
   /**
@@ -177,15 +179,19 @@ export class AdminTutorService {
       throw new Error('Tutor not found');
     }
 
-    return tutor as TutorAdmin;
+    return this.transformTutorToAdminInterface(tutor);
   }
 
   /**
    * Toggle tutor featured status
    */
   static async toggleFeatured(tutorId: string, adminId: string): Promise<TutorAdmin> {
-    const tutor = await TutorQueries.toggleFeatured(tutorId);
-    return await TutorQueries.getTutorByIdForAdmin(tutorId) as Promise<TutorAdmin>;
+    await TutorQueries.toggleFeatured(tutorId);
+    const tutor = await TutorQueries.getTutorByIdForAdmin(tutorId);
+    if (!tutor) {
+      throw new Error('Tutor not found after toggle featured');
+    }
+    return this.transformTutorToAdminInterface(tutor);
   }
 
   /**
@@ -249,7 +255,7 @@ export class AdminTutorService {
       throw new Error('Tutor not found');
     }
 
-    return updated as TutorAdmin;
+    return this.transformTutorToAdminInterface(updated);
   }
 
   /**
@@ -370,7 +376,49 @@ export class AdminTutorService {
     };
 
     const tutor = await TutorModel.create(transformedData);
-    return tutor.toObject() as TutorAdmin;
+    return this.transformTutorToAdminInterface(tutor.toObject());
+  }
+
+  /**
+   * Transform tutor document from DB to TutorAdmin interface
+   */
+  private static transformTutorToAdminInterface(doc: any): TutorAdmin {
+    // Transform location to match TutorAdmin interface
+    const location = doc.approved?.location || {};
+    const transformedLocation: any = {
+      areas: location.areas || [],
+      city: location.city,
+      state: location.state,
+      // Map old structure to new structure with defaults
+      address: {
+        locality: location.city || '',
+        city: location.city || '',
+        state: location.state || '',
+        coordinates: location.coordinates?.coordinates
+          ? {
+              lat: location.coordinates.coordinates[1], // latitude is second element
+              lng: location.coordinates.coordinates[0]  // longitude is first element
+            }
+          : { lat: 0, lng: 0 }
+      },
+      availabilityRange: {
+        value: location.travelRadius || 10,
+        unit: 'km' as const
+      },
+      coordinates: location.coordinates
+    };
+
+    return {
+      ...doc,
+      id: doc._id?.toString() || doc.id,
+      // Transform location in approved section
+      approved: {
+        ...doc.approved,
+        location: transformedLocation
+      },
+      // Ensure all required fields are present
+      lastActive: doc.analytics?.lastActive || new Date()
+    };
   }
 
   /**
@@ -454,7 +502,7 @@ export class AdminTutorService {
     }
     if (filters.status) matchStage['status.current'] = filters.status;
 
-    const pipeline = [
+    const pipeline: any[] = [
       { $match: matchStage },
       {
         $group: {
@@ -479,7 +527,7 @@ export class AdminTutorService {
           total: { $sum: '$count' }
         }
       },
-      { $sort: { '_id': 1 } }
+      { $sort: { _id: 1 } }
     ];
 
     return await TutorModel.aggregate(pipeline);

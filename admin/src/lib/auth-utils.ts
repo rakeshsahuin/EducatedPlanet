@@ -5,7 +5,7 @@ import { validateSession } from '@educatedplanet/dataservice';
 // Types
 export interface User {
   id: string;
-  email: string;
+  email: string | null;
   name: string;
   role: string;
 }

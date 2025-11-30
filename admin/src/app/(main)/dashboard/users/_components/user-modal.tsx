@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -33,6 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
 
@@ -46,6 +47,10 @@ const userFormSchema = z.object({
   avatar: z.string().optional(),
   isEmailVerified: z.boolean(),
   isPhoneVerified: z.boolean(),
+  profile: z.object({
+    gender: z.enum(["male", "female", "other"]).optional(),
+    genderCustom: z.string().optional(),
+  }).optional(),
 });
 
 type UserFormData = z.infer<typeof userFormSchema>;
@@ -61,19 +66,35 @@ interface UserModalProps {
 export function UserModal({ children, user, mode, onSubmit, onClose }: UserModalProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showOtherGender, setShowOtherGender] = useState(false);
 
   const form = useForm<UserFormData>({
     resolver: zodResolver(userFormSchema as any),
     defaultValues: {
-      name: user?.name || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-      role: user?.role || "user",
-      avatar: user?.avatar || "",
-      isEmailVerified: user?.isEmailVerified || false,
-      isPhoneVerified: user?.isPhoneVerified || false,
+      name: "",
+      email: "",
+      phone: "",
+      role: "user",
+      avatar: "",
+      isEmailVerified: false,
+      isPhoneVerified: false,
+      profile: {
+        gender: undefined,
+        genderCustom: "",
+      },
     },
   });
+
+  const watchGender = form.watch("profile.gender");
+
+  // Initialize showOtherGender based on current gender value
+  React.useEffect(() => {
+    if (user?.profile?.gender && !["male", "female"].includes(user.profile.gender)) {
+      setShowOtherGender(true);
+      form.setValue("profile.gender", "other");
+      form.setValue("profile.genderCustom", user.profile.gender);
+    }
+  }, [user, form]);
 
   // Auto-open modal in edit mode when user data is provided
   useEffect(() => {
@@ -88,6 +109,10 @@ export function UserModal({ children, user, mode, onSubmit, onClose }: UserModal
         avatar: user.avatar || "",
         isEmailVerified: user.isEmailVerified || false,
         isPhoneVerified: user.isPhoneVerified || false,
+        profile: {
+          gender: user.profile?.gender && ["male", "female"].includes(user.profile.gender) ? user.profile.gender : "other",
+          genderCustom: user.profile?.gender && !["male", "female"].includes(user.profile.gender) ? user.profile.gender : "",
+        },
       });
     }
   }, [mode, user, form]);
@@ -95,7 +120,31 @@ export function UserModal({ children, user, mode, onSubmit, onClose }: UserModal
   const handleSubmit = async (data: UserFormData) => {
     setIsLoading(true);
     try {
-      await onSubmit?.(data);
+      // Process gender data
+      const processedData = { ...data };
+      if (data.profile) {
+        // If "other" is selected and custom value is provided, use custom value
+        if (data.profile.gender === "other" && data.profile.genderCustom) {
+          processedData.profile = {
+            ...data.profile,
+            genderCustom: data.profile.genderCustom,
+          };
+        }
+        // If no gender selected but custom value exists, use custom value
+        else if (!data.profile.gender && data.profile.genderCustom) {
+          processedData.profile = {
+            ...data.profile,
+            genderCustom: data.profile.genderCustom,
+          };
+        }
+        // Remove genderCustom from final data as it's not needed in API
+        if (processedData.profile && 'genderCustom' in processedData.profile) {
+          const { genderCustom, ...profileWithoutCustom } = processedData.profile;
+          processedData.profile = profileWithoutCustom;
+        }
+      }
+
+      await onSubmit?.(processedData);
       if (mode === "create") {
         form.reset();
       }
@@ -132,7 +181,7 @@ export function UserModal({ children, user, mode, onSubmit, onClose }: UserModal
           )}
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[467px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {mode === "create" ? (
@@ -214,6 +263,66 @@ export function UserModal({ children, user, mode, onSubmit, onClose }: UserModal
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
                     <Input placeholder="+1 (555) 123-4567" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="profile.gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center gap-4">
+                      <RadioGroup
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          setShowOtherGender(value === "other");
+                        }}
+                        value={field.value || ""}
+                        className="flex items-center gap-4"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="male" id="male" />
+                          <FormLabel htmlFor="male" className="font-normal cursor-pointer">
+                            Male
+                          </FormLabel>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="female" id="female" />
+                          <FormLabel htmlFor="female" className="font-normal cursor-pointer">
+                            Female
+                          </FormLabel>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="other" id="other" />
+                          <FormLabel htmlFor="other" className="font-normal cursor-pointer">
+                            Other
+                          </FormLabel>
+                        </div>
+                      </RadioGroup>
+
+                      {watchGender === "other" && (
+                        <FormField
+                          control={form.control}
+                          name="profile.genderCustom"
+                          render={({ field }) => (
+                            <FormItem className="flex-1 max-w-xs">
+                              <FormControl>
+                                <Input
+                                  placeholder="Enter custom gender"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

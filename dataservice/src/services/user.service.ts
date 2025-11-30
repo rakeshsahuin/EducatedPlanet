@@ -36,7 +36,31 @@ export class UserService {
       isEmailVerified: userDoc.isEmailVerified || false,
       isPhoneVerified: userDoc.isPhoneVerified || false,
       createdAt: userDoc.createdAt,
-      updatedAt: userDoc.updatedAt
+      updatedAt: userDoc.updatedAt,
+      profile: userDoc.profile ? {
+        avatar: userDoc.profile.avatar,
+        bio: userDoc.profile.bio,
+        dateOfBirth: userDoc.profile.dateOfBirth,
+        gender: userDoc.profile.gender,
+        address: userDoc.profile.address,
+        preferences: userDoc.profile.preferences || {
+          notifications: {
+            email: true,
+            sms: true,
+            push: true,
+            marketing: false,
+            tutorUpdates: true
+          },
+          language: 'en',
+          timezone: 'Asia/Kolkata',
+          privacy: {
+            profileVisibility: 'public',
+            showPhone: false,
+            showEmail: false,
+            allowDirectMessages: true
+          }
+        }
+      } : undefined
     };
   }
   /**
@@ -151,7 +175,7 @@ export class UserService {
       UserModel.countDocuments(query)
     ]);
 
-    const users = userDocs.map(doc => this.transformUserDocument(doc));
+    const users: User[] = userDocs.map((doc: IUserDocument) => this.transformUserDocument(doc));
 
     return {
       users,

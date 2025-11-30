@@ -1,4 +1,5 @@
-import { CloudflareImageResponse, PhotoData } from '@educatedplanet/common';
+import { CloudflareImageResponse } from '@educatedplanet/common';
+import { PhotoData } from '@educatedplanet/models';
 
 /**
  * Upload a tutor photo to Cloudflare Images
@@ -30,8 +31,7 @@ export async function uploadTutorPhoto(
     if (!response.ok) {
       return {
         success: false,
-        error: result.error || 'Upload failed',
-        details: result
+        error: result.error || 'Upload failed'
       };
     }
 

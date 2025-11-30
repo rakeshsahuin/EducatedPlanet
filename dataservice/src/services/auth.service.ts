@@ -1,6 +1,6 @@
 import { verifyPassword, hashPassword } from '@educatedplanet/common';
 import { IUserDocument } from '../datamodels/schemas/user-clean.schema';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 import { databaseConnection } from '../datamodels/connections';
 
 // JWT Secret - should be passed from environment
@@ -33,7 +33,7 @@ export interface AuthSession {
 export interface UserSessionResponse {
   user: {
     id: string;
-    email: string;
+    email: string | null;
     name: string;
     role: string;
   };
@@ -77,7 +77,7 @@ export async function authenticateUser(email: string, password: string): Promise
     const token = jwt.sign(
       {
         id: user._id.toString(),
-        email: user.email,
+        email: user.email || null,
         name: user.name,
         role: user.role || 'admin',
       },
@@ -94,12 +94,15 @@ export async function authenticateUser(email: string, password: string): Promise
 
     // Store session in database (using the connection directly since sessions might not be in UserModel)
     const db = databaseConnection.getDb();
+    if (!db) {
+      throw new Error('Database connection not available');
+    }
     await db.collection('admin_sessions').insertOne(sessionData);
 
     return {
       user: {
         id: user._id.toString(),
-        email: user.email,
+        email: user.email || null,
         name: user.name,
         role: user.role || 'admin',
       },
@@ -148,7 +151,7 @@ export async function validateSession(token: string): Promise<UserSessionRespons
     return {
       user: {
         id: user._id.toString(),
-        email: user.email,
+        email: user.email || null,
         name: user.name,
         role: user.role || 'admin',
       },

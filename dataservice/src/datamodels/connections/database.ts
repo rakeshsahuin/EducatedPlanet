@@ -19,7 +19,7 @@ export interface DatabaseConfig {
  * Default database configuration
  */
 export const defaultConfig: DatabaseConfig = {
-  uri: process.env.MONGODB_URI,
+  uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/educatedplanet',
   options: {
     maxPoolSize: 10,
     serverSelectionTimeoutMS: 5000,
@@ -30,7 +30,7 @@ export const defaultConfig: DatabaseConfig = {
     retryWrites: true,
     w: 'majority',
     // Explicitly set the database name from environment variable
-    dbName: process.env.MONGODB_DB_NAME
+    dbName: process.env.MONGODB_DB_NAME || 'educatedplanet'
   },
 };
 
@@ -132,7 +132,7 @@ export class DatabaseConnection {
     if (!this.isConnected) {
       throw new Error('Database not connected');
     }
-    return mongoose.connection.db;
+    return mongoose.connection.db!;
   }
 
   /**

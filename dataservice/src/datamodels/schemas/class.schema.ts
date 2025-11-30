@@ -40,8 +40,8 @@ const classSchemaDefinition = new Schema<IClassDocument>({
   toJSON: {
     virtuals: true,
     transform: function(doc, ret) {
-      delete ret.__v;
-      return ret;
+      const { __v, ...clean } = ret;
+      return clean;
     }
   }
 });
@@ -71,7 +71,7 @@ classSchemaDefinition.methods.addSubClass = function(subClassCode: string) {
 };
 
 classSchemaDefinition.methods.removeSubClass = function(subClassCode: string) {
-  this.subClasses = this.subClasses.filter(code => code !== subClassCode);
+  this.subClasses = this.subClasses.filter((code: any) => code !== subClassCode);
 };
 
 // Export the schema definition, not the model

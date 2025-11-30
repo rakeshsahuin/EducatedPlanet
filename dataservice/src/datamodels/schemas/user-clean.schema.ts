@@ -3,6 +3,44 @@ import validator from 'validator';
 import { User } from '@educatedplanet/models';
 
 /**
+ * Profile document interface
+ */
+export interface IUserProfileDocument {
+  avatar?: string;
+  bio?: string;
+  dateOfBirth?: Date;
+  gender?: 'male' | 'female' | 'other';
+  address?: {
+    street?: string;
+    area: string;
+    city: string;
+    state: string;
+    pincode?: string;
+    coordinates?: {
+      latitude: number;
+      longitude: number;
+    };
+  };
+  preferences: {
+    notifications: {
+      email: boolean;
+      sms: boolean;
+      push: boolean;
+      marketing: boolean;
+      tutorUpdates: boolean;
+    };
+    language: 'en' | 'hi' | 'or';
+    timezone: string;
+    privacy: {
+      profileVisibility: 'public' | 'private';
+      showPhone: boolean;
+      showEmail: boolean;
+      allowDirectMessages: boolean;
+    };
+  };
+}
+
+/**
  * User document interface
  */
 export interface IUserDocument extends Omit<User, 'id'>, Document {
@@ -10,14 +48,15 @@ export interface IUserDocument extends Omit<User, 'id'>, Document {
   verificationOTP?: string;
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
-  isEmailVerified?: boolean;
-  isPhoneVerified?: boolean;
+  isEmailVerified: boolean;
+  isPhoneVerified: boolean;
   lastLoginAt?: Date;
   loginAttempts?: number;
   lockUntil?: Date;
   isActive: boolean;
   isDeleted: boolean;
   deletedAt?: Date;
+  profile?: IUserProfileDocument;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -114,6 +153,110 @@ const userSchema = new Schema<IUserDocument>({
   deletedAt: {
     type: Date,
     select: false
+  },
+  profile: {
+    avatar: {
+      type: String,
+      default: ''
+    },
+    bio: {
+      type: String,
+      maxlength: [500, 'Bio cannot exceed 500 characters']
+    },
+    dateOfBirth: {
+      type: Date
+    },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other'],
+      required: false
+    },
+    address: {
+      street: {
+        type: String,
+        trim: true
+      },
+      area: {
+        type: String,
+        trim: true
+      },
+      city: {
+        type: String,
+        trim: true
+      },
+      state: {
+        type: String,
+        trim: true
+      },
+      pincode: {
+        type: String,
+        trim: true
+      },
+      coordinates: {
+        latitude: {
+          type: Number,
+          min: -90,
+          max: 90
+        },
+        longitude: {
+          type: Number,
+          min: -180,
+          max: 180
+        }
+      }
+    },
+    preferences: {
+      notifications: {
+        email: {
+          type: Boolean,
+          default: true
+        },
+        sms: {
+          type: Boolean,
+          default: true
+        },
+        push: {
+          type: Boolean,
+          default: true
+        },
+        marketing: {
+          type: Boolean,
+          default: false
+        },
+        tutorUpdates: {
+          type: Boolean,
+          default: true
+        }
+      },
+      language: {
+        type: String,
+        enum: ['en', 'hi', 'or'],
+        default: 'en'
+      },
+      timezone: {
+        type: String,
+        default: 'Asia/Kolkata'
+      },
+      privacy: {
+        profileVisibility: {
+          type: String,
+          enum: ['public', 'private'],
+          default: 'public'
+        },
+        showPhone: {
+          type: Boolean,
+          default: false
+        },
+        showEmail: {
+          type: Boolean,
+          default: false
+        },
+        allowDirectMessages: {
+          type: Boolean,
+          default: true
+        }
+      }
+    }
   }
 }, {
   timestamps: true,

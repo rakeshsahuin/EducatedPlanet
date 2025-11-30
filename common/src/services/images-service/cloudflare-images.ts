@@ -1,4 +1,13 @@
-import { CloudflareImageResponse, ImageUploadError } from './types';
+import {
+  CloudflareImageResponse,
+  ImageUploadError,
+  CloudflareApiResponse,
+  CloudflareApiError,
+  CloudflareImageResult,
+  CloudflareListImagesResponse,
+  CloudflareListImagesResult,
+  CloudflareImageInfo
+} from './types';
 import { generateUniqueFilename, sanitizeMetadata } from './utils';
 
 export class CloudflareImagesClient {
@@ -6,10 +15,10 @@ export class CloudflareImagesClient {
   private apiToken: string;
   private apiUrl: string;
 
-  constructor(accountId: string, apiToken: string, apiUrl?: string) {
+  constructor(accountId: string, apiToken: string, apiUrl: string) {
     this.accountId = accountId;
     this.apiToken = apiToken;
-    this.apiUrl = apiUrl || `https://api.cloudflare.com/client/v4/accounts/${accountId}/images/v1`;
+    this.apiUrl = apiUrl.replace('<accountid>', accountId);
   }
 
   /**
@@ -31,7 +40,8 @@ export class CloudflareImagesClient {
         formData.append('file', file);
       } else if (Buffer.isBuffer(file)) {
         // For buffer, we need to create a File-like object
-        const blob = new Blob([file]);
+        const uint8Array = new Uint8Array(file);
+        const blob = new Blob([uint8Array]);
         formData.append('file', blob, options.filename || generateUniqueFilename());
       } else {
         throw new Error('Invalid file format');
@@ -57,14 +67,14 @@ export class CloudflareImagesClient {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
+        const errorData = await response.json().catch(() => null) as CloudflareApiResponse<CloudflareApiError> | null;
         throw new Error(
           errorData?.errors?.[0]?.message ||
           `Cloudflare API error: ${response.status} ${response.statusText}`
         );
       }
 
-      const data = await response.json();
+      const data = await response.json() as CloudflareApiResponse<CloudflareImageResult>;
 
       if (!data.success) {
         throw new Error(data.errors?.[0]?.message || 'Upload failed');
@@ -103,7 +113,7 @@ export class CloudflareImagesClient {
         throw new Error(`Failed to fetch image details: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as CloudflareApiResponse<CloudflareImageResult>;
 
       if (!data.success) {
         throw new Error(data.errors?.[0]?.message || 'Failed to fetch image');
@@ -137,7 +147,7 @@ export class CloudflareImagesClient {
         throw new Error(`Failed to delete image: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as CloudflareApiResponse<boolean>;
       return data.success;
 
     } catch (error) {
@@ -174,13 +184,13 @@ export class CloudflareImagesClient {
         throw new Error(`Failed to list images: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as CloudflareListImagesResponse;
 
       if (!data.success) {
         throw new Error(data.errors?.[0]?.message || 'Failed to list images');
       }
 
-      const images = data.result.images.map((img: any) => this.transformCloudflareResponse(img));
+      const images = data.result.images.map((img: CloudflareImageResult) => this.transformCloudflareResponse(img));
 
       return {
         images,
@@ -196,7 +206,7 @@ export class CloudflareImagesClient {
   /**
    * Transform Cloudflare API response to our format
    */
-  private transformCloudflareResponse(cloudflareResult: any): CloudflareImageResponse {
+  private transformCloudflareResponse(cloudflareResult: CloudflareImageResult): CloudflareImageResponse {
     return {
       id: cloudflareResult.id,
       filename: cloudflareResult.filename || cloudflareResult.id,

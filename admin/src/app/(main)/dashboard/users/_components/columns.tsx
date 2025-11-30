@@ -121,6 +121,26 @@ export const usersColumns: ColumnDef<UserTable>[] = [
     cell: ({ row }) => <span className="text-sm">{row.original.phone}</span>,
   },
   {
+    accessorKey: "gender",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Gender" />
+    ),
+    cell: ({ row }) => {
+      const gender = row.original.profile?.gender;
+      return gender ? (
+        <Badge variant="secondary" className="capitalize">
+          {gender}
+        </Badge>
+      ) : (
+        <span className="text-muted-foreground">-</span>
+      );
+    },
+    filterFn: (row, id, value) => {
+      const gender = row.original.profile?.gender;
+      return value.includes(gender);
+    },
+  },
+  {
     accessorKey: "role",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Role" />

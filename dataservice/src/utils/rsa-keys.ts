@@ -104,7 +104,7 @@ export function encryptWithPublicKey(data: string): string {
 
   // Use JSEncrypt for consistency
   const encrypt = new JSEncrypt();
-  encrypt.setPublicKey(publicKey);
+  encrypt.setPublicKey(publicKey!);
   const encrypted = encrypt.encrypt(data);
 
   if (!encrypted) {

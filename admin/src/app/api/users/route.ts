@@ -64,12 +64,20 @@ export async function POST(request: NextRequest) {
 
     const newUser = await userApi.createUser(userData);
 
-    // If verification fields are provided, update them
-    if (body.isEmailVerified !== undefined || body.isPhoneVerified !== undefined) {
-      const updateData: any = {};
-      if (body.isEmailVerified !== undefined) updateData.isEmailVerified = body.isEmailVerified;
-      if (body.isPhoneVerified !== undefined) updateData.isPhoneVerified = body.isPhoneVerified;
+    // If profile data, verification fields are provided, update them
+    const updateData: any = {};
+    if (body.isEmailVerified !== undefined) updateData.isEmailVerified = body.isEmailVerified;
+    if (body.isPhoneVerified !== undefined) updateData.isPhoneVerified = body.isPhoneVerified;
+    if (body.profile?.gender !== undefined || body.profile?.genderCustom !== undefined) {
+      // Handle gender data - if "other" and custom value provided, use custom value
+      let genderValue = body.profile?.gender;
+      if (body.profile?.gender === "other" && body.profile?.genderCustom) {
+        genderValue = body.profile.genderCustom;
+      }
+      updateData.profile = { ...updateData.profile, gender: genderValue };
+    }
 
+    if (Object.keys(updateData).length > 0) {
       await userApi.updateUser(newUser.id, updateData);
     }
 

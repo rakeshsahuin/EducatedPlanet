@@ -59,6 +59,14 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (body.role) updateData.role = body.role;
     if (body.isEmailVerified !== undefined) updateData.isEmailVerified = body.isEmailVerified;
     if (body.isPhoneVerified !== undefined) updateData.isPhoneVerified = body.isPhoneVerified;
+    if (body.profile?.gender !== undefined || body.profile?.genderCustom !== undefined) {
+      // Handle gender data - if "other" and custom value provided, use custom value
+      let genderValue = body.profile?.gender;
+      if (body.profile?.gender === "other" && body.profile?.genderCustom) {
+        genderValue = body.profile.genderCustom;
+      }
+      updateData.profile = { ...updateData.profile, gender: genderValue };
+    }
 
     const updatedUser = await userApi.updateUser(id, updateData);
 

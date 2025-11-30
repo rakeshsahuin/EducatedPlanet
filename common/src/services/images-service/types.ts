@@ -49,3 +49,35 @@ export interface ImageValidationResult {
   error?: string;
   code?: string;
 }
+
+// Cloudflare API Response Types
+export interface CloudflareApiError {
+  message: string;
+  code?: number;
+}
+
+export interface CloudflareImageInfo {
+  total: number;
+}
+
+export interface CloudflareImageResult {
+  id: string;
+  filename?: string;
+  metadata?: Record<string, any>;
+  uploaded?: string;
+  requireSignedURLs?: boolean;
+  variants?: string[];
+}
+
+export interface CloudflareListImagesResult {
+  images: CloudflareImageResult[];
+  image_info: CloudflareImageInfo;
+}
+
+export interface CloudflareApiResponse<T = any> {
+  success: boolean;
+  result: T;
+  errors?: CloudflareApiError[];
+}
+
+export interface CloudflareListImagesResponse extends CloudflareApiResponse<CloudflareListImagesResult> {}

@@ -12,7 +12,7 @@ export class AdminAnalyticsService {
   static async getMonthlyRegistrations(year?: number) {
     const targetYear = year || new Date().getFullYear();
 
-    const pipeline = [
+    const pipeline: any[] = [
       {
         $match: {
           isDeleted: { $ne: true },
@@ -37,7 +37,7 @@ export class AdminAnalyticsService {
           }
         }
       },
-      { $sort: { '_id': 1 } }
+      { $sort: { _id: 1 } }
     ];
 
     const results = await TutorModel.aggregate(pipeline);
@@ -62,7 +62,7 @@ export class AdminAnalyticsService {
    * Get tutor distribution by city
    */
   static async getTutorsByCity(limit = 10) {
-    const pipeline = [
+    const pipeline: any[] = [
       {
         $match: {
           'status.current': 'approved',
@@ -91,7 +91,7 @@ export class AdminAnalyticsService {
    * Get popular subjects
    */
   static async getPopularSubjects(limit = 10) {
-    const pipeline = [
+    const pipeline: any[] = [
       {
         $match: {
           'status.current': 'approved',
@@ -127,7 +127,7 @@ export class AdminAnalyticsService {
    * Get tutor performance metrics
    */
   static async getPerformanceMetrics() {
-    const pipeline = [
+    const pipeline: any[] = [
       {
         $match: {
           'status.current': 'approved',
@@ -175,7 +175,10 @@ export class AdminAnalyticsService {
     const distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     result.ratingDistribution.forEach((dist: any) => {
       Object.keys(dist).forEach(key => {
-        distribution[key as keyof typeof distribution] += dist[key];
+        const ratingKey = key as '1' | '2' | '3' | '4' | '5';
+        if (ratingKey in distribution) {
+          distribution[ratingKey] += dist[key];
+        }
       });
     });
 
@@ -202,7 +205,7 @@ export class AdminAnalyticsService {
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-    const pipeline = [
+    const pipeline: any[] = [
       {
         $match: {
           'status.current': 'pending',
@@ -259,14 +262,19 @@ export class AdminAnalyticsService {
     dateTo?: Date;
     status?: TutorStatus;
   } = {}) {
-    const { monthlyRegistrations, tutorsByCity, popularSubjects, performanceMetrics, approvalQueue } =
-      await Promise.all([
-        this.getMonthlyRegistrations(),
-        this.getTutorsByCity(),
-        this.getPopularSubjects(),
-        this.getPerformanceMetrics(),
-        this.getApprovalQueueMetrics()
-      ]);
+    const [
+      monthlyRegistrations,
+      tutorsByCity,
+      popularSubjects,
+      performanceMetrics,
+      approvalQueue
+    ] = await Promise.all([
+      this.getMonthlyRegistrations(),
+      this.getTutorsByCity(),
+      this.getPopularSubjects(),
+      this.getPerformanceMetrics(),
+      this.getApprovalQueueMetrics()
+    ]);
 
     return {
       generatedAt: new Date(),

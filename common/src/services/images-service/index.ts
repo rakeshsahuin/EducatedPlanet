@@ -11,7 +11,7 @@ import { DEFAULT_IMAGE_CATEGORIES, getCategoryConfig, validateCategory } from '.
 import { validateFile, buildVariantUrls } from './utils';
 import { softDeleteManager } from './soft-delete';
 
-export class ImageUploadService {
+class ImageUploadService {
   private static instance: ImageUploadService;
   private client: CloudflareImagesClient | null = null;
   private config: ImageUploadConfig | null = null;
@@ -32,9 +32,9 @@ export class ImageUploadService {
   private async ensureInitialized(): Promise<void> {
     if (this.initialized) return;
 
-    const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
-    const apiToken = process.env.CLOUDFLARE_IMAGES_API_TOKEN;
-    const apiUrl = process.env.CLOUDFLARE_IMAGES_API_URL;
+    const accountId = process.env.CLOUDFLARE_ACCOUNT_ID!;
+    const apiToken = process.env.CLOUDFLARE_IMAGES_API_TOKEN!;
+    const apiUrl = process.env.CLOUDFLARE_IMAGES_API_URL!;
 
     if (!accountId || !apiToken) {
       throw new Error(
@@ -84,7 +84,8 @@ export class ImageUploadService {
         file = options.file;
       } else if (Buffer.isBuffer(options.file)) {
         // Convert buffer to File for validation
-        const blob = new Blob([options.file], { type: 'image/jpeg' });
+        const uint8Array = new Uint8Array(options.file);
+        const blob = new Blob([uint8Array], { type: 'image/jpeg' });
         file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
       } else {
         throw new Error('Invalid file format. Expected File or Buffer.');
@@ -191,7 +192,6 @@ export class ImageUploadService {
       }
 
       if (variantNames) {
-        // Return only requested variants
         const baseUrl = `https://imagedelivery.net/${this.config?.accountId}/${imageId}`;
         return variantNames.map(variant => `${baseUrl}/${variant}`);
       }
@@ -215,7 +215,7 @@ export class ImageUploadService {
    * Get all available categories
    */
   getAvailableCategories(): ImageCategory[] {
-    return Array.from(DEFAULT_IMAGE_CATEGORIES.values());
+    return Object.values(DEFAULT_IMAGE_CATEGORIES);
   }
 
   /**

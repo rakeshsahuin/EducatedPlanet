@@ -68,7 +68,7 @@ export default async function EditTutorPage({
       },
       availabilityRange: {
         value: 5,
-        unit: "km",
+        unit: "km" as const,
       },
       city: tutorData.approved?.location?.city || "",
       areas: tutorData.approved?.location?.areas || [],

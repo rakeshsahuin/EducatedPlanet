@@ -104,13 +104,13 @@ export class ClassService {
     await ClassQueries.deleteById(id);
   }
 
-  async getClassById(id: string): Promise<Class> {
+  async getClassById(id: string): Promise<Class | null> {
     await this.ensureInitialized();
     const doc = await ClassQueries.findById(id);
     return doc ? this.transformClassDocument(doc) : null;
   }
 
-  async getClassByCode(code: string): Promise<Class> {
+  async getClassByCode(code: string): Promise<Class | null> {
     await this.ensureInitialized();
     const doc = await ClassQueries.findByCode(code);
     return doc ? this.transformClassDocument(doc) : null;

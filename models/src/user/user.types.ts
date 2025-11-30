@@ -12,6 +12,7 @@ export interface User {
   isPhoneVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
+  profile?: UserProfile;
 }
 
 /**

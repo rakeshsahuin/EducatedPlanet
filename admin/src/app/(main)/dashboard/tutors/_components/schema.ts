@@ -65,6 +65,8 @@ export const tutorFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Phone must be at least 10 digits"),
+  gender: z.enum(["male", "female", "other"]).optional(),
+  genderCustom: z.string().optional(),
   title: z.string().min(1, "Professional title is required"),
   shortDescription: z.string().min(10, "Short description must be at least 10 characters"),
   longDescription: z.string().min(50, "Long description must be at least 50 characters"),

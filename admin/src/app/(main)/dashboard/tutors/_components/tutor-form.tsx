@@ -42,6 +42,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, Plus, X, Upload, Info, Globe, Twitter, Facebook, Instagram, Github, GraduationCap, Youtube } from "lucide-react";
 import { LocationForm } from "@/components/forms/LocationForm";
@@ -115,6 +116,7 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [showRoleChangeDialog, setShowRoleChangeDialog] = useState(false);
   const [isChangingRole, setIsChangingRole] = useState(false);
+  const [showOtherGender, setShowOtherGender] = useState(false);
 
   // Fetch subjects from API
   const { subjects, loading: dataLoading } = useSubjectsAndClasses();
@@ -140,6 +142,8 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
       name: initialData?.name || "",
       email: initialData?.email || "",
       phone: initialData?.phone || "",
+      gender: undefined,
+      genderCustom: undefined,
       title: initialData?.title || "",
       shortDescription: initialData?.shortDescription || "",
       longDescription: initialData?.longDescription || "",
@@ -152,17 +156,10 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
       }],
       teachingModes: initialData?.teachingModes || ["offline"],
       location: {
-        // New structured address
-        address: initialData?.location?.address || {
-          locality: "",
-          city: "",
-          state: "",
-          coordinates: { lat: 0, lng: 0 },
-        },
-        // Availability range
+        address: initialData?.location?.address,
         availabilityRange: initialData?.location?.availabilityRange || {
           value: 5,
-          unit: "km",
+          unit: "km" as const,
         },
         // Legacy fields for backward compatibility
         city: initialData?.location?.city || "",
@@ -228,6 +225,7 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
   });
 
   const watchedTeachingModes = form.watch("teachingModes");
+  const watchGender = form.watch("gender");
 
   // Update derived states when form values change
   useEffect(() => {
@@ -425,12 +423,26 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
       form.setValue("email", user.email || "");
       form.setValue("phone", user.phone);
       form.setValue("userId", user.id);
+
+      // Handle gender - if it's not male/female, set as "other" and store custom value
+      if (user.profile?.gender) {
+        if (["male", "female"].includes(user.profile.gender)) {
+          form.setValue("gender", user.profile.gender);
+        } else {
+          form.setValue("gender", "other");
+          form.setValue("genderCustom", user.profile.gender);
+          setShowOtherGender(true);
+        }
+      }
     } else {
       // Clear fields when user is deselected
       form.setValue("name", "");
       form.setValue("email", "");
       form.setValue("phone", "");
+      form.setValue("gender", undefined);
+      form.setValue("genderCustom", "");
       form.setValue("userId", "");
+      setShowOtherGender(false);
     }
   };
 
@@ -570,6 +582,65 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                       <FormLabel>Email Address</FormLabel>
                       <FormControl>
                         <Input type="email" placeholder="Enter email address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gender</FormLabel>
+                      <FormControl>
+                        <div className="flex items-center gap-4">
+                          <RadioGroup
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              setShowOtherGender(value === "other");
+                            }}
+                            value={field.value || ""}
+                            className="flex items-center gap-4"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="male" id="tutor-male" />
+                              <FormLabel htmlFor="tutor-male" className="font-normal cursor-pointer">
+                                Male
+                              </FormLabel>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="female" id="tutor-female" />
+                              <FormLabel htmlFor="tutor-female" className="font-normal cursor-pointer">
+                                Female
+                              </FormLabel>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="other" id="tutor-other" />
+                              <FormLabel htmlFor="tutor-other" className="font-normal cursor-pointer">
+                                Other
+                              </FormLabel>
+                            </div>
+                          </RadioGroup>
+
+                          {watchGender === "other" && !selectedUser && (
+                            <FormField
+                              control={form.control}
+                              name="genderCustom"
+                              render={({ field }) => (
+                                <FormItem className="flex-1 max-w-xs">
+                                  <FormControl>
+                                    <Input
+                                      placeholder="Enter custom gender"
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

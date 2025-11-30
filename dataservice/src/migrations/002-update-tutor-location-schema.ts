@@ -1,5 +1,6 @@
 import { Tutor } from '@educatedplanet/models';
-import tutorModel, { TutorDocument } from '../datamodels/schemas/tutor-clean.schema';
+import { TutorModel } from '../datamodels/models/tutor.model';
+import { ITutorDocument } from '../datamodels/schemas/tutor-clean.schema';
 import mongoose from 'mongoose';
 
 /**
@@ -97,7 +98,7 @@ export async function up(): Promise<void> {
 
   try {
     // Get all tutors
-    const tutors = await tutorModel.find({}) as TutorDocument[];
+    const tutors = await TutorModel.find({}) as ITutorDocument[];
 
     console.log(`Found ${tutors.length} tutors to migrate`);
 
@@ -113,11 +114,11 @@ export async function up(): Promise<void> {
       };
 
       // Check if tutor has existing location data
-      if (tutor.location && tutor.location.city) {
+      if (tutor.approved?.location && tutor.approved.location.city) {
         const address = await createAddressFromLegacy(
-          tutor.location.city,
-          tutor.location.areas || [],
-          (tutor as any).location?.fullAddress
+          tutor.approved.location.city,
+          tutor.approved.location.areas || [],
+          (tutor as any).approved?.location?.fullAddress
         );
 
         updateData.$set['location.address'] = address;
@@ -144,12 +145,14 @@ export async function up(): Promise<void> {
       }
 
       // Update the tutor document
-      await tutorModel.updateOne(
+      await TutorModel.updateOne(
         { _id: tutor._id },
         updateData
       );
 
-      console.log(`Migrated tutor: ${tutor.name || tutor._id}`);
+      console.log(`Migrated tutor: ${tutor.approved?.basicInfo ?
+        `${tutor.approved.basicInfo.firstName} ${tutor.approved.basicInfo.lastName}` :
+        tutor._id}`);
     }
 
     console.log('Migration 002 completed successfully');
@@ -164,7 +167,7 @@ export async function down(): Promise<void> {
 
   try {
     // Remove new fields and keep old structure
-    await tutorModel.updateMany(
+    await TutorModel.updateMany(
       {},
       {
         $unset: {

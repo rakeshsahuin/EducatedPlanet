@@ -10,6 +10,9 @@ export const userTableSchema = z.object({
   isPhoneVerified: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  profile: z.object({
+    gender: z.enum(["male", "female", "other"]).optional(),
+  }).optional(),
 });
 
 export type UserTable = z.infer<typeof userTableSchema>;
@@ -23,6 +26,9 @@ export const userFormSchema = z.object({
   avatar: z.string().optional(),
   isEmailVerified: z.boolean(),
   isPhoneVerified: z.boolean(),
+  profile: z.object({
+    gender: z.enum(["male", "female", "other"]).optional(),
+  }).optional(),
 });
 
 export type UserForm = z.infer<typeof userFormSchema>;

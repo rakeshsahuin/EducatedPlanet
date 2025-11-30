@@ -65,10 +65,8 @@ const subjectSchemaDefinition = new Schema<ISubjectDocument>({
   toJSON: {
     virtuals: true,
     transform: function(doc, ret) {
-      delete ret.__v;
-      delete ret.isDeleted;
-      delete ret.deletedAt;
-      return ret;
+      const { __v, isDeleted, deletedAt, ...clean } = ret;
+      return clean;
     }
   }
 });
@@ -89,7 +87,7 @@ subjectSchemaDefinition.index({ 'metadata.difficulty': 1, isAcademic: 1 });
 
 // Instance methods
 subjectSchemaDefinition.methods.hasClass = function(classId: string) {
-  return this.classIds.some(id => id.toString() === classId);
+  return this.classIds.some((id: any) => id.toString() === classId);
 };
 
 subjectSchemaDefinition.methods.addClass = function(classId: string) {
@@ -99,7 +97,7 @@ subjectSchemaDefinition.methods.addClass = function(classId: string) {
 };
 
 subjectSchemaDefinition.methods.removeClass = function(classId: string) {
-  this.classIds = this.classIds.filter(id => id.toString() !== classId);
+  this.classIds = this.classIds.filter((id: any) => id.toString() !== classId);
 };
 
 subjectSchemaDefinition.methods.updatePopularity = function(isPopular: boolean) {

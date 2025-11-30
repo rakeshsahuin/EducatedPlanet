@@ -7,7 +7,7 @@ import { getCSRFToken } from '@/utils/get-csrf-token';
 // Types
 export interface User {
   id: string;
-  email: string;
+  email: string | null;
   name: string;
   role: string;
   avatar?: string;

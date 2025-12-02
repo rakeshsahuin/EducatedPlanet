@@ -173,8 +173,11 @@ export function ExperienceEntry({
                   selected={fromDateValue}
                   onSelect={handleFromDateSelect}
                   initialFocus
+                  captionLayout="dropdown"
                   fromYear={1950}
                   toYear={new Date().getFullYear()}
+                  startMonth={new Date(1950, 0)}
+                  endMonth={new Date(new Date().getFullYear(), 11)}
                 />
               </PopoverContent>
             </Popover>
@@ -214,8 +217,11 @@ export function ExperienceEntry({
                   selected={toDateValue}
                   onSelect={handleToDateSelect}
                   initialFocus
+                  captionLayout="dropdown"
                   fromYear={1950}
                   toYear={new Date().getFullYear()}
+                  startMonth={new Date(1950, 0)}
+                  endMonth={new Date(new Date().getFullYear(), 11)}
                   disabled={(date) => fromDateValue && date < fromDateValue}
                 />
               </PopoverContent>

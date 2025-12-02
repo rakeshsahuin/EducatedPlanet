@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { useRouter } from "next/navigation";
 import { ArrowUpDown, MoreHorizontal, Edit, Eye, Star, MapPin, Calendar, CheckCircle, XCircle, Clock, AlertCircle, Crown } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -78,7 +79,7 @@ const RatingStars = ({ rating, count }: { rating: number; count: number }) => {
   );
 };
 
-export const tutorsColumns: ColumnDef<TutorTable>[] = [
+export const createTutorsColumns = (router: ReturnType<typeof useRouter>): ColumnDef<TutorTable>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -354,7 +355,7 @@ export const tutorsColumns: ColumnDef<TutorTable>[] = [
                 Copy Tutor ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => window.location.href = `/dashboard/tutors/edit/${tutor.id}`}>
+              <DropdownMenuItem onClick={() => router.push(`/dashboard/tutors/edit/${tutor.id}`)}>
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Details
               </DropdownMenuItem>

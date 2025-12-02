@@ -149,6 +149,7 @@ export const UserQueries = {
           role: 1,
           isEmailVerified: 1,
           isPhoneVerified: 1,
+          'profile.gender': 1,
           createdAt: 1
         }
       },

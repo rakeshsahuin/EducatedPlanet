@@ -28,6 +28,7 @@ interface User {
   role: string;
   isEmailVerified: boolean;
   isPhoneVerified: boolean;
+  gender?: string;
 }
 
 interface UserSearchSelectProps {

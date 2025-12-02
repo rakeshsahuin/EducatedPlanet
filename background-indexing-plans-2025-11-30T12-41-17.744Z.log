@@ -1,0 +1,122 @@
+[2025-11-30T12:41:17.945Z] 🔧 Intelligent Context MCP Configuration:
+[2025-11-30T12:41:17.945Z] ==================================================
+[2025-11-30T12:41:17.945Z] 📊 Log Level: INFO
+[2025-11-30T12:41:17.945Z] 🌟 Wildcard Backend: ✅ Enabled (all-in-one solution)
+[2025-11-30T12:41:17.945Z] 🚀 Available Capabilities:
+[2025-11-30T12:41:17.945Z] 🔄 Result Reranking: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.945Z] 🔍 Vector Search: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.946Z] 📐 Embeddings: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.946Z] ==================================================
+[2025-11-30T12:41:17.946Z] 🔧 Intelligent Context MCP Configuration:
+[2025-11-30T12:41:17.946Z] ==================================================
+[2025-11-30T12:41:17.946Z] 📊 Log Level: INFO
+[2025-11-30T12:41:17.946Z] 🌟 Wildcard Backend: ✅ Enabled (all-in-one solution)
+[2025-11-30T12:41:17.946Z] 🚀 Available Capabilities:
+[2025-11-30T12:41:17.946Z] 🔄 Result Reranking: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.946Z] 🔍 Vector Search: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.946Z] 📐 Embeddings: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.946Z] ==================================================
+[2025-11-30T12:41:17.947Z] [DEBUG] NamespaceManagerService.initialize() called
+[2025-11-30T12:41:17.947Z] [DEBUG] Loading registry from: C:\Users\RakaThinkpad\.codex-context\indexed-codebases.json
+[2025-11-30T12:41:17.948Z] 🔧 Capabilities: {"reranking":false,"vectorSearch":false,"localBM25":true}
+[2025-11-30T12:41:17.948Z] 🌐 Wildcard backend: ENABLED (using hosted Fastify backend)
+[2025-11-30T12:41:17.948Z]    Base URL: https://deepcontext.mcp.wild-card.ai
+[2025-11-30T12:41:17.948Z] ⚠️  Jina API key not provided - result reranking will be disabled
+[2025-11-30T12:41:17.948Z] 💡 Set JINA_API_KEY environment variable to enable result reranking
+[2025-11-30T12:41:17.948Z] [DEBUG] NamespaceManagerService.initialize() called
+[2025-11-30T12:41:17.948Z] [DEBUG] Loading registry from: C:\Users\RakaThinkpad\.codex-context\indexed-codebases.json
+[2025-11-30T12:41:17.949Z] [BACKGROUND] Starting indexing for: C:\Users\RakaThinkpad\.claude\plans
+[2025-11-30T12:41:17.949Z] [BACKGROUND] Using Wildcard API
+[2025-11-30T12:41:17.949Z] [BACKGROUND] Wildcard API Key: 3de72897c9...
+[2025-11-30T12:41:17.949Z] [BACKGROUND] Wildcard API URL: undefined
+[2025-11-30T12:41:17.949Z] 🔧 Intelligent Context MCP Configuration:
+[2025-11-30T12:41:17.949Z] ==================================================
+[2025-11-30T12:41:17.950Z] 📊 Log Level: INFO
+[2025-11-30T12:41:17.950Z] 🌟 Wildcard Backend: ✅ Enabled (all-in-one solution)
+[2025-11-30T12:41:17.950Z] 🚀 Available Capabilities:
+[2025-11-30T12:41:17.950Z] 🔄 Result Reranking: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.950Z] 🔍 Vector Search: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.950Z] 📐 Embeddings: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.950Z] ==================================================
+[2025-11-30T12:41:17.950Z] 🔧 Intelligent Context MCP Configuration:
+[2025-11-30T12:41:17.950Z] ==================================================
+[2025-11-30T12:41:17.950Z] [BACKGROUND] Initialized successfully
+[2025-11-30T12:41:17.950Z] 📊 Log Level: INFO
+[2025-11-30T12:41:17.950Z] 🌟 Wildcard Backend: ✅ Enabled (all-in-one solution)
+[2025-11-30T12:41:17.950Z] 🚀 Available Capabilities:
+[2025-11-30T12:41:17.950Z] 🔄 Result Reranking: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.950Z] 🔍 Vector Search: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.950Z] 📐 Embeddings: ✅ Enabled (via Wildcard)
+[2025-11-30T12:41:17.950Z] ==================================================
+[2025-11-30T12:41:17.950Z] [DEBUG] NamespaceManagerService.initialize() called
+[2025-11-30T12:41:17.950Z] [DEBUG] Loading registry from: C:\Users\RakaThinkpad\.codex-context\indexed-codebases.json
+[2025-11-30T12:41:17.951Z] [DEBUG] Successfully loaded 3 indexed codebases
+[2025-11-30T12:41:17.953Z] [2025-11-30T12:41:17.964Z] [NamespaceManagerService] [INFO] 📂 Loaded 3 indexed codebases from disk
+[2025-11-30T12:41:17.953Z] [DEBUG] NamespaceManagerService initialized with 3 indexed codebases
+[2025-11-30T12:41:17.953Z] [2025-11-30T12:41:17.965Z] [NamespaceManagerService] [INFO] 🚀 NamespaceManagerService initialized with 3 indexed codebases
+[2025-11-30T12:41:17.959Z] [DEBUG] Successfully loaded 3 indexed codebases
+[2025-11-30T12:41:17.959Z] [2025-11-30T12:41:17.971Z] [NamespaceManagerService] [INFO] 📂 Loaded 3 indexed codebases from disk
+[2025-11-30T12:41:17.959Z] [DEBUG] NamespaceManagerService initialized with 3 indexed codebases
+[2025-11-30T12:41:17.959Z] [2025-11-30T12:41:17.971Z] [NamespaceManagerService] [INFO] 🚀 NamespaceManagerService initialized with 3 indexed codebases
+[2025-11-30T12:41:17.959Z] [DEBUG] Successfully loaded 3 indexed codebases
+[2025-11-30T12:41:17.959Z] [2025-11-30T12:41:17.972Z] [NamespaceManagerService] [INFO] 📂 Loaded 3 indexed codebases from disk
+[2025-11-30T12:41:17.959Z] [DEBUG] NamespaceManagerService initialized with 3 indexed codebases
+[2025-11-30T12:41:17.959Z] [2025-11-30T12:41:17.972Z] [NamespaceManagerService] [INFO] 🚀 NamespaceManagerService initialized with 3 indexed codebases
+[2025-11-30T12:41:18.062Z] [2025-11-30T12:41:18.074Z] [TREESITTER-FULL] [INFO] ✅ Tree-sitter parsers initialized successfully (TypeScript, JavaScript, Python)
+[2025-11-30T12:41:18.062Z] [2025-11-30T12:41:18.074Z] [TREESITTER-FULL] [INFO] ✅ Tree-sitter parsers initialized successfully (TypeScript, JavaScript, Python)
+[2025-11-30T12:41:18.062Z] [BACKGROUND] Namespace manager initialized
+[2025-11-30T12:41:18.062Z] [BACKGROUND] About to start indexCodebase()...
+[2025-11-30T12:41:18.062Z] [2025-11-30T12:41:18.074Z] [TREESITTER-FULL] [INFO] ✅ Tree-sitter parsers initialized successfully (TypeScript, JavaScript, Python)
+[2025-11-30T12:41:18.062Z] [2025-11-30T12:41:18.074Z] [STANDALONE-INTEGRATION] [INFO] Initialized with 3 indexed codebases
+[2025-11-30T12:41:18.062Z] [2025-11-30T12:41:18.074Z] [STANDALONE-INTEGRATION] [INFO] Initialized with 3 indexed codebases
+[2025-11-30T12:41:18.062Z] [2025-11-30T12:41:18.074Z] [STANDALONE-INTEGRATION] [INFO] Initialized with 3 indexed codebases
+[2025-11-30T12:41:18.062Z] [BACKGROUND] Codebase path: C:\Users\RakaThinkpad\.claude\plans
+[2025-11-30T12:41:18.062Z] [BACKGROUND] Force reindex: false
+[2025-11-30T12:41:18.063Z] [2025-11-30T12:41:18.075Z] [INDEXING-ORCHESTRATOR] [INFO] 🚀 Starting indexing: C:\Users\RakaThinkpad\.claude\plans
+[2025-11-30T12:41:18.063Z] [2025-11-30T12:41:18.075Z] [INDEXING-ORCHESTRATOR] [DEBUG] 📋 Options: {"force":false,"filtering":true,"dependencies":true}
+[2025-11-30T12:41:18.063Z] 🔍 Registry initialized successfully
+[2025-11-30T12:41:18.063Z] [2025-11-30T12:41:18.076Z] [TREESITTER-FULL] [INFO] ✅ Tree-sitter parsers initialized successfully (TypeScript, JavaScript, Python)
+[2025-11-30T12:41:18.064Z] 🚀 Intelligent Context MCP Server ready!
+[2025-11-30T12:41:18.064Z] 🔄 Result Reranking: ❌ Disabled
+[2025-11-30T12:41:18.064Z] 📝 Local BM25 Search: ✅ Always Available
+[2025-11-30T12:41:18.064Z] 🔌 Transport: stdio
+[2025-11-30T12:41:18.065Z] [2025-11-30T12:41:18.077Z] [INDEXING-ORCHESTRATOR] [WARN] ⚠️ No files found in C:\Users\RakaThinkpad\.claude\plans
+[2025-11-30T12:41:18.065Z] [2025-11-30T12:41:18.077Z] [INDEXING-ORCHESTRATOR] [INFO] 🔍 Content filtering 0 files...
+[2025-11-30T12:41:18.065Z] [2025-11-30T12:41:18.077Z] [INDEXING-ORCHESTRATOR] [INFO] ✅ Content filtering complete: 0/0 files included
+[2025-11-30T12:41:18.065Z] [2025-11-30T12:41:18.077Z] [INDEXING-ORCHESTRATOR] [INFO] 📝 Processing: 0 files
+[2025-11-30T12:41:18.066Z] [2025-11-30T12:41:18.078Z] [INDEXING-ORCHESTRATOR] [WARN] ❌ No chunks generated from 0 files - possible causes: all files filtered out, parsing failures, or empty files
+[2025-11-30T12:41:18.068Z] [2025-11-30T12:41:18.080Z] [NamespaceManagerService] [WARN] ⚠️ Registered failed indexing: C:\Users\RakaThinkpad\.claude\plans - No indexable content found - check if files contain valid code or adjust content filtering
+[2025-11-30T12:41:18.068Z] [BACKGROUND] Raw result: {
+[2025-11-30T12:41:18.068Z]   "success": false,
+[2025-11-30T12:41:18.068Z]   "namespace": "mcp_4fc0752551e6bcae",
+[2025-11-30T12:41:18.068Z]   "filesProcessed": 0,
+[2025-11-30T12:41:18.068Z]   "chunksCreated": 0,
+[2025-11-30T12:41:18.068Z]   "processingTimeMs": 2,
+[2025-11-30T12:41:18.068Z]   "message": "Indexing failed with 1 errors",
+[2025-11-30T12:41:18.068Z]   "errors": [
+[2025-11-30T12:41:18.068Z]     {
+[2025-11-30T12:41:18.068Z]       "file": "C:\\Users\\RakaThinkpad\\.claude\\plans",
+[2025-11-30T12:41:18.068Z]       "error": "No supported files found in directory"
+[2025-11-30T12:41:18.068Z]     }
+[2025-11-30T12:41:18.068Z]   ]
+[2025-11-30T12:41:18.068Z] }
+[2025-11-30T12:41:18.068Z] [BACKGROUND] ✅ Indexing completed for C:\Users\RakaThinkpad\.claude\plans: 0 chunks
+[2025-11-30T12:41:18.068Z] [BACKGROUND] ⚠️  Zero chunks created or indexing failed - investigating...
+[2025-11-30T12:41:18.068Z] [BACKGROUND] Success: false
+[2025-11-30T12:41:18.068Z] [BACKGROUND] Message: Indexing failed with 1 errors
+[2025-11-30T12:41:18.068Z] [BACKGROUND] Files processed: 0
+[2025-11-30T12:41:18.068Z] [BACKGROUND] Processing time: 2ms
+[2025-11-30T12:41:18.068Z] [BACKGROUND] Namespace: mcp_4fc0752551e6bcae
+[2025-11-30T12:41:18.069Z] [BACKGROUND] Errors property: [
+[2025-11-30T12:41:18.069Z]   {
+[2025-11-30T12:41:18.069Z]     file: 'C:\\Users\\RakaThinkpad\\.claude\\plans',
+[2025-11-30T12:41:18.069Z]     error: 'No supported files found in directory'
+[2025-11-30T12:41:18.069Z]   }
+[2025-11-30T12:41:18.069Z] ]
+[2025-11-30T12:41:18.069Z] [BACKGROUND] Errors: 1
+[2025-11-30T12:41:18.070Z] [2025-11-30T12:41:18.082Z] [NamespaceManagerService] [WARN] ⚠️ Registered failed indexing: C:\Users\RakaThinkpad\.claude\plans - Indexing failed with 1 errors
+[2025-11-30T12:41:18.070Z] [BACKGROUND] ✅ Failed indexing attempt registered for status tracking
+[2025-11-30T12:41:18.070Z] [BACKGROUND] Error details:
+[2025-11-30T12:41:18.070Z] [BACKGROUND]   Error 1: File: C:\Users\RakaThinkpad\.claude\plans, Error: No supported files found in directory
+[2025-11-30T12:41:18.070Z] [BACKGROUND] All result keys: success, namespace, filesProcessed, chunksCreated, processingTimeMs, message, errors
+[2025-11-30T12:41:18.085Z] Process completed with code: 0

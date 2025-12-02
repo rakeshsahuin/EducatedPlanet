@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Search, Filter, Download, Loader2, CheckCircle, XCircle, AlertCircle, Users, Star, Crown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -20,10 +21,11 @@ import { useDataTableInstance } from "@/hooks/use-data-table-instance";
 import { toast } from "sonner";
 import { TutorStatus } from "@educatedplanet/models";
 
-import { tutorsColumns } from "./columns";
+import { createTutorsColumns } from "./columns";
 import { TutorTable, TutorSearchParams } from "./schema";
 
 export function TutorsTable() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [cityFilter, setCityFilter] = useState<string>("all");
@@ -158,7 +160,7 @@ export function TutorsTable() {
 
   const table = useDataTableInstance({
     data: tutors,
-    columns: tutorsColumns,
+    columns: createTutorsColumns(router),
     getRowId: (row) => row.id,
     defaultPageSize: 10,
     defaultSorting: [{ id: "submittedAt", desc: true }],
@@ -377,7 +379,7 @@ export function TutorsTable() {
           <CardTitle className="flex items-center justify-between">
             <span>Tutors Management</span>
             <div className="flex items-center gap-2">
-              <Button variant="default" onClick={() => window.location.href = "/dashboard/tutors/add"}>
+              <Button variant="default" onClick={() => router.push("/dashboard/tutors/add")}>
                 Add New Tutor
               </Button>
             </div>
@@ -603,7 +605,7 @@ export function TutorsTable() {
         <CardContent className="space-y-4">
           <div className="relative">
             <div className="overflow-hidden rounded-md border">
-              <DataTable table={table} columns={tutorsColumns} />
+              <DataTable table={table} columns={createTutorsColumns(router)} />
             </div>
 
             {/* Loading Overlay */}

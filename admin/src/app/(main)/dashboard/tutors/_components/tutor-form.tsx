@@ -65,29 +65,6 @@ interface TutorFormProps {
   mode: "create" | "edit";
 }
 
-// Common options
-const SUBJECT_OPTIONS = [
-  "Mathematics", "Physics", "Chemistry", "Biology", "English", "Hindi",
-  "Computer Science", "History", "Geography", "Economics", "Accountancy",
-  "Business Studies", "Political Science", "Sociology", "Psychology"
-];
-
-const CLASS_OPTIONS = [
-  "Class 1-5", "Class 6-8", "Class 9-10", "Class 11-12",
-  "NEET", "JEE", "CUET", "GATE", "CAT", "IELTS", "TOEFL"
-];
-
-const CITY_OPTIONS = [
-  "Bhubaneswar", "Cuttack", "Rourkela", "Puri", "Sambalpur",
-  "Berhampur", "Balasore", "Bhawanipatna", "Jharsuguda"
-];
-
-const BHUBANESWAR_AREAS = [
-  "Patia", "Saheed Nagar", "Forest Park", "Nayapalli", "Old Town",
-  "Bapuji Nagar", "Ashok Nagar", "Master Canteen", "Rasulgarh",
-  "Acharya Vihar", "Sailashree Vihar", "IRC Village"
-];
-
 const TEACHING_MODES: { value: TeachingMode; label: string }[] = [
   { value: "online", label: "Online Only" },
   { value: "offline", label: "Offline Only" },
@@ -147,34 +124,33 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
       title: initialData?.title || "",
       shortDescription: initialData?.shortDescription || "",
       longDescription: initialData?.longDescription || "",
-      subjects: initialData?.subjects || [{
-        subjectId: "",
-        subjectName: "",
-        isAcademic: true,
-        ageFrom: 5,
-        ageTo: 18
-      }],
+      subjects: initialData?.subjects || [],
       teachingModes: initialData?.teachingModes || ["offline"],
       location: {
-        address: initialData?.location?.address,
+        address: initialData?.location?.address || {
+          locality: undefined,
+          city: undefined,
+          state: undefined,
+          coordinates: { lat: 20.2961, lng: 85.8245 }
+        },
         availabilityRange: initialData?.location?.availabilityRange || {
           value: 5,
-          unit: "km" as const,
+          unit: "km" as const
         },
         // Legacy fields for backward compatibility
-        city: initialData?.location?.city || "",
+        city: initialData?.location?.city,
         areas: initialData?.location?.areas || [],
       },
       pricing: {
         oneToOne: {
-          hourlyRate: initialData?.pricing?.oneToOne?.hourlyRate || 0,
+          hourlyRate: initialData?.pricing?.oneToOne?.hourlyRate || undefined,
         },
         group: {
-          hourlyRate: initialData?.pricing?.group?.hourlyRate || 0,
-          maxStudents: initialData?.pricing?.group?.maxStudents || 0,
+          hourlyRate: initialData?.pricing?.group?.hourlyRate || undefined,
+          maxStudents: initialData?.pricing?.group?.maxStudents || undefined,
         },
         online: {
-          hourlyRate: initialData?.pricing?.online?.hourlyRate || 0,
+          hourlyRate: initialData?.pricing?.online?.hourlyRate || undefined,
         },
       },
       education: initialData?.education || [],
@@ -233,6 +209,61 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
       setSelectedTeachingMode(watchedTeachingModes[0]);
     }
   }, [watchedTeachingModes]);
+
+  // Ensure teachingModes is always synchronized with selectedTeachingMode
+  useEffect(() => {
+    if (selectedTeachingMode) {
+      form.setValue("teachingModes", [selectedTeachingMode]);
+    }
+  }, [selectedTeachingMode, form]);
+
+  // Debug form validation state
+  const debugFormState = () => {
+    const errors = form.formState.errors;
+    console.log('=== FORM VALIDATION DEBUG ===');
+    console.log('Form isValid:', form.formState.isValid);
+    console.log('Form isDirty:', form.formState.isDirty);
+    console.log('Selected user:', selectedUser);
+    console.log('Selected teaching mode:', selectedTeachingMode);
+    console.log('Selected times:', selectedTimes);
+    console.log('Current form values:', {
+      userId: form.getValues('userId'),
+      name: form.getValues('name'),
+      email: form.getValues('email'),
+      phone: form.getValues('phone'),
+      title: form.getValues('title'),
+      shortDescription: form.getValues('shortDescription'),
+      longDescription: form.getValues('longDescription'),
+      subjects: form.getValues('subjects'),
+      teachingModes: form.getValues('teachingModes'),
+      location: form.getValues('location'),
+    });
+    console.log('Form errors:', errors);
+    
+    // Check specific required fields
+    // const requiredFields = [
+    //   'userId', 'name', 'email', 'phone', 'title',
+    //   'shortDescription', 'longDescription', 'subjects', 'teachingModes'
+    // ];
+    // requiredFields.forEach(field => {
+    //   const value = form.getValues(field as any);
+    //   const hasError = errors[field];
+    //   console.log(`${field}:`, { value, hasError });
+    // });
+    
+    // Check location fields specifically
+    const location = form.getValues('location');
+    if (location) {
+      console.log('Location fields:', {
+        locality: location.address?.locality,
+        city: location.address?.city,
+        state: location.address?.state,
+        availabilityRange: location.availabilityRange
+      });
+    }
+    
+    console.log('=== END DEBUG ===');
+  };
 
   // Handle subject field updates
   const handleSubjectChange = (index: number, value: TutorSubject) => {
@@ -382,9 +413,35 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
   };
 
   const onSubmit = async (data: z.infer<typeof tutorFormSchema>) => {
+    // Manually trigger validation to catch all errors
+    const isValid = await form.trigger();
+
+    if (!isValid) {
+      const errors = form.formState.errors;
+      const errorCount = Object.keys(errors).length;
+
+      // Get the field names with errors
+      const errorFields = Object.keys(errors).map(key => {
+        // Convert camelCase to readable format
+        const fieldName = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+        return fieldName;
+      });
+
+      toast.error(`You have ${errorCount} validation error${errorCount > 1 ? 's' : ''} in the form. Please check the following field${errorCount > 1 ? 's' : ''}: ${errorFields.slice(0, 3).join(', ')}${errorCount > 3 ? '...' : ''}`, {
+        duration: 3000,
+      });
+      return;
+    }
+
+    console.log('Form submitted with data:', data);
+    console.log('Selected user:', selectedUser);
+    console.log('Selected teaching mode:', selectedTeachingMode);
+    console.log('Selected times:', selectedTimes);
+
     // Check if we need to change user role (only for new tutors)
     if (mode === "create" && selectedUser && selectedUser.role === "user") {
       setShowRoleChangeDialog(true);
+      console.log('Role change modal opened')
       return;
     }
 
@@ -425,12 +482,12 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
       form.setValue("userId", user.id);
 
       // Handle gender - if it's not male/female, set as "other" and store custom value
-      if (user.profile?.gender) {
-        if (["male", "female"].includes(user.profile.gender)) {
-          form.setValue("gender", user.profile.gender);
+      if (user.gender) {
+        if (["male", "female"].includes(user.gender)) {
+          form.setValue("gender", user.gender);
         } else {
           form.setValue("gender", "other");
-          form.setValue("genderCustom", user.profile.gender);
+          form.setValue("genderCustom", user.gender);
           setShowOtherGender(true);
         }
       }
@@ -448,7 +505,7 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" noValidate>
         {/* Description and User Selection */}
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
@@ -623,7 +680,7 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                             </div>
                           </RadioGroup>
 
-                          {watchGender === "other" && !selectedUser && (
+                          {watchGender === "other" && (
                             <FormField
                               control={form.control}
                               name="genderCustom"
@@ -781,7 +838,10 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                           name="teachingMode"
                           value={mode.value}
                           checked={selectedTeachingMode === mode.value}
-                          onChange={() => setSelectedTeachingMode(mode.value)}
+                          onChange={(e) => {
+                            setSelectedTeachingMode(e.target.value as TeachingMode);
+                            form.setValue("teachingModes", [e.target.value as TeachingMode]);
+                          }}
                           className="sr-only"
                         />
                         <span className="text-sm font-medium">{mode.label}</span>
@@ -838,7 +898,7 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
             <Card>
               <CardHeader>
                 <CardTitle>Pricing Details</CardTitle>
-                <CardDescription>Set hourly rates for different teaching modes</CardDescription>
+                <CardDescription>Set hourly rates for different teaching modes (Optional)</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -853,8 +913,11 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                             type="number"
                             min="0"
                             placeholder="500"
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                            value={field.value || ""}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              field.onChange(val === "" ? undefined : parseInt(val) || undefined);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -872,8 +935,11 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                             type="number"
                             min="0"
                             placeholder="400"
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                            value={field.value || ""}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              field.onChange(val === "" ? undefined : parseInt(val) || undefined);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -891,8 +957,11 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                             type="number"
                             min="0"
                             placeholder="300"
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                            value={field.value || ""}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              field.onChange(val === "" ? undefined : parseInt(val) || undefined);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -912,8 +981,11 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
                           min="1"
                           max="50"
                           placeholder="10"
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          value={field.value || ""}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            field.onChange(val === "" ? undefined : parseInt(val) || undefined);
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -1218,7 +1290,10 @@ export function TutorForm({ initialData, tutorId, mode }: TutorFormProps) {
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button
+            type="submit"
+            disabled={isLoading}
+          >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {mode === "edit" ? "Update Tutor" : "Create Tutor"}
           </Button>

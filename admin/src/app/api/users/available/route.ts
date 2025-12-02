@@ -19,7 +19,8 @@ export async function GET(request: NextRequest) {
       phone: user.phone,
       role: user.role,
       isEmailVerified: user.isEmailVerified,
-      isPhoneVerified: user.isPhoneVerified
+      isPhoneVerified: user.isPhoneVerified,
+      gender: user.profile?.gender
     }));
 
     return NextResponse.json({

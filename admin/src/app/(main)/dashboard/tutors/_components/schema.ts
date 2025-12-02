@@ -104,16 +104,16 @@ export const tutorFormSchema = z.object({
   }),
   pricing: z.object({
     oneToOne: z.object({
-      hourlyRate: z.number().min(1, "Hourly rate is required"),
+      hourlyRate: z.number().min(0, "Hourly rate must be 0 or greater").optional(),
     }),
     group: z.object({
-      hourlyRate: z.number().optional(),
-      maxStudents: z.number().positive().optional(),
+      hourlyRate: z.number().min(0, "Group rate must be 0 or greater").optional(),
+      maxStudents: z.number().min(1, "Max students must be at least 1").optional(),
     }),
     online: z.object({
-      hourlyRate: z.number().optional(),
+      hourlyRate: z.number().min(0, "Online rate must be 0 or greater").optional(),
     }),
-  }),
+  }).optional(),
   education: z.array(z.object({
     degree: z.string(),
     institution: z.string(),
@@ -121,7 +121,7 @@ export const tutorFormSchema = z.object({
   })).optional(),
   experience: z.array(z.object({
     title: z.string().min(1, "Job title is required").max(150, "Job title cannot exceed 150 characters"),
-    institution: z.string().min(1, "Institution is required").max(150, "Institution name cannot exceed 150 characters"),
+    institution: z.string().max(150, "Institution name cannot exceed 150 characters").optional(),
     yearFrom: z.date({
       required_error: "Start date is required",
     }),
@@ -189,16 +189,16 @@ export const tutorFormSchema = z.object({
     variants: z.array(z.string()),
     metadata: z.record(z.any()).optional()
   })).max(20, "Maximum 20 images allowed").optional(),
-    resumeLink: z.string().url().optional(),
+    resumeLink: z.string().url("Invalid resume URL").optional().or(z.literal("")),
   socialLinks: z.object({
-    linkedin: z.string().url().optional(),
-    youtube: z.string().url().optional(),
-    website: z.string().url().optional(),
-    onlineCourses: z.string().url().optional(),
-    twitter: z.string().url().optional(),
-    facebook: z.string().url().optional(),
-    instagram: z.string().url().optional(),
-    github: z.string().url().optional(),
+    linkedin: z.string().url("Invalid LinkedIn URL").optional().or(z.literal("")),
+    youtube: z.string().url("Invalid YouTube URL").optional().or(z.literal("")),
+    website: z.string().url("Invalid website URL").optional().or(z.literal("")),
+    onlineCourses: z.string().url("Invalid course URL").optional().or(z.literal("")),
+    twitter: z.string().url("Invalid Twitter URL").optional().or(z.literal("")),
+    facebook: z.string().url("Invalid Facebook URL").optional().or(z.literal("")),
+    instagram: z.string().url("Invalid Instagram URL").optional().or(z.literal("")),
+    github: z.string().url("Invalid GitHub URL").optional().or(z.literal("")),
   }).optional(),
   bankDetails: z.object({
     accountNumber: z.string().optional(),
